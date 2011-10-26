@@ -2,16 +2,25 @@ import fileinput
 import json
 
 
+# Event types
+CHANGE_MERGED = "change-merged"
+PATCHSET_CREATED = "patchset-created"
+COMMENT_ADDED = "comment-added"
+CHANGE_ABANDONED = "change-abandoned"
+CHANGE_RESTORED = "change-restored"
+REF_UPDATED = "ref-updated"
+
+
 class GerritStreamError(Exception):
     ''' GerritStreamError is raised when an error occurs while
-    reading the Gerrit events stream
+    reading the Gerrit events stream.
     '''
 
 
 class GerritAccount:
     ''' Representation of the Gerrit user account (name and email address)
-    described in `json_data`
-    Raise GerritStreamError if name or email address field is missing
+    described in `json_data`.
+    Raise GerritStreamError if name or email address field is missing.
     '''
 
     def __init__(self, json_data):
@@ -26,8 +35,8 @@ class GerritAccount:
 
 
 class GerritChange:
-    ''' Representation of the Gerrit change described in `json_data`
-    Raise GerritStreamError if any of the required fields is missing
+    ''' Representation of the Gerrit change described in `json_data`.
+    Raise GerritStreamError if any of the required fields is missing.
     '''
 
     def __init__(self, json_data):
@@ -44,8 +53,8 @@ class GerritChange:
 
 
 class GerritPatchset:
-    ''' Representation of the Gerrit patch set described in `json_data`
-    Raise GerritStreamError if any of the required fields is missing
+    ''' Representation of the Gerrit patch set described in `json_data`.
+    Raise GerritStreamError if any of the required fields is missing.
     '''
 
     def __init__(self, json_data):
@@ -60,9 +69,9 @@ class GerritPatchset:
 
 class GerritApprovals:
     ''' Representation of the Gerrit approvals (verification and code review)
-    described in `json_data`
-    Raise GerritStreamError if required field is missing or has an
-    unexpected value
+    described in `json_data`.
+    Raise GerritStreamError if a required field is missing or has an
+    unexpected value.
     '''
 
     def __init__(self, json_data):
@@ -80,8 +89,8 @@ class GerritApprovals:
 
 
 class GerritRefUpdate:
-    ''' Representation of the Gerrit "ref update" described in `json_data`
-    Raise GerritStreamError if any of the required fields is missing
+    ''' Representation of the Gerrit "ref update" described in `json_data`.
+    Raise GerritStreamError if any of the required fields is missing.
     '''
 
     def __init__(self, json_data):
@@ -95,7 +104,7 @@ class GerritRefUpdate:
 
 
 class GerritEvent:
-    ''' Gerrit event base class
+    ''' Gerrit event base class.
     '''
 
     def __init__(self):
@@ -104,8 +113,8 @@ class GerritEvent:
 
 class GerritPatchsetCreatedEvent(GerritEvent):
     ''' Representation of the Gerrit "patchset-created" event described in
-    `json_data`
-    Raise GerritStreamError if any of the required fields is missing
+    `json_data`.
+    Raise GerritStreamError if any of the required fields is missing.
     '''
 
     def __init__(self, json_data):
@@ -120,8 +129,8 @@ class GerritPatchsetCreatedEvent(GerritEvent):
 
 class GerritCommentAddedEvent(GerritEvent):
     ''' Representation of the Gerrit "comment-added" event described in
-    `json_data`
-    Raise GerritStreamError if any of the required fields is missing
+    `json_data`.
+    Raise GerritStreamError if any of the required fields is missing.
     '''
 
     def __init__(self, json_data):
@@ -140,8 +149,8 @@ class GerritCommentAddedEvent(GerritEvent):
 
 class GerritChangeMergedEvent(GerritEvent):
     ''' Representation of the Gerrit "change-merged" event described in
-    `json_data`
-    Raise GerritStreamError if any of the required fields is missing
+    `json_data`.
+    Raise GerritStreamError if any of the required fields is missing.
     '''
 
     def __init__(self, json_data):
@@ -155,8 +164,8 @@ class GerritChangeMergedEvent(GerritEvent):
 
 class GerritChangeAbandonedEvent(GerritEvent):
     ''' Representation of the Gerrit "change-abandoned" event described in
-    `json_data`
-    Raise GerritStreamError if any of the required fields is missing
+    `json_data`.
+    Raise GerritStreamError if any of the required fields is missing.
     '''
 
     def __init__(self, json_data):
@@ -175,8 +184,8 @@ class GerritChangeAbandonedEvent(GerritEvent):
 
 class GerritChangeRestoredEvent(GerritEvent):
     ''' Representation of the Gerrit "change-restored" event described in
-    `json_data`
-    Raise GerritStreamError if any of the required fields is missing
+    `json_data`.
+    Raise GerritStreamError if any of the required fields is missing.
     '''
 
     def __init__(self, json_data):
@@ -193,8 +202,8 @@ class GerritChangeRestoredEvent(GerritEvent):
 
 class GerritRefUpdatedEvent(GerritEvent):
     ''' Representation of the Gerrit "ref-updated" event described in
-    `json_data`
-    Raise GerritStreamError if any of the required fields is missing
+    `json_data`.
+    Raise GerritStreamError if any of the required fields is missing.
     '''
 
     def __init__(self, json_data):
@@ -209,24 +218,27 @@ class GerritRefUpdatedEvent(GerritEvent):
 
 
 class GerritStream:
-    ''' Gerrit stream handler
+    ''' Gerrit stream handler.
     '''
 
     def __init__(self):
         self.listeners = []
 
     def attach(self, listener):
-        ''' Attach the `listener` to the list of listeners
+        ''' Attach the `listener` to the list of listeners.
+        Raise GerritStream error if the listener does not match the
+        expected signature.
         '''
         if not hasattr(listener, "on_gerrit_event"):
-            raise GerritStreamError("Listener must have event handler")
+            raise GerritStreamError("Listener must have `on_gerrit_event` " \
+                                    "event handler")
         if not listener.on_gerrit_event.func_code.co_argcount == 2:
-            raise GerritStreamError("Handler must accept 1 parameter")
+            raise GerritStreamError("`on_gerrit_event` must take 1 arg")
         if not listener in self.listeners:
             self.listeners.append(listener)
 
     def detach(self, listener):
-        ''' Remove the `listener` from the list of listeners
+        ''' Remove the `listener` from the list of listeners.
         '''
         if listener in self.listeners:
             try:
@@ -236,14 +248,16 @@ class GerritStream:
 
     def __get_event(self, json_data):
         ''' Create a new 'GerritEvent' from the JSON object
-        described in `json_data`
+        described in `json_data`.
+        Return an instance of one of the GerritEvent subclasses.
+        Raise GerritStreamError if any error occurs.
         '''
-        event_dict = dict({"change-merged": "ChangeMerged",
-            "patchset-created": "PatchsetCreated",
-            "comment-added": "CommentAdded",
-            "change-abandoned": "ChangeAbandoned",
-            "change-restored": "ChangeRestored",
-            "ref-updated": "RefUpdated"})
+        event_dict = {CHANGE_MERGED: "ChangeMerged",
+            PATCHSET_CREATED: "PatchsetCreated",
+            COMMENT_ADDED: "CommentAdded",
+            CHANGE_ABANDONED: "ChangeAbandoned",
+            CHANGE_RESTORED: "ChangeRestored",
+            REF_UPDATED: "RefUpdated"}
 
         event_type = json_data["type"]
         if event_type in event_dict:
@@ -251,20 +265,18 @@ class GerritStream:
             try:
                 return globals()[classname](json_data)
             except KeyError, e:
-                print("Error creating event %s" % (str(e)))
+                raise GerritStreamError("Error creating event: %s" % (str(e)))
 
-        print("Unhandled event type %s" % (event_type))
-        return None
+        raise GerritStreamError("Unexpected event type `%s`" % (event_type))
 
     def __dispatch_event(self, event):
-        ''' Dispatch the `event` to the listeners
+        ''' Dispatch the `event` to the listeners.
         '''
-        if not event == None:
-            for listener in self.listeners:
-                listener.on_gerrit_event(event)
+        for listener in self.listeners:
+            listener.on_gerrit_event(event)
 
     def stream(self, inputstream):
-        ''' Listen to the `inputstream` and handle JSON objects
+        ''' Listen to the `inputstream` and handle JSON objects.
         '''
         try:
             done = 0
@@ -278,4 +290,4 @@ class GerritStream:
         except IOError:
             raise GerritStreamError("IOError while reading event stream")
         except ValueError:
-            raise GerritStreamError("Invalid json data in event stream")
+            raise GerritStreamError("Invalid JSON data in event stream")
