@@ -227,11 +227,13 @@ class GerritStream:
     def attach(self, listener):
         ''' Attach the `listener` to the list of listeners.
         Raise GerritStream error if the listener does not match the
-        expected signature.
+        expected signature, or if its event handler is not callable.
         '''
         if not hasattr(listener, "on_gerrit_event"):
             raise GerritStreamError("Listener must have `on_gerrit_event` " \
                                     "event handler")
+        if not callable(listener.on_gerrit_event):
+            raise GerritStreamError("`on_gerrit_event` must be callable")
         if not listener.on_gerrit_event.func_code.co_argcount == 2:
             raise GerritStreamError("`on_gerrit_event` must take 1 arg")
         if not listener in self.listeners:

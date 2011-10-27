@@ -23,6 +23,17 @@ class ListenerWithInvalidHandler():
         pass
 
 
+class ListenerWithInvalidHandlerNotCallable():
+    """ Dummy listener class with invalid event handler
+    that is not callable.
+    """
+
+    on_gerrit_event = "this is a string"
+
+    def __init__(self):
+        pass
+
+
 class ListenerWithValidHandler():
     """ Dummy listener class.
     """
@@ -51,6 +62,14 @@ class TestGerritStream(unittest.TestCase):
         """
         g = GerritStream()
         l = ListenerWithInvalidHandler()
+        self.assertRaises(GerritStreamError, g.attach, l)
+
+    def test_listener_non_callable_handler(self):
+        """ Test that an exception is raised if a listener with
+        non-callable event handler is added.
+        """
+        g = GerritStream()
+        l = ListenerWithInvalidHandlerNotCallable()
         self.assertRaises(GerritStreamError, g.attach, l)
 
     def test_listener_valid_handler(self):
