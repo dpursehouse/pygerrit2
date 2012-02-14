@@ -1,4 +1,9 @@
-import fileinput
+""" Gerrit event stream interface.
+
+Class to listen to the Gerrit event stream and dispatch events.
+
+"""
+
 import json
 
 
@@ -31,7 +36,7 @@ class GerritAccount:
             else:
                 self.email = ""
         except KeyError, e:
-            raise GerritStreamError("GerritAccount: %s" % (str(e)))
+            raise GerritStreamError("GerritAccount: %s" % e)
 
 
 class GerritChange:
@@ -49,7 +54,7 @@ class GerritChange:
             self.url = json_data["url"]
             self.owner = GerritAccount(json_data["owner"])
         except KeyError, e:
-            raise GerritStreamError("GerritChange: %s" % (str(e)))
+            raise GerritStreamError("GerritChange: %s" % e)
 
 
 class GerritPatchset:
@@ -64,7 +69,7 @@ class GerritPatchset:
             self.ref = json_data["ref"]
             self.uploader = GerritAccount(json_data["uploader"])
         except KeyError, e:
-            raise GerritStreamError("GerritPatchset: %s" % (str(e)))
+            raise GerritStreamError("GerritPatchset: %s" % e)
 
 
 class GerritApprovals:
@@ -85,7 +90,7 @@ class GerritApprovals:
                     raise GerritStreamError("GerritApprovals: Bad type %s"
                         % (approval["type"]))
         except KeyError, e:
-            raise GerritStreamError("GerritApprovals: %s" % (str(e)))
+            raise GerritStreamError("GerritApprovals: %s" % e)
 
 
 class GerritRefUpdate:
@@ -100,7 +105,7 @@ class GerritRefUpdate:
             self.refname = json_data["refName"]
             self.project = json_data["project"]
         except KeyError, e:
-            raise GerritStreamError("GerritRefUpdate: %s" % (str(e)))
+            raise GerritStreamError("GerritRefUpdate: %s" % e)
 
 
 class GerritEvent:
@@ -123,8 +128,7 @@ class GerritPatchsetCreatedEvent(GerritEvent):
             self.patchset = GerritPatchset(json_data["patchSet"])
             self.uploader = GerritAccount(json_data["uploader"])
         except KeyError, e:
-            raise GerritStreamError("GerritPatchsetCreatedEvent: %s"
-                % (str(e)))
+            raise GerritStreamError("GerritPatchsetCreatedEvent: %s" % e)
 
 
 class GerritCommentAddedEvent(GerritEvent):
@@ -143,8 +147,8 @@ class GerritCommentAddedEvent(GerritEvent):
             else:
                 self.approvals = None
             self.comment = json_data["comment"]
-        except ValueError:
-            raise GerritStreamError("GerritCommentAddedEvent: %s" % (str(e)))
+        except ValueError, e:
+            raise GerritStreamError("GerritCommentAddedEvent: %s" % e)
 
 
 class GerritChangeMergedEvent(GerritEvent):
@@ -159,7 +163,7 @@ class GerritChangeMergedEvent(GerritEvent):
             self.patchset = GerritPatchset(json_data["patchSet"])
             self.submitter = GerritAccount(json_data["submitter"])
         except KeyError, e:
-            raise GerritStreamError("GerritChangeMergedEvent: %s" % (str(e)))
+            raise GerritStreamError("GerritChangeMergedEvent: %s" % e)
 
 
 class GerritChangeAbandonedEvent(GerritEvent):
@@ -197,7 +201,7 @@ class GerritChangeRestoredEvent(GerritEvent):
                 self.patchset = None
             self.restorer = GerritAccount(json_data["restorer"])
         except KeyError, e:
-            raise GerritStreamError("GerritChangeRestoredEvent: %s" % (str(e)))
+            raise GerritStreamError("GerritChangeRestoredEvent: %s" % e)
 
 
 class GerritRefUpdatedEvent(GerritEvent):
@@ -214,12 +218,20 @@ class GerritRefUpdatedEvent(GerritEvent):
             else:
                 self.submitter = None
         except KeyError, e:
-            raise GerritStreamError("GerritRefUpdatedEvent: %s" % (str(e)))
+            raise GerritStreamError("GerritRefUpdatedEvent: %s" % e)
 
 
 class GerritStream:
     ''' Gerrit stream handler.
     '''
+
+    # Map the event types to class names.
+    _event_dict = {CHANGE_MERGED: "ChangeMerged",
+                   PATCHSET_CREATED: "PatchsetCreated",
+                   COMMENT_ADDED: "CommentAdded",
+                   CHANGE_ABANDONED: "ChangeAbandoned",
+                   CHANGE_RESTORED: "ChangeRestored",
+                   REF_UPDATED: "RefUpdated"}
 
     def __init__(self):
         self.listeners = []
@@ -245,33 +257,26 @@ class GerritStream:
         if listener in self.listeners:
             try:
                 self.listeners.remove(listener)
-            except:
+            except ValueError:
                 pass
 
-    def __get_event(self, json_data):
+    def _get_event(self, json_data):
         ''' Create a new 'GerritEvent' from the JSON object
         described in `json_data`.
         Return an instance of one of the GerritEvent subclasses.
         Raise GerritStreamError if any error occurs.
         '''
-        event_dict = {CHANGE_MERGED: "ChangeMerged",
-            PATCHSET_CREATED: "PatchsetCreated",
-            COMMENT_ADDED: "CommentAdded",
-            CHANGE_ABANDONED: "ChangeAbandoned",
-            CHANGE_RESTORED: "ChangeRestored",
-            REF_UPDATED: "RefUpdated"}
-
         event_type = json_data["type"]
-        if event_type in event_dict:
-            classname = "Gerrit" + event_dict[event_type] + "Event"
+        if event_type in self._event_dict:
+            classname = "Gerrit" + self._event_dict[event_type] + "Event"
             try:
                 return globals()[classname](json_data)
             except KeyError, e:
-                raise GerritStreamError("Error creating event: %s" % (str(e)))
+                raise GerritStreamError("Error creating event: %s" % e)
 
-        raise GerritStreamError("Unexpected event type `%s`" % (event_type))
+        raise GerritStreamError("Unexpected event type `%s`" % event_type)
 
-    def __dispatch_event(self, event):
+    def _dispatch_event(self, event):
         ''' Dispatch the `event` to the listeners.
         '''
         for listener in self.listeners:
@@ -286,10 +291,10 @@ class GerritStream:
                 line = inputstream.readline()
                 if line:
                     data = json.loads(line)
-                    self.__dispatch_event(self.__get_event(data))
+                    self._dispatch_event(self._get_event(data))
                 else:
                     break
-        except IOError:
-            raise GerritStreamError("IOError while reading event stream")
-        except ValueError:
-            raise GerritStreamError("Invalid JSON data in event stream")
+        except IOError, e:
+            raise GerritStreamError("Error reading event stream: %s" % e)
+        except ValueError, e:
+            raise GerritStreamError("Invalid JSON data in event stream: %s" % e)
