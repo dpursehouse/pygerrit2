@@ -22,7 +22,7 @@ class GerritStreamError(Exception):
     '''
 
 
-class GerritAccount:
+class GerritAccount(object):
     ''' Representation of the Gerrit user account (name and email address)
     described in `json_data`.
     Raise GerritStreamError if name or email address field is missing.
@@ -39,7 +39,7 @@ class GerritAccount:
             raise GerritStreamError("GerritAccount: %s" % e)
 
 
-class GerritChange:
+class GerritChange(object):
     ''' Representation of the Gerrit change described in `json_data`.
     Raise GerritStreamError if any of the required fields is missing.
     '''
@@ -57,7 +57,7 @@ class GerritChange:
             raise GerritStreamError("GerritChange: %s" % e)
 
 
-class GerritPatchset:
+class GerritPatchset(object):
     ''' Representation of the Gerrit patch set described in `json_data`.
     Raise GerritStreamError if any of the required fields is missing.
     '''
@@ -72,7 +72,7 @@ class GerritPatchset:
             raise GerritStreamError("GerritPatchset: %s" % e)
 
 
-class GerritApprovals:
+class GerritApprovals(object):
     ''' Representation of the Gerrit approvals (verification and code review)
     described in `json_data`.
     Raise GerritStreamError if a required field is missing or has an
@@ -93,7 +93,7 @@ class GerritApprovals:
             raise GerritStreamError("GerritApprovals: %s" % e)
 
 
-class GerritRefUpdate:
+class GerritRefUpdate(object):
     ''' Representation of the Gerrit "ref update" described in `json_data`.
     Raise GerritStreamError if any of the required fields is missing.
     '''
@@ -108,7 +108,7 @@ class GerritRefUpdate:
             raise GerritStreamError("GerritRefUpdate: %s" % e)
 
 
-class GerritEvent:
+class GerritEvent(object):
     ''' Gerrit event base class.
     '''
 
@@ -221,7 +221,7 @@ class GerritRefUpdatedEvent(GerritEvent):
             raise GerritStreamError("GerritRefUpdatedEvent: %s" % e)
 
 
-class GerritStream:
+class GerritStream(object):
     ''' Gerrit stream handler.
     '''
 
