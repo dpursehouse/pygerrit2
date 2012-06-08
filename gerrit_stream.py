@@ -48,7 +48,7 @@ class GerritChange(object):
         try:
             self.project = json_data["project"]
             self.branch = json_data["branch"]
-            self.id = json_data["id"]
+            self.change_id = json_data["id"]
             self.number = json_data["number"]
             self.subject = json_data["subject"]
             self.url = json_data["url"]
@@ -87,14 +87,14 @@ class GerritApprovals(object):
                 elif approval["type"] == "CRVW":
                     self.code_review = approval["value"]
                 else:
-                    raise GerritStreamError("GerritApprovals: Bad type %s"
-                        % (approval["type"]))
+                    raise GerritStreamError("GerritApprovals: Bad type %s" %
+                                            (approval["type"]))
         except KeyError, e:
             raise GerritStreamError("GerritApprovals: %s" % e)
 
 
 class GerritRefUpdate(object):
-    ''' Representation of the Gerrit "ref update" described in `json_data`.
+    ''' Representation of the Gerrit ref update described in `json_data`.
     Raise GerritStreamError if any of the required fields is missing.
     '''
 
@@ -123,6 +123,7 @@ class GerritPatchsetCreatedEvent(GerritEvent):
     '''
 
     def __init__(self, json_data):
+        super(GerritPatchsetCreatedEvent, self).__init__()
         try:
             self.change = GerritChange(json_data["change"])
             self.patchset = GerritPatchset(json_data["patchSet"])
@@ -138,6 +139,7 @@ class GerritCommentAddedEvent(GerritEvent):
     '''
 
     def __init__(self, json_data):
+        super(GerritCommentAddedEvent, self).__init__()
         try:
             self.change = GerritChange(json_data["change"])
             self.patchset = GerritPatchset(json_data["patchSet"])
@@ -158,6 +160,7 @@ class GerritChangeMergedEvent(GerritEvent):
     '''
 
     def __init__(self, json_data):
+        super(GerritChangeMergedEvent, self).__init__()
         try:
             self.change = GerritChange(json_data["change"])
             self.patchset = GerritPatchset(json_data["patchSet"])
@@ -173,6 +176,7 @@ class GerritChangeAbandonedEvent(GerritEvent):
     '''
 
     def __init__(self, json_data):
+        super(GerritChangeAbandonedEvent, self).__init__()
         try:
             self.change = GerritChange(json_data["change"])
             if "patchSet" in json_data:
@@ -182,8 +186,7 @@ class GerritChangeAbandonedEvent(GerritEvent):
             self.abandoner = GerritAccount(json_data["abandoner"])
             self.reason = json_data["reason"]
         except KeyError, e:
-            raise GerritStreamError("GerritChangeAbandonedEvent: %s"
-                % (str(e)))
+            raise GerritStreamError("GerritChangeAbandonedEvent: %s" % e)
 
 
 class GerritChangeRestoredEvent(GerritEvent):
@@ -193,6 +196,7 @@ class GerritChangeRestoredEvent(GerritEvent):
     '''
 
     def __init__(self, json_data):
+        super(GerritChangeRestoredEvent, self).__init__()
         try:
             self.change = GerritChange(json_data["change"])
             if "patchSet" in json_data:
@@ -211,6 +215,7 @@ class GerritRefUpdatedEvent(GerritEvent):
     '''
 
     def __init__(self, json_data):
+        super(GerritRefUpdatedEvent, self).__init__()
         try:
             self.ref_update = GerritRefUpdate(json_data["refUpdate"])
             if "submitter" in json_data:
@@ -242,8 +247,8 @@ class GerritStream(object):
         expected signature, or if its event handler is not callable.
         '''
         if not hasattr(listener, "on_gerrit_event"):
-            raise GerritStreamError("Listener must have `on_gerrit_event` " \
-                                    "event handler")
+            raise GerritStreamError("Listener must have `on_gerrit_event` "
+                                    "event handler method")
         if not callable(listener.on_gerrit_event):
             raise GerritStreamError("`on_gerrit_event` must be callable")
         if not listener.on_gerrit_event.func_code.co_argcount == 2:
