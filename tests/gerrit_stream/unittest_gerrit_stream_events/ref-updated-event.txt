@@ -1,0 +1,7 @@
+{"type":"ref-updated",
+ "submitter":{"name":"Submitter Name",
+              "email":"submitter@example.com"},
+              "refUpdate":{"oldRev":"0000000000000000000000000000000000000000",
+              "newRev":"deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+              "refName":"refs/tags/refname",
+              "project":"project-name"}}
