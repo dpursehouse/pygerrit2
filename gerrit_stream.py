@@ -10,6 +10,7 @@ import json
 # Event types
 CHANGE_MERGED = "change-merged"
 PATCHSET_CREATED = "patchset-created"
+DRAFT_PUBLISHED = "draft-published"
 COMMENT_ADDED = "comment-added"
 CHANGE_ABANDONED = "change-abandoned"
 CHANGE_RESTORED = "change-restored"
@@ -132,6 +133,22 @@ class GerritPatchsetCreatedEvent(GerritEvent):
             raise GerritStreamError("GerritPatchsetCreatedEvent: %s" % e)
 
 
+class GerritDraftPublishedEvent(GerritEvent):
+    ''' Representation of the Gerrit "draft-published" event described in
+    `json_data`.
+    Raise GerritStreamError if any of the required fields is missing.
+    '''
+
+    def __init__(self, json_data):
+        super(GerritDraftPublishedEvent, self).__init__()
+        try:
+            self.change = GerritChange(json_data["change"])
+            self.patchset = GerritPatchset(json_data["patchSet"])
+            self.uploader = GerritAccount(json_data["uploader"])
+        except KeyError, e:
+            raise GerritStreamError("GerritDraftPublishedEvent: %s" % e)
+
+
 class GerritCommentAddedEvent(GerritEvent):
     ''' Representation of the Gerrit "comment-added" event described in
     `json_data`.
@@ -233,6 +250,7 @@ class GerritStream(object):
     # Map the event types to class names.
     _event_dict = {CHANGE_MERGED: "ChangeMerged",
                    PATCHSET_CREATED: "PatchsetCreated",
+                   DRAFT_PUBLISHED: "DraftPublished",
                    COMMENT_ADDED: "CommentAdded",
                    CHANGE_ABANDONED: "ChangeAbandoned",
                    CHANGE_RESTORED: "ChangeRestored",
