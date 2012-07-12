@@ -16,6 +16,12 @@ CHANGE_ABANDONED = "change-abandoned"
 CHANGE_RESTORED = "change-restored"
 REF_UPDATED = "ref-updated"
 
+# Approval categories
+APPROVAL_CATEGORY_CODE_REVIEW = "CRVW"
+APPROVAL_CATEGORY_VERIFY = "VRIF"
+SUPPORTED_APPROVAL_CATEGORIES = [APPROVAL_CATEGORY_CODE_REVIEW,
+                                 APPROVAL_CATEGORY_VERIFY]
+
 
 class GerritStreamError(Exception):
     ''' GerritStreamError is raised when an error occurs while
@@ -73,25 +79,27 @@ class GerritPatchset(object):
             raise GerritStreamError("GerritPatchset: %s" % e)
 
 
-class GerritApprovals(object):
-    ''' Representation of the Gerrit approvals (verification and code review)
+class GerritApproval(object):
+    ''' Representation of a Gerrit approval (verification, code review, etc)
     described in `json_data`.
     Raise GerritStreamError if a required field is missing or has an
     unexpected value.
     '''
 
     def __init__(self, json_data):
-        try:
-            for approval in json_data:
-                if approval["type"] == "VRIF":
-                    self.verified = approval["value"]
-                elif approval["type"] == "CRVW":
-                    self.code_review = approval["value"]
-                else:
-                    raise GerritStreamError("GerritApprovals: Bad type %s" %
-                                            (approval["type"]))
-        except KeyError, e:
-            raise GerritStreamError("GerritApprovals: %s" % e)
+        if "type" not in json_data:
+            raise GerritStreamError("GerritApproval: Missing type")
+        if "value" not in json_data:
+            raise GerritStreamError("GerritApproval: Missing value")
+        if json_data["type"] not in SUPPORTED_APPROVAL_CATEGORIES:
+            raise GerritStreamError("GerritApproval: Type %s not supported" %
+                                    json_data["type"])
+        self.category = json_data["type"]
+        self.value = json_data["value"]
+        if "description" in json_data:
+            self.description = json_data["description"]
+        else:
+            self.description = None
 
 
 class GerritRefUpdate(object):
@@ -161,10 +169,10 @@ class GerritCommentAddedEvent(GerritEvent):
             self.change = GerritChange(json_data["change"])
             self.patchset = GerritPatchset(json_data["patchSet"])
             self.author = GerritAccount(json_data["author"])
+            self.approvals = []
             if "approvals" in json_data:
-                self.approvals = GerritApprovals(json_data["approvals"])
-            else:
-                self.approvals = None
+                for approval in json_data["approvals"]:
+                    self.approvals.append(GerritApproval(approval))
             self.comment = json_data["comment"]
         except ValueError, e:
             raise GerritStreamError("GerritCommentAddedEvent: %s" % e)
