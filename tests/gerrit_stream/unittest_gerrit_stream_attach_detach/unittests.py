@@ -44,8 +44,9 @@ class ListenerWithValidHandler():
         pass
 
 
-class TestGerritStream(unittest.TestCase):
-    """ Test that the GerritStream class behaves correctly.
+class TestGerritStreamAttachDetach(unittest.TestCase):
+    """ Test that the attach and detach methods in the GerritStream
+    class behave correctly.
     """
 
     def test_listener_no_handler(self):
