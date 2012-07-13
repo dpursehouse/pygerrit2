@@ -229,6 +229,7 @@ class GerritChangeRestoredEvent(GerritEvent):
             else:
                 self.patchset = None
             self.restorer = GerritAccount(json_data["restorer"])
+            self.reason = json_data["reason"]
         except KeyError, e:
             raise GerritStreamError("GerritChangeRestoredEvent: %s" % e)
 
