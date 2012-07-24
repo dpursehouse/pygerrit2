@@ -16,12 +16,6 @@ CHANGE_ABANDONED = "change-abandoned"
 CHANGE_RESTORED = "change-restored"
 REF_UPDATED = "ref-updated"
 
-# Approval categories
-APPROVAL_CATEGORY_CODE_REVIEW = "CRVW"
-APPROVAL_CATEGORY_VERIFY = "VRIF"
-SUPPORTED_APPROVAL_CATEGORIES = [APPROVAL_CATEGORY_CODE_REVIEW,
-                                 APPROVAL_CATEGORY_VERIFY]
-
 
 class GerritStreamError(Exception):
     ''' GerritStreamError is raised when an error occurs while
@@ -91,9 +85,6 @@ class GerritApproval(object):
             raise GerritStreamError("GerritApproval: Missing type")
         if "value" not in json_data:
             raise GerritStreamError("GerritApproval: Missing value")
-        if json_data["type"] not in SUPPORTED_APPROVAL_CATEGORIES:
-            raise GerritStreamError("GerritApproval: Type %s not supported" %
-                                    json_data["type"])
         self.category = json_data["type"]
         self.value = json_data["value"]
         if "description" in json_data:
