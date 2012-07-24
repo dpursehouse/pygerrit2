@@ -3,7 +3,7 @@
 
 import unittest
 
-from gerrit_stream import GerritStream, GerritStreamError
+from pygerrit.stream import GerritStream, GerritStreamError
 
 
 class ListenerWithNoHandler():

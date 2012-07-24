@@ -7,10 +7,11 @@ import json
 import os
 import unittest
 
-from gerrit_stream import GerritStream, GerritPatchsetCreatedEvent, \
-    GerritRefUpdatedEvent, GerritChangeMergedEvent, GerritCommentAddedEvent, \
-    GerritChangeAbandonedEvent, GerritChangeRestoredEvent, \
-    GerritDraftPublishedEvent
+from pygerrit.events import PatchsetCreatedEvent, \
+    RefUpdatedEvent, ChangeMergedEvent, CommentAddedEvent, \
+    ChangeAbandonedEvent, ChangeRestoredEvent, \
+    DraftPublishedEvent
+from pygerrit.stream import GerritStream
 
 
 class TestGerritStreamEvents(unittest.TestCase):
@@ -29,13 +30,13 @@ class TestGerritStreamEvents(unittest.TestCase):
         return self.stream._get_event(json.loads(data.read()))
 
     def test_patchset_created_event(self):
-        """Tests that the `GerritPatchsetCreatedEvent` event is properly
-        generated.  Also implicitly tests that the `GerritChange`,
-        `GerritAccount`, and `GerritPatchset` classes behave properly.
+        """Tests that the `PatchsetCreatedEvent` event is properly
+        generated.  Also implicitly tests that the `Change`,
+        `Account`, and `Patchset` classes behave properly.
 
         """
         event = self._get_event("patchset-created-event.txt")
-        self.assertTrue(isinstance(event, GerritPatchsetCreatedEvent))
+        self.assertTrue(isinstance(event, PatchsetCreatedEvent))
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
         self.assertEquals(event.change.change_id,
@@ -55,12 +56,12 @@ class TestGerritStreamEvents(unittest.TestCase):
         self.assertEquals(event.uploader.email, "uploader@example.com")
 
     def test_draft_published_event(self):
-        """Tests that the `GerritDraftPublishedEvent` event is properly
+        """Tests that the `DraftPublishedEvent` event is properly
         generated.
 
         """
         event = self._get_event("draft-published-event.txt")
-        self.assertTrue(isinstance(event, GerritDraftPublishedEvent))
+        self.assertTrue(isinstance(event, DraftPublishedEvent))
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
         self.assertEquals(event.change.change_id,
@@ -80,13 +81,13 @@ class TestGerritStreamEvents(unittest.TestCase):
         self.assertEquals(event.uploader.email, "uploader@example.com")
 
     def test_ref_updated_event(self):
-        """Tests that the `GerritRefUpdatedEvent` event is properly
-        generated.  Also implicitly tests that the `GerritRefUpdate`,
+        """Tests that the `RefUpdatedEvent` event is properly
+        generated.  Also implicitly tests that the `RefUpdate`,
         class behaves properly.
 
         """
         event = self._get_event("ref-updated-event.txt")
-        self.assertTrue(isinstance(event, GerritRefUpdatedEvent))
+        self.assertTrue(isinstance(event, RefUpdatedEvent))
         self.assertEquals(event.ref_update.project, "project-name")
         self.assertEquals(event.ref_update.oldrev,
                           "0000000000000000000000000000000000000000")
@@ -97,12 +98,12 @@ class TestGerritStreamEvents(unittest.TestCase):
         self.assertEquals(event.submitter.email, "submitter@example.com")
 
     def test_change_merged_event(self):
-        """Tests that the `GerritChangeMergedEvent` event is properly
+        """Tests that the `ChangeMergedEvent` event is properly
         generated.
 
         """
         event = self._get_event("change-merged-event.txt")
-        self.assertTrue(isinstance(event, GerritChangeMergedEvent))
+        self.assertTrue(isinstance(event, ChangeMergedEvent))
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
         self.assertEquals(event.change.change_id,
@@ -122,13 +123,13 @@ class TestGerritStreamEvents(unittest.TestCase):
         self.assertEquals(event.submitter.email, "submitter@example.com")
 
     def test_comment_added_event(self):
-        """Tests that the `GerritCommentAddedEvent` event is properly
-        generated.  Also implicitly tests that the `GerritApproval` class
+        """Tests that the `CommentAddedEvent` event is properly
+        generated.  Also implicitly tests that the `Approval` class
         behaves properly.
 
         """
         event = self._get_event("comment-added-event.txt")
-        self.assertTrue(isinstance(event, GerritCommentAddedEvent))
+        self.assertTrue(isinstance(event, CommentAddedEvent))
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
         self.assertEquals(event.change.change_id,
@@ -155,12 +156,12 @@ class TestGerritStreamEvents(unittest.TestCase):
         self.assertEquals(event.author.email, "author@example.com")
 
     def test_change_abandoned_event(self):
-        """Tests that the `GerritChangeAbandonedEvent` event is properly
+        """Tests that the `ChangeAbandonedEvent` event is properly
         generated.
 
         """
         event = self._get_event("change-abandoned-event.txt")
-        self.assertTrue(isinstance(event, GerritChangeAbandonedEvent))
+        self.assertTrue(isinstance(event, ChangeAbandonedEvent))
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
         self.assertEquals(event.change.change_id,
@@ -175,12 +176,12 @@ class TestGerritStreamEvents(unittest.TestCase):
         self.assertEquals(event.reason, "Abandon reason")
 
     def test_change_restored_event(self):
-        """Tests that the `GerritChangeRestoredEvent` event is properly
+        """Tests that the `ChangeRestoredEvent` event is properly
         generated.
 
         """
         event = self._get_event("change-restored-event.txt")
-        self.assertTrue(isinstance(event, GerritChangeRestoredEvent))
+        self.assertTrue(isinstance(event, ChangeRestoredEvent))
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
         self.assertEquals(event.change.change_id,
