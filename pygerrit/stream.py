@@ -6,7 +6,7 @@ Class to listen to the Gerrit event stream and dispatch events.
 
 import json
 
-from events import PatchsetCreatedEvent, \
+from pygerrit.events import PatchsetCreatedEvent, \
     RefUpdatedEvent, ChangeMergedEvent, CommentAddedEvent, \
     ChangeAbandonedEvent, ChangeRestoredEvent, \
     DraftPublishedEvent
@@ -23,14 +23,15 @@ REF_UPDATED = "ref-updated"
 
 
 class GerritStreamError(Exception):
-    ''' GerritStreamError is raised when an error occurs while
-    reading the Gerrit events stream.
-    '''
+
+    """ Raised when an error occurs while reading the Gerrit events stream. """
+
+    pass
 
 
 class GerritStream(object):
-    ''' Gerrit stream handler.
-    '''
+
+    """ Gerrit events stream handler. """
 
     # Map the event types to class names.
     _event_dict = {CHANGE_MERGED: "ChangeMergedEvent",
@@ -45,10 +46,12 @@ class GerritStream(object):
         self.listeners = []
 
     def attach(self, listener):
-        ''' Attach the `listener` to the list of listeners.
+        """ Attach the `listener` to the list of listeners.
+
         Raise GerritStreamError if the listener does not match the
         expected signature, or if its event handler is not callable.
-        '''
+
+        """
         if not hasattr(listener, "on_gerrit_event"):
             raise GerritStreamError("Listener must have `on_gerrit_event` "
                                     "event handler method")
@@ -60,8 +63,7 @@ class GerritStream(object):
             self.listeners.append(listener)
 
     def detach(self, listener):
-        ''' Remove the `listener` from the list of listeners.
-        '''
+        """ Remove the `listener` from the list of listeners. """
         if listener in self.listeners:
             try:
                 self.listeners.remove(listener)
@@ -69,11 +71,12 @@ class GerritStream(object):
                 pass
 
     def _get_event(self, json_data):
-        ''' Create a new 'GerritEvent' from the JSON object
-        described in `json_data`.
-        Return an instance of one of the GerritEvent subclasses.
+        """ Create a new event from `json_data`.
+
+        Return an instance of one of the `GerritEvent` subclasses.
         Raise GerritStreamError if any error occurs.
-        '''
+
+        """
         event_type = json_data["type"]
         if event_type in self._event_dict:
             classname = self._event_dict[event_type]
@@ -85,14 +88,12 @@ class GerritStream(object):
         raise GerritStreamError("Unexpected event type `%s`" % event_type)
 
     def _dispatch_event(self, event):
-        ''' Dispatch the `event` to the listeners.
-        '''
+        """ Dispatch the `event` to the listeners. """
         for listener in self.listeners:
             listener.on_gerrit_event(event)
 
     def stream(self, inputstream):
-        ''' Listen to the `inputstream` and handle JSON objects.
-        '''
+        """ Listen to the `inputstream` and handle JSON objects. """
         try:
             done = 0
             while not done:

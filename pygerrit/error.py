@@ -2,4 +2,7 @@
 
 
 class GerritError(Exception):
-    ''' Raised when something goes wrong in Gerrit handling. '''
+
+    """ Raised when something goes wrong in Gerrit handling. """
+
+    pass

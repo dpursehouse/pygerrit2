@@ -5,18 +5,16 @@ from pygerrit.models import Account, Approval, Change, Patchset, RefUpdate
 
 
 class GerritEvent(object):
-    ''' Gerrit event base class.
-    '''
+
+    """ Gerrit event base class. """
 
     def __init__(self):
         pass
 
 
 class PatchsetCreatedEvent(GerritEvent):
-    ''' Representation of the Gerrit "patchset-created" event described in
-    `json_data`.
-    Raise GerritError if any of the required fields is missing.
-    '''
+
+    """ Gerrit "patchset-created" event. """
 
     def __init__(self, json_data):
         super(PatchsetCreatedEvent, self).__init__()
@@ -29,10 +27,8 @@ class PatchsetCreatedEvent(GerritEvent):
 
 
 class DraftPublishedEvent(GerritEvent):
-    ''' Representation of the Gerrit "draft-published" event described in
-    `json_data`.
-    Raise GerritError if any of the required fields is missing.
-    '''
+
+    """ Gerrit "draft-published" event. """
 
     def __init__(self, json_data):
         super(DraftPublishedEvent, self).__init__()
@@ -45,10 +41,8 @@ class DraftPublishedEvent(GerritEvent):
 
 
 class CommentAddedEvent(GerritEvent):
-    ''' Representation of the Gerrit "comment-added" event described in
-    `json_data`.
-    Raise GerritError if any of the required fields is missing.
-    '''
+
+    """ Gerrit "comment-added" event. """
 
     def __init__(self, json_data):
         super(CommentAddedEvent, self).__init__()
@@ -66,10 +60,8 @@ class CommentAddedEvent(GerritEvent):
 
 
 class ChangeMergedEvent(GerritEvent):
-    ''' Representation of the Gerrit "change-merged" event described in
-    `json_data`.
-    Raise GerritError if any of the required fields is missing.
-    '''
+
+    """ Gerrit "change-merged" event. """
 
     def __init__(self, json_data):
         super(ChangeMergedEvent, self).__init__()
@@ -82,10 +74,8 @@ class ChangeMergedEvent(GerritEvent):
 
 
 class ChangeAbandonedEvent(GerritEvent):
-    ''' Representation of the Gerrit "change-abandoned" event described in
-    `json_data`.
-    Raise GerritError if any of the required fields is missing.
-    '''
+
+    """ Gerrit "change-abandoned" event. """
 
     def __init__(self, json_data):
         super(ChangeAbandonedEvent, self).__init__()
@@ -102,10 +92,8 @@ class ChangeAbandonedEvent(GerritEvent):
 
 
 class ChangeRestoredEvent(GerritEvent):
-    ''' Representation of the Gerrit "change-restored" event described in
-    `json_data`.
-    Raise GerritError if any of the required fields is missing.
-    '''
+
+    """ Gerrit "change-restored" event. """
 
     def __init__(self, json_data):
         super(ChangeRestoredEvent, self).__init__()
@@ -122,10 +110,8 @@ class ChangeRestoredEvent(GerritEvent):
 
 
 class RefUpdatedEvent(GerritEvent):
-    ''' Representation of the Gerrit "ref-updated" event described in
-    `json_data`.
-    Raise GerritError if any of the required fields is missing.
-    '''
+
+    """ Gerrit "ref-updated" event. """
 
     def __init__(self, json_data):
         super(RefUpdatedEvent, self).__init__()

@@ -1,21 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+""" Unit tests for the stream attach/detach functionality. """
+
 import unittest
 
 from pygerrit.stream import GerritStream, GerritStreamError
 
 
 class ListenerWithNoHandler():
-    """ Dummy listener class with no event handler.
-    """
+
+    """ Dummy listener class with no event handler. """
+
     def __init__(self):
         pass
 
 
 class ListenerWithInvalidHandler():
-    """ Dummy listener class with invalid event handler.
-    """
+
+    """ Dummy listener class with invalid event handler. """
+
     def __init__(self):
         pass
 
@@ -24,9 +28,8 @@ class ListenerWithInvalidHandler():
 
 
 class ListenerWithInvalidHandlerNotCallable():
-    """ Dummy listener class with invalid event handler
-    that is not callable.
-    """
+
+    """ Dummy listener class with event handler that is not callable. """
 
     on_gerrit_event = "this is a string"
 
@@ -35,8 +38,9 @@ class ListenerWithInvalidHandlerNotCallable():
 
 
 class ListenerWithValidHandler():
-    """ Dummy listener class.
-    """
+
+    """ Dummy listener class. """
+
     def __init__(self):
         pass
 
@@ -45,37 +49,44 @@ class ListenerWithValidHandler():
 
 
 class TestGerritStreamAttachDetach(unittest.TestCase):
-    """ Test that the attach and detach methods in the GerritStream
-    class behave correctly.
-    """
+
+    """ Test that the attach and detach methods behave correctly. """
 
     def test_listener_no_handler(self):
-        """ Test that an exception is raised if a listener is
-        attached without an event handler method.
+        """ Listener without event handler.
+
+        Test that an exception is raised if a listener is attached without
+        an event handler method.
+
         """
         g = GerritStream()
         l = ListenerWithNoHandler()
         self.assertRaises(GerritStreamError, g.attach, l)
 
     def test_listener_invalid_handler(self):
-        """ Test that an exception is raised if a listener is
-        attached with an invalid event handler method.
+        """ Listener with invalid handler method.
+
+        Test that an exception is raised if a listener is attached with an
+        invalid event handler method (does not have correct signature).
+
         """
         g = GerritStream()
         l = ListenerWithInvalidHandler()
         self.assertRaises(GerritStreamError, g.attach, l)
 
     def test_listener_non_callable_handler(self):
-        """ Test that an exception is raised if a listener with
-        non-callable event handler is added.
+        """ Listener with non-callable handler.
+
+        Test that an exception is raised if a listener with non-callable
+        event handler is added.
+
         """
         g = GerritStream()
         l = ListenerWithInvalidHandlerNotCallable()
         self.assertRaises(GerritStreamError, g.attach, l)
 
     def test_listener_valid_handler(self):
-        """ Test that a valid listener can be added.
-        """
+        """ Test that a valid listener can be added. """
         g = GerritStream()
         l = ListenerWithValidHandler()
         self.assertEquals(len(g.listeners), 0)
@@ -84,8 +95,7 @@ class TestGerritStreamAttachDetach(unittest.TestCase):
         self.assertEquals(g.listeners[0], l)
 
     def test_add_same_listener_multiple_times(self):
-        """ Test that the same listener will only be added once.
-        """
+        """ Test that the same listener will only be added once. """
         g = GerritStream()
         l = ListenerWithValidHandler()
         self.assertEquals(len(g.listeners), 0)
@@ -97,8 +107,7 @@ class TestGerritStreamAttachDetach(unittest.TestCase):
         self.assertEquals(g.listeners[0], l)
 
     def test_add_multiple_listeners(self):
-        """ Test that multiple listeners can be added.
-        """
+        """ Test that multiple listeners can be added. """
         g = GerritStream()
         l = ListenerWithValidHandler()
         self.assertEquals(len(g.listeners), 0)
@@ -112,8 +121,7 @@ class TestGerritStreamAttachDetach(unittest.TestCase):
         self.assertEquals(g.listeners[1], l2)
 
     def test_detach_listener(self):
-        """ Test that a listener can be detached.
-        """
+        """ Test that a listener can be detached. """
         g = GerritStream()
         l = ListenerWithValidHandler()
         self.assertEquals(len(g.listeners), 0)
@@ -124,8 +132,11 @@ class TestGerritStreamAttachDetach(unittest.TestCase):
         self.assertEquals(len(g.listeners), 0)
 
     def test_detach_not_attached_listener(self):
-        """ Test that the class behaves correctly if a not-attached
+        """ Detach non-attached listener.
+
+        Test that the class behaves correctly if a not-attached
         listener is detached.
+
         """
         g = GerritStream()
         l = ListenerWithValidHandler()

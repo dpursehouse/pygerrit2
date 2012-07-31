@@ -4,10 +4,8 @@ from pygerrit.error import GerritError
 
 
 class Account(object):
-    ''' Representation of the Gerrit user account (name and email address)
-    described in `json_data`.
-    Raise GerritError if name or email address field is missing.
-    '''
+
+    """ Gerrit user account (name and email address). """
 
     def __init__(self, json_data):
         try:
@@ -21,9 +19,8 @@ class Account(object):
 
 
 class Change(object):
-    ''' Representation of the Gerrit change described in `json_data`.
-    Raise GerritError if any of the required fields is missing.
-    '''
+
+    """ Gerrit change. """
 
     def __init__(self, json_data):
         try:
@@ -39,9 +36,8 @@ class Change(object):
 
 
 class Patchset(object):
-    ''' Representation of the Gerrit patch set described in `json_data`.
-    Raise GerritError if any of the required fields is missing.
-    '''
+
+    """ Gerrit patch set. """
 
     def __init__(self, json_data):
         try:
@@ -54,11 +50,8 @@ class Patchset(object):
 
 
 class Approval(object):
-    ''' Representation of a Gerrit approval (verification, code review, etc)
-    described in `json_data`.
-    Raise GerritError if a required field is missing or has an
-    unexpected value.
-    '''
+
+    """ Gerrit approval (verified, code review, etc). """
 
     def __init__(self, json_data):
         if "type" not in json_data:
@@ -74,9 +67,8 @@ class Approval(object):
 
 
 class RefUpdate(object):
-    ''' Representation of the Gerrit ref update described in `json_data`.
-    Raise GerritError if any of the required fields is missing.
-    '''
+
+    """ Gerrit ref update. """
 
     def __init__(self, json_data):
         try:
