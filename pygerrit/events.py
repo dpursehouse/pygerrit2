@@ -81,10 +81,7 @@ class ChangeAbandonedEvent(GerritEvent):
         super(ChangeAbandonedEvent, self).__init__()
         try:
             self.change = Change(json_data["change"])
-            if "patchSet" in json_data:
-                self.patchset = Patchset(json_data["patchSet"])
-            else:
-                self.patchset = None
+            self.patchset = Patchset.from_json(json_data)
             self.abandoner = Account(json_data["abandoner"])
             self.reason = json_data["reason"]
         except KeyError, e:
@@ -99,10 +96,7 @@ class ChangeRestoredEvent(GerritEvent):
         super(ChangeRestoredEvent, self).__init__()
         try:
             self.change = Change(json_data["change"])
-            if "patchSet" in json_data:
-                self.patchset = Patchset(json_data["patchSet"])
-            else:
-                self.patchset = None
+            self.patchset = Patchset.from_json(json_data)
             self.restorer = Account(json_data["restorer"])
             self.reason = json_data["reason"]
         except KeyError, e:
@@ -117,9 +111,6 @@ class RefUpdatedEvent(GerritEvent):
         super(RefUpdatedEvent, self).__init__()
         try:
             self.ref_update = RefUpdate(json_data["refUpdate"])
-            if "submitter" in json_data:
-                self.submitter = Account(json_data["submitter"])
-            else:
-                self.submitter = None
+            self.submitter = Account.from_json(json_data, "submitter")
         except KeyError, e:
             raise GerritError("RefUpdatedEvent: %s" % e)
