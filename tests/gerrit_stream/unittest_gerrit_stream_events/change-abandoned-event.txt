@@ -1,6 +1,7 @@
 {"type":"change-abandoned",
  "change":{"project":"project-name",
            "branch":"branch-name",
+           "topic":"topic-name",
            "id":"Ideadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
            "number":"123456",
            "subject":"Commit message subject",

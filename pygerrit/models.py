@@ -31,6 +31,7 @@ class Change(object):
     def __init__(self, json_data):
         self.project = from_json(json_data, "project")
         self.branch = from_json(json_data, "branch")
+        self.topic = from_json(json_data, "topic")
         self.change_id = from_json(json_data, "id")
         self.number = from_json(json_data, "number")
         self.subject = from_json(json_data, "subject")

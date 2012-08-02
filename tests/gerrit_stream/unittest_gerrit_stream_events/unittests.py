@@ -38,6 +38,7 @@ class TestPatchsetCreatedEvent(unittest.TestCase):
         self.assertTrue(isinstance(event, PatchsetCreatedEvent))
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
+        self.assertEquals(event.change.topic, "topic-name")
         self.assertEquals(event.change.change_id,
                           "Ideadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
         self.assertEquals(event.change.number, "123456")
@@ -73,6 +74,7 @@ class TestDraftPublishedEvent(unittest.TestCase):
         self.assertTrue(isinstance(event, DraftPublishedEvent))
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
+        self.assertEquals(event.change.topic, "topic-name")
         self.assertEquals(event.change.change_id,
                           "Ideadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
         self.assertEquals(event.change.number, "123456")
@@ -134,6 +136,7 @@ class TestChangeMergedEvent(unittest.TestCase):
         self.assertTrue(isinstance(event, ChangeMergedEvent))
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
+        self.assertEquals(event.change.topic, "topic-name")
         self.assertEquals(event.change.change_id,
                           "Ideadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
         self.assertEquals(event.change.number, "123456")
@@ -169,6 +172,7 @@ class TestCommentAddedEvent(unittest.TestCase):
         self.assertTrue(isinstance(event, CommentAddedEvent))
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
+        self.assertEquals(event.change.topic, "topic-name")
         self.assertEquals(event.change.change_id,
                           "Ideadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
         self.assertEquals(event.change.number, "123456")
@@ -211,6 +215,7 @@ class TestChangeAbandonedEvent(unittest.TestCase):
         self.assertTrue(isinstance(event, ChangeAbandonedEvent))
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
+        self.assertEquals(event.change.topic, "topic-name")
         self.assertEquals(event.change.change_id,
                           "Ideadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
         self.assertEquals(event.change.number, "123456")
@@ -241,6 +246,7 @@ class TestChangeRestoredEvent(unittest.TestCase):
         self.assertTrue(isinstance(event, ChangeRestoredEvent))
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
+        self.assertEquals(event.change.topic, "topic-name")
         self.assertEquals(event.change.change_id,
                           "Ideadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
         self.assertEquals(event.change.number, "123456")
