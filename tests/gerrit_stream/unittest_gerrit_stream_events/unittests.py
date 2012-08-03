@@ -30,7 +30,7 @@ class TestPatchsetCreatedEvent(unittest.TestCase):
     """ Test that the `PatchsetCreatedEvent` event is dispatched properly. """
 
     def setUp(self):
-        self.stream = GerritStream()
+        self.stream = GerritStream(_get_stream("patchset-created-event.txt"))
         self.stream.attach(self)
         self.event_received = False
 
@@ -57,7 +57,7 @@ class TestPatchsetCreatedEvent(unittest.TestCase):
         self.event_received = True
 
     def test_patchset_created_event(self):
-        self.stream.stream(_get_stream("patchset-created-event.txt"))
+        self.stream.read()
         self.assertTrue(self.event_received)
 
 
@@ -66,7 +66,7 @@ class TestDraftPublishedEvent(unittest.TestCase):
     """ Test that the `DraftPublished` event is dispatched properly. """
 
     def setUp(self):
-        self.stream = GerritStream()
+        self.stream = GerritStream(_get_stream("draft-published-event.txt"))
         self.stream.attach(self)
         self.event_received = False
 
@@ -93,7 +93,7 @@ class TestDraftPublishedEvent(unittest.TestCase):
         self.event_received = True
 
     def test_draft_published_event(self):
-        self.stream.stream(_get_stream("draft-published-event.txt"))
+        self.stream.read()
         self.assertTrue(self.event_received)
 
 
@@ -102,7 +102,7 @@ class TestRefUpdatedEvent(unittest.TestCase):
     """ Test that the `RefUpdated` event is dispatched properly. """
 
     def setUp(self):
-        self.stream = GerritStream()
+        self.stream = GerritStream(_get_stream("ref-updated-event.txt"))
         self.stream.attach(self)
         self.event_received = False
 
@@ -119,7 +119,7 @@ class TestRefUpdatedEvent(unittest.TestCase):
         self.event_received = True
 
     def test_ref_updated_event(self):
-        self.stream.stream(_get_stream("ref-updated-event.txt"))
+        self.stream.read()
         self.assertTrue(self.event_received)
 
 
@@ -128,7 +128,7 @@ class TestChangeMergedEvent(unittest.TestCase):
     """ Test that the `ChangeMerged` event is dispatched properly. """
 
     def setUp(self):
-        self.stream = GerritStream()
+        self.stream = GerritStream(_get_stream("change-merged-event.txt"))
         self.stream.attach(self)
         self.event_received = False
 
@@ -155,7 +155,7 @@ class TestChangeMergedEvent(unittest.TestCase):
         self.event_received = True
 
     def test_change_merged_event(self):
-        self.stream.stream(_get_stream("change-merged-event.txt"))
+        self.stream.read()
         self.assertTrue(self.event_received)
 
 
@@ -164,7 +164,7 @@ class TestCommentAddedEvent(unittest.TestCase):
     """ Test that the `CommentAdded` event is dispatched properly. """
 
     def setUp(self):
-        self.stream = GerritStream()
+        self.stream = GerritStream(_get_stream("comment-added-event.txt"))
         self.stream.attach(self)
         self.event_received = False
 
@@ -198,7 +198,7 @@ class TestCommentAddedEvent(unittest.TestCase):
         self.event_received = True
 
     def test_comment_added_event(self):
-        self.stream.stream(_get_stream("comment-added-event.txt"))
+        self.stream.read()
         self.assertTrue(self.event_received)
 
 
@@ -207,7 +207,7 @@ class TestChangeAbandonedEvent(unittest.TestCase):
     """ Test that the `ChangeAbandoned` event is dispatched properly. """
 
     def setUp(self):
-        self.stream = GerritStream()
+        self.stream = GerritStream(_get_stream("change-abandoned-event.txt"))
         self.stream.attach(self)
         self.event_received = False
 
@@ -229,7 +229,7 @@ class TestChangeAbandonedEvent(unittest.TestCase):
         self.event_received = True
 
     def test_change_abandoned_event(self):
-        self.stream.stream(_get_stream("change-abandoned-event.txt"))
+        self.stream.read()
         self.assertTrue(self.event_received)
 
 
@@ -238,7 +238,7 @@ class TestChangeRestoredEvent(unittest.TestCase):
     """ Test that the `ChangeRestored` event is dispatched properly. """
 
     def setUp(self):
-        self.stream = GerritStream()
+        self.stream = GerritStream(_get_stream("change-restored-event.txt"))
         self.stream.attach(self)
         self.event_received = False
 
@@ -260,7 +260,7 @@ class TestChangeRestoredEvent(unittest.TestCase):
         self.event_received = True
 
     def test_change_restored_event(self):
-        self.stream.stream(_get_stream("change-restored-event.txt"))
+        self.stream.read()
         self.assertTrue(self.event_received)
 
 

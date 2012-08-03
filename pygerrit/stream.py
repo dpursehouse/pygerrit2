@@ -22,8 +22,9 @@ class GerritStream(object):
 
     """ Gerrit events stream handler. """
 
-    def __init__(self):
+    def __init__(self, stream):
         self.listeners = []
+        self.stream = stream
 
     def attach(self, listener):
         """ Attach the `listener` to the list of listeners.
@@ -50,10 +51,10 @@ class GerritStream(object):
             except ValueError:
                 pass
 
-    def stream(self, inputstream):
-        """ Read lines of JSON data from `inputstream` and dispatch events.
+    def read(self):
+        """ Read lines of JSON data from `stream` and dispatch events.
 
-        For each line read from `inputstream`, until EOF, parse the line as
+        For each line read from `stream`, until EOF, parse the line as
         JSON data, instantiate the corresponding GerritEvent, and dispatch it
         to the listeners.
 
@@ -62,7 +63,7 @@ class GerritStream(object):
         """
         try:
             while 1:
-                line = inputstream.readline()
+                line = self.stream.readline()
                 if not line:
                     break
                 json_data = json.loads(line)
@@ -72,7 +73,7 @@ class GerritStream(object):
                         listener.on_gerrit_event(event)
                 except GerritError, e:
                     logging.error("Unable to dispatch event: %s", e)
-        except IOError, e:
+        except (IOError, AttributeError), e:
             raise GerritStreamError("Error reading event stream: %s" % e)
         except ValueError, e:
             raise GerritStreamError("Invalid JSON data in event stream: %s" % e)

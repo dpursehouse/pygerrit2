@@ -3,6 +3,7 @@
 
 """ Unit tests for the stream attach/detach functionality. """
 
+from StringIO import StringIO
 import unittest
 
 from pygerrit.stream import GerritStream, GerritStreamError
@@ -59,7 +60,7 @@ class TestGerritStreamAttachDetach(unittest.TestCase):
         an event handler method.
 
         """
-        g = GerritStream()
+        g = GerritStream(StringIO("Dummy stream"))
         l = ListenerWithNoHandler()
         self.assertRaises(GerritStreamError, g.attach, l)
 
@@ -70,7 +71,7 @@ class TestGerritStreamAttachDetach(unittest.TestCase):
         invalid event handler method (does not have correct signature).
 
         """
-        g = GerritStream()
+        g = GerritStream(StringIO("Dummy stream"))
         l = ListenerWithInvalidHandler()
         self.assertRaises(GerritStreamError, g.attach, l)
 
@@ -81,13 +82,13 @@ class TestGerritStreamAttachDetach(unittest.TestCase):
         event handler is added.
 
         """
-        g = GerritStream()
+        g = GerritStream(StringIO("Dummy stream"))
         l = ListenerWithInvalidHandlerNotCallable()
         self.assertRaises(GerritStreamError, g.attach, l)
 
     def test_listener_valid_handler(self):
         """ Test that a valid listener can be added. """
-        g = GerritStream()
+        g = GerritStream(StringIO("Dummy stream"))
         l = ListenerWithValidHandler()
         self.assertEquals(len(g.listeners), 0)
         g.attach(l)
@@ -96,7 +97,7 @@ class TestGerritStreamAttachDetach(unittest.TestCase):
 
     def test_add_same_listener_multiple_times(self):
         """ Test that the same listener will only be added once. """
-        g = GerritStream()
+        g = GerritStream(StringIO("Dummy stream"))
         l = ListenerWithValidHandler()
         self.assertEquals(len(g.listeners), 0)
         g.attach(l)
@@ -108,7 +109,7 @@ class TestGerritStreamAttachDetach(unittest.TestCase):
 
     def test_add_multiple_listeners(self):
         """ Test that multiple listeners can be added. """
-        g = GerritStream()
+        g = GerritStream(StringIO("Dummy stream"))
         l = ListenerWithValidHandler()
         self.assertEquals(len(g.listeners), 0)
         g.attach(l)
@@ -122,7 +123,7 @@ class TestGerritStreamAttachDetach(unittest.TestCase):
 
     def test_detach_listener(self):
         """ Test that a listener can be detached. """
-        g = GerritStream()
+        g = GerritStream(StringIO("Dummy stream"))
         l = ListenerWithValidHandler()
         self.assertEquals(len(g.listeners), 0)
         g.attach(l)
@@ -138,11 +139,21 @@ class TestGerritStreamAttachDetach(unittest.TestCase):
         listener is detached.
 
         """
-        g = GerritStream()
+        g = GerritStream(StringIO("Dummy stream"))
         l = ListenerWithValidHandler()
         self.assertEquals(len(g.listeners), 0)
         g.detach(l)
         self.assertEquals(len(g.listeners), 0)
+
+    def test_stream_without_read_method(self):
+        """ Create stream with input that does not have read() method.
+
+        Test that the class raises an exception when trying to stream
+        from an input that does not have a read() method.
+
+        """
+        g = GerritStream("String does not have read()")
+        self.assertRaises(GerritStreamError, g.read)
 
 if __name__ == '__main__':
     unittest.main()
