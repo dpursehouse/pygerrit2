@@ -9,6 +9,14 @@ class GerritEventFactory(object):
     """ Gerrit event factory. """
 
     _events = {}
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        """ Return the event factory instance. """
+        if not cls._instance:
+            cls._instance = super(GerritEventFactory, cls).__new__(cls, *args,
+                                                                   **kwargs)
+        return cls._instance
 
     @classmethod
     def register(cls, name):
