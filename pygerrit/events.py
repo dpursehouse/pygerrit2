@@ -22,6 +22,7 @@ class GerritEventFactory(object):
             if name in cls._events:
                 raise GerritError("Duplicate event: %s" % name)
             cls._events[name] = klazz.__name__
+            klazz.name = name
             return klazz
         return decorate
 

@@ -36,6 +36,7 @@ class TestPatchsetCreatedEvent(unittest.TestCase):
 
     def on_gerrit_event(self, event):
         self.assertTrue(isinstance(event, PatchsetCreatedEvent))
+        self.assertEquals(event.name, "patchset-created")
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
         self.assertEquals(event.change.topic, "topic-name")
@@ -72,6 +73,7 @@ class TestDraftPublishedEvent(unittest.TestCase):
 
     def on_gerrit_event(self, event):
         self.assertTrue(isinstance(event, DraftPublishedEvent))
+        self.assertEquals(event.name, "draft-published")
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
         self.assertEquals(event.change.topic, "topic-name")
@@ -108,6 +110,7 @@ class TestRefUpdatedEvent(unittest.TestCase):
 
     def on_gerrit_event(self, event):
         self.assertTrue(isinstance(event, RefUpdatedEvent))
+        self.assertEquals(event.name, "ref-updated")
         self.assertEquals(event.ref_update.project, "project-name")
         self.assertEquals(event.ref_update.oldrev,
                           "0000000000000000000000000000000000000000")
@@ -134,6 +137,7 @@ class TestChangeMergedEvent(unittest.TestCase):
 
     def on_gerrit_event(self, event):
         self.assertTrue(isinstance(event, ChangeMergedEvent))
+        self.assertEquals(event.name, "change-merged")
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
         self.assertEquals(event.change.topic, "topic-name")
@@ -170,6 +174,7 @@ class TestCommentAddedEvent(unittest.TestCase):
 
     def on_gerrit_event(self, event):
         self.assertTrue(isinstance(event, CommentAddedEvent))
+        self.assertEquals(event.name, "comment-added")
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
         self.assertEquals(event.change.topic, "topic-name")
@@ -213,6 +218,7 @@ class TestChangeAbandonedEvent(unittest.TestCase):
 
     def on_gerrit_event(self, event):
         self.assertTrue(isinstance(event, ChangeAbandonedEvent))
+        self.assertEquals(event.name, "change-abandoned")
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
         self.assertEquals(event.change.topic, "topic-name")
@@ -244,6 +250,7 @@ class TestChangeRestoredEvent(unittest.TestCase):
 
     def on_gerrit_event(self, event):
         self.assertTrue(isinstance(event, ChangeRestoredEvent))
+        self.assertEquals(event.name, "change-restored")
         self.assertEquals(event.change.project, "project-name")
         self.assertEquals(event.change.branch, "branch-name")
         self.assertEquals(event.change.topic, "topic-name")
