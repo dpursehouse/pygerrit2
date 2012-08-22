@@ -1,3 +1,0 @@
-export PYTHONPATH=$PYTHONPATH:`pwd`
-
-$TESTDIR/unittests.py
