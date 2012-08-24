@@ -3,38 +3,36 @@
 
 """ Unit tests for the Gerrit event stream handler and event objects. """
 
+import json
 import os
-from StringIO import StringIO
 import unittest
 
 from pygerrit.events import PatchsetCreatedEvent, \
     RefUpdatedEvent, ChangeMergedEvent, CommentAddedEvent, \
     ChangeAbandonedEvent, ChangeRestoredEvent, \
     DraftPublishedEvent
-from pygerrit.stream import GerritStream
+from pygerrit.client import GerritClient
 
 
-def _get_stream(name):
-    """ Get stream object containing JSON data.
+def _create_event(name, gerrit):
+    """ Create a new event.
 
-    Return a `StringIO` instantiated with the contents of the file
-    specified by `name`.  Newlines are removed.
+    Read the contents of the file specified by `name` and load as JSON
+    data, then add as an event in the `gerrit` client.
 
     """
-    data = open(os.path.join(os.environ["TESTDIR"], name))
-    return StringIO(data.read().replace("\n", ""))
+    data = open(os.path.join(os.environ["TESTDIR"], name + ".txt"))
+    json_data = json.loads(data.read().replace("\n", ""))
+    gerrit.put_event(json_data)
 
 
-class TestPatchsetCreatedEvent(unittest.TestCase):
-
-    """ Test that the `PatchsetCreatedEvent` event is dispatched properly. """
-
+class TestGerritEvents(unittest.TestCase):
     def setUp(self):
-        self.stream = GerritStream(_get_stream("patchset-created-event.txt"))
-        self.stream.attach(self)
-        self.event_received = False
+        self.gerrit = GerritClient("review.sonyericsson.net")
 
-    def on_gerrit_event(self, event):
+    def test_patchset_created(self):
+        _create_event("patchset-created-event", self.gerrit)
+        event = self.gerrit.get_event(False)
         self.assertTrue(isinstance(event, PatchsetCreatedEvent))
         self.assertEquals(event.name, "patchset-created")
         self.assertEquals(event.change.project, "project-name")
@@ -55,23 +53,10 @@ class TestPatchsetCreatedEvent(unittest.TestCase):
         self.assertEquals(event.patchset.uploader.email, "uploader@example.com")
         self.assertEquals(event.uploader.name, "Uploader Name")
         self.assertEquals(event.uploader.email, "uploader@example.com")
-        self.event_received = True
 
-    def test_patchset_created_event(self):
-        self.stream.read()
-        self.assertTrue(self.event_received)
-
-
-class TestDraftPublishedEvent(unittest.TestCase):
-
-    """ Test that the `DraftPublished` event is dispatched properly. """
-
-    def setUp(self):
-        self.stream = GerritStream(_get_stream("draft-published-event.txt"))
-        self.stream.attach(self)
-        self.event_received = False
-
-    def on_gerrit_event(self, event):
+    def test_draft_published(self):
+        _create_event("draft-published-event", self.gerrit)
+        event = self.gerrit.get_event(False)
         self.assertTrue(isinstance(event, DraftPublishedEvent))
         self.assertEquals(event.name, "draft-published")
         self.assertEquals(event.change.project, "project-name")
@@ -92,23 +77,10 @@ class TestDraftPublishedEvent(unittest.TestCase):
         self.assertEquals(event.patchset.uploader.email, "uploader@example.com")
         self.assertEquals(event.uploader.name, "Uploader Name")
         self.assertEquals(event.uploader.email, "uploader@example.com")
-        self.event_received = True
 
-    def test_draft_published_event(self):
-        self.stream.read()
-        self.assertTrue(self.event_received)
-
-
-class TestRefUpdatedEvent(unittest.TestCase):
-
-    """ Test that the `RefUpdated` event is dispatched properly. """
-
-    def setUp(self):
-        self.stream = GerritStream(_get_stream("ref-updated-event.txt"))
-        self.stream.attach(self)
-        self.event_received = False
-
-    def on_gerrit_event(self, event):
+    def test_ref_updated(self):
+        _create_event("ref-updated-event", self.gerrit)
+        event = self.gerrit.get_event(False)
         self.assertTrue(isinstance(event, RefUpdatedEvent))
         self.assertEquals(event.name, "ref-updated")
         self.assertEquals(event.ref_update.project, "project-name")
@@ -119,23 +91,10 @@ class TestRefUpdatedEvent(unittest.TestCase):
         self.assertEquals(event.ref_update.refname, "refs/tags/refname")
         self.assertEquals(event.submitter.name, "Submitter Name")
         self.assertEquals(event.submitter.email, "submitter@example.com")
-        self.event_received = True
 
-    def test_ref_updated_event(self):
-        self.stream.read()
-        self.assertTrue(self.event_received)
-
-
-class TestChangeMergedEvent(unittest.TestCase):
-
-    """ Test that the `ChangeMerged` event is dispatched properly. """
-
-    def setUp(self):
-        self.stream = GerritStream(_get_stream("change-merged-event.txt"))
-        self.stream.attach(self)
-        self.event_received = False
-
-    def on_gerrit_event(self, event):
+    def test_change_merged(self):
+        _create_event("change-merged-event", self.gerrit)
+        event = self.gerrit.get_event(False)
         self.assertTrue(isinstance(event, ChangeMergedEvent))
         self.assertEquals(event.name, "change-merged")
         self.assertEquals(event.change.project, "project-name")
@@ -156,23 +115,10 @@ class TestChangeMergedEvent(unittest.TestCase):
         self.assertEquals(event.patchset.uploader.email, "uploader@example.com")
         self.assertEquals(event.submitter.name, "Submitter Name")
         self.assertEquals(event.submitter.email, "submitter@example.com")
-        self.event_received = True
 
-    def test_change_merged_event(self):
-        self.stream.read()
-        self.assertTrue(self.event_received)
-
-
-class TestCommentAddedEvent(unittest.TestCase):
-
-    """ Test that the `CommentAdded` event is dispatched properly. """
-
-    def setUp(self):
-        self.stream = GerritStream(_get_stream("comment-added-event.txt"))
-        self.stream.attach(self)
-        self.event_received = False
-
-    def on_gerrit_event(self, event):
+    def test_comment_added(self):
+        _create_event("comment-added-event", self.gerrit)
+        event = self.gerrit.get_event(False)
         self.assertTrue(isinstance(event, CommentAddedEvent))
         self.assertEquals(event.name, "comment-added")
         self.assertEquals(event.change.project, "project-name")
@@ -200,23 +146,10 @@ class TestCommentAddedEvent(unittest.TestCase):
         self.assertEquals(event.approvals[1].value, "1")
         self.assertEquals(event.author.name, "Author Name")
         self.assertEquals(event.author.email, "author@example.com")
-        self.event_received = True
 
-    def test_comment_added_event(self):
-        self.stream.read()
-        self.assertTrue(self.event_received)
-
-
-class TestChangeAbandonedEvent(unittest.TestCase):
-
-    """ Test that the `ChangeAbandoned` event is dispatched properly. """
-
-    def setUp(self):
-        self.stream = GerritStream(_get_stream("change-abandoned-event.txt"))
-        self.stream.attach(self)
-        self.event_received = False
-
-    def on_gerrit_event(self, event):
+    def test_change_abandoned(self):
+        _create_event("change-abandoned-event", self.gerrit)
+        event = self.gerrit.get_event(False)
         self.assertTrue(isinstance(event, ChangeAbandonedEvent))
         self.assertEquals(event.name, "change-abandoned")
         self.assertEquals(event.change.project, "project-name")
@@ -232,23 +165,10 @@ class TestChangeAbandonedEvent(unittest.TestCase):
         self.assertEquals(event.abandoner.name, "Abandoner Name")
         self.assertEquals(event.abandoner.email, "abandoner@example.com")
         self.assertEquals(event.reason, "Abandon reason")
-        self.event_received = True
 
-    def test_change_abandoned_event(self):
-        self.stream.read()
-        self.assertTrue(self.event_received)
-
-
-class TestChangeRestoredEvent(unittest.TestCase):
-
-    """ Test that the `ChangeRestored` event is dispatched properly. """
-
-    def setUp(self):
-        self.stream = GerritStream(_get_stream("change-restored-event.txt"))
-        self.stream.attach(self)
-        self.event_received = False
-
-    def on_gerrit_event(self, event):
+    def test_change_restored(self):
+        _create_event("change-restored-event", self.gerrit)
+        event = self.gerrit.get_event(False)
         self.assertTrue(isinstance(event, ChangeRestoredEvent))
         self.assertEquals(event.name, "change-restored")
         self.assertEquals(event.change.project, "project-name")
@@ -264,12 +184,6 @@ class TestChangeRestoredEvent(unittest.TestCase):
         self.assertEquals(event.restorer.name, "Restorer Name")
         self.assertEquals(event.restorer.email, "restorer@example.com")
         self.assertEquals(event.reason, "Restore reason")
-        self.event_received = True
-
-    def test_change_restored_event(self):
-        self.stream.read()
-        self.assertTrue(self.event_received)
-
 
 if __name__ == '__main__':
     unittest.main()
