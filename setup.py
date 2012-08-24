@@ -13,4 +13,5 @@ setup(
     url="http://sonymobile.com",
     packages=['pygerrit'],
     keywords='gerrit, json',
+    install_requires=['paramiko'],
 )
