@@ -34,8 +34,12 @@ class GerritSSHClient(SSHClient):
             if not isfile(key_filename):
                 raise GerritError("Identity file '%s' does not exist" %
                                   key_filename)
+        try:
+            port = int(data['port'])
+        except ValueError:
+            raise GerritError("Invalid port: %s" % data['port'])
         self.connect(hostname=data['hostname'],
-                     port=int(data['port']),
+                     port=port,
                      username=data['user'],
                      key_filename=key_filename)
 
