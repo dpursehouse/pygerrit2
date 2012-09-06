@@ -21,7 +21,7 @@ class GerritEventFactory(object):
         def decorate(klazz):
             if name in cls._events:
                 raise GerritError("Duplicate event: %s" % name)
-            cls._events[name] = klazz.__name__
+            cls._events[name] = [klazz.__module__, klazz.__name__]
             klazz.name = name
             return klazz
         return decorate
@@ -40,8 +40,12 @@ class GerritEventFactory(object):
         name = json_data["type"]
         if not name in cls._events:
             raise GerritError("Unknown event: %s" % name)
-        classname = cls._events[name]
-        return globals()[classname](json_data)
+        event = cls._events[name]
+        module_name = event[0]
+        class_name = event[1]
+        module = __import__(module_name, fromlist=[module_name])
+        klazz = getattr(module, class_name)
+        return klazz(json_data)
 
 
 class GerritEvent(object):

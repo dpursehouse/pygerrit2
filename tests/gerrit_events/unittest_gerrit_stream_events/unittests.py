@@ -10,8 +10,19 @@ import unittest
 from pygerrit.events import PatchsetCreatedEvent, \
     RefUpdatedEvent, ChangeMergedEvent, CommentAddedEvent, \
     ChangeAbandonedEvent, ChangeRestoredEvent, \
-    DraftPublishedEvent
+    DraftPublishedEvent, GerritEventFactory, GerritEvent
 from pygerrit.client import GerritClient
+
+
+@GerritEventFactory.register("user-defined-event")
+class UserDefinedEvent(GerritEvent):
+
+    """ Dummy event class to test event registration. """
+
+    def __init__(self, json_data):
+        super(UserDefinedEvent, self).__init__()
+        self.title = json_data['title']
+        self.description = json_data['description']
 
 
 def _create_event(name, gerrit):
@@ -184,6 +195,22 @@ class TestGerritEvents(unittest.TestCase):
         self.assertEquals(event.restorer.name, "Restorer Name")
         self.assertEquals(event.restorer.email, "restorer@example.com")
         self.assertEquals(event.reason, "Restore reason")
+
+    def test_user_defined_event(self):
+        _create_event("user-defined-event", self.gerrit)
+        event = self.gerrit.get_event(False)
+        self.assertTrue(isinstance(event, UserDefinedEvent))
+        self.assertEquals(event.title, "Event title")
+        self.assertEquals(event.description, "Event description")
+
+    def test_add_duplicate_event(self):
+        try:
+            @GerritEventFactory.register("user-defined-event")
+            class AnotherUserDefinedEvent(GerritEvent):
+                pass
+        except:
+            return
+        self.fail("Did not raise exception when duplicate event registered")
 
 if __name__ == '__main__':
     unittest.main()
