@@ -32,7 +32,7 @@ def _create_event(name, gerrit):
     data, then add as an event in the `gerrit` client.
 
     """
-    data = open(os.path.join(os.environ["TESTDIR"], name + ".txt"))
+    data = open(os.path.join("testdata", name + ".txt"))
     json_data = json.loads(data.read().replace("\n", ""))
     gerrit.put_event(json_data)
 
