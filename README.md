@@ -1,5 +1,3 @@
-""" Error classes.
-
 The MIT License
 
 Copyright 2011 Sony Ericsson Mobile Communications. All rights reserved.
@@ -22,12 +20,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
-"""
-
-
-class GerritError(Exception):
-
-    """ Raised when something goes wrong in Gerrit handling. """
-
-    pass
