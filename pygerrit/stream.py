@@ -30,7 +30,6 @@ import json
 from select import poll, POLLIN
 from threading import Thread, Event
 
-from pygerrit.ssh import GerritSSHClient
 from pygerrit.error import GerritError
 from pygerrit.events import GerritEvent, GerritEventFactory
 
@@ -49,11 +48,11 @@ class GerritStream(Thread):
 
     """ Gerrit events stream handler. """
 
-    def __init__(self, gerrit, host):
+    def __init__(self, gerrit, ssh_client):
         Thread.__init__(self)
         self.daemon = True
         self._gerrit = gerrit
-        self._host = host
+        self._ssh_client = ssh_client
         self._stop = Event()
 
     def stop(self):
@@ -63,8 +62,8 @@ class GerritStream(Thread):
     def run(self):
         """ Listen to the stream and send events to the client. """
         try:
-            client = GerritSSHClient(self._host)
-            _stdin, stdout, _stderr = client.run_gerrit_command("stream-events")
+            _stdin, stdout, _stderr = \
+                self._ssh_client.run_gerrit_command("stream-events")
             p = poll()
             p.register(stdout.channel)
             while not self._stop.is_set():

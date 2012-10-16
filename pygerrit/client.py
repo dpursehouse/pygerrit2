@@ -28,6 +28,7 @@ from Queue import Queue, Empty, Full
 
 from pygerrit.error import GerritError
 from pygerrit.events import GerritEventFactory
+from pygerrit.ssh import GerritSSHClient
 from pygerrit.stream import GerritStream
 
 
@@ -37,14 +38,14 @@ class GerritClient(object):
 
     def __init__(self, host):
         self._factory = GerritEventFactory()
-        self._host = host
         self._events = Queue()
         self._stream = None
+        self._ssh_client = GerritSSHClient(host)
 
     def start_event_stream(self):
         """ Start streaming events from `gerrit stream-events`. """
         if not self._stream:
-            self._stream = GerritStream(self, host=self._host)
+            self._stream = GerritStream(self, ssh_client=self._ssh_client)
             self._stream.start()
 
     def stop_event_stream(self):
