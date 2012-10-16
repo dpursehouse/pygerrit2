@@ -24,10 +24,13 @@ THE SOFTWARE.
 
 """
 
+from json import JSONDecoder
 from Queue import Queue, Empty, Full
 
+from pygerrit import escape_string
 from pygerrit.error import GerritError
 from pygerrit.events import GerritEventFactory
+from pygerrit.models import Change
 from pygerrit.ssh import GerritSSHClient
 from pygerrit.stream import GerritStream
 
@@ -41,6 +44,37 @@ class GerritClient(object):
         self._events = Queue()
         self._stream = None
         self._ssh_client = GerritSSHClient(host)
+
+    def query(self, term):
+        """ Run `gerrit query` with the given term.
+
+        Return a list of results as `Change` objects.
+
+        """
+        results = []
+        command = ["query", "--current-patch-set", "--all-approvals",
+                   "--format JSON", "--commit-message"]
+        if isinstance(term, list):
+            command += [escape_string(" ".join(term))]
+        else:
+            command += [escape_string(term)]
+        _stdin, stdout, _stderr = self._ssh_client.run_gerrit_command(command)
+        decoder = JSONDecoder()
+        for line in stdout.read().splitlines():
+            # Gerrit's response to the query command contains one or more
+            # lines of JSON-encoded strings.  The last one is a status
+            # dictionary containing the key "type" whose value indicates
+            # whether or not the operation was successful.
+            # According to http://goo.gl/h13HD it should be safe to use the
+            # presence of the "type" key to determine whether the dictionary
+            # represents a change or if it's the query status indicator.
+            data = decoder.decode(line)
+            if "type" in data:
+                if data["type"] == "error":
+                    raise GerritError("Query error: %s" % data["message"])
+            else:
+                results.append(Change(data))
+        return results
 
     def start_event_stream(self):
         """ Start streaming events from `gerrit stream-events`. """

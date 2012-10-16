@@ -35,3 +35,18 @@ def from_json(json_data, key):
     if key in json_data:
         return json_data[key]
     return None
+
+
+def escape_string(string):
+    """ Escape a string for use in Gerrit commands.
+
+    Adds necessary escapes and surrounding double quotes to a
+    string so that it can be passed to any of the Gerrit commands
+    that require double-quoted strings.
+
+    """
+
+    result = string
+    result = result.replace('\\', '\\\\')
+    result = result.replace('"', '\\"')
+    return '"' + result + '"'
