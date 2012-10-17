@@ -63,7 +63,7 @@ def _create_event(name, gerrit):
 
 class TestGerritEvents(unittest.TestCase):
     def setUp(self):
-        self.gerrit = GerritClient("review.sonyericsson.net")
+        self.gerrit = GerritClient("review")
 
     def test_patchset_created(self):
         _create_event("patchset-created-event", self.gerrit)
