@@ -74,7 +74,7 @@ class GerritStream(Thread):
                             line = stdout.readline()
                             json_data = json.loads(line)
                             self._gerrit.put_event(json_data)
-        except GerritError, e:
+        except (GerritError, ValueError, IOError), e:
             error = json.loads('{"type":"gerrit-stream-error",'
                                '"error":"%s"}' % str(e))
             self._gerrit.put_event(error)
