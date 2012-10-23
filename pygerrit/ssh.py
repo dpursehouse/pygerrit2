@@ -25,6 +25,7 @@ THE SOFTWARE.
 """
 
 from os.path import abspath, expanduser, isfile
+from threading import Lock
 
 from pygerrit.error import GerritError
 
@@ -39,6 +40,7 @@ class GerritSSHClient(SSHClient):
         """ Initialise and connect to SSH. """
         super(GerritSSHClient, self).__init__()
         self.load_system_host_keys()
+        self.lock = Lock()
 
         configfile = expanduser("~/.ssh/config")
         if not isfile(configfile):
@@ -78,4 +80,7 @@ class GerritSSHClient(SSHClient):
             gerrit_command += command
         else:
             gerrit_command.append(command)
-        return self.exec_command(" ".join(gerrit_command))
+        self.lock.acquire()
+        stdin, stdout, stderr = self.exec_command(" ".join(gerrit_command))
+        self.lock.release()
+        return stdin, stdout, stderr
