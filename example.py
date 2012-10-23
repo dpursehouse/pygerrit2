@@ -56,6 +56,7 @@ def _main():
     logging.basicConfig(format='%(message)s', level=logging.INFO)
 
     gerrit = GerritClient(host=options.hostname)
+    logging.info("Connected to Gerrit version [%s]", gerrit.gerrit_version())
     gerrit.start_event_stream()
     try:
         while True:

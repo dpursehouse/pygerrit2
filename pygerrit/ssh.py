@@ -25,12 +25,22 @@ THE SOFTWARE.
 """
 
 from os.path import abspath, expanduser, isfile
+import re
 from threading import Lock
 
 from pygerrit.error import GerritError
 
 from paramiko import SSHClient, SSHConfig
 from paramiko.ssh_exception import SSHException
+
+
+def _extract_version(version_string, pattern):
+    """ Extract the version from `version_string` using `pattern`. """
+    if version_string:
+        match = pattern.match(version_string.strip())
+        if match:
+            return match.group(1)
+    return ""
 
 
 class GerritSSHClient(SSHClient):
@@ -42,6 +52,7 @@ class GerritSSHClient(SSHClient):
         super(GerritSSHClient, self).__init__()
         self.load_system_host_keys()
         self.lock = Lock()
+        self.remote_version = None
 
         configfile = expanduser("~/.ssh/config")
         if not isfile(configfile):
@@ -69,6 +80,26 @@ class GerritSSHClient(SSHClient):
                      port=port,
                      username=data['user'],
                      key_filename=key_filename)
+
+    def get_remote_version(self):
+        """ Return the version of the remote Gerrit server. """
+        if self.remote_version is not None:
+            return self.remote_version
+
+        try:
+            version_string = self._transport.remote_version
+            pattern = re.compile(r'^.*GerritCodeReview_([a-z0-9-\.]*) .*$')
+            self.remote_version = _extract_version(version_string, pattern)
+        except AttributeError:
+            try:
+                _stdin, stdout, _stderr = self.run_gerrit_command("version")
+            except GerritError:
+                self.remote_version = ""
+            else:
+                version_string = stdout.read()
+                pattern = re.compile(r'^gerrit version (.*)$')
+                self.remote_version = _extract_version(version_string, pattern)
+        return self.remote_version
 
     def run_gerrit_command(self, command):
         """ Run the given command.

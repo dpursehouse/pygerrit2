@@ -34,8 +34,6 @@ from pygerrit.models import Change
 from pygerrit.ssh import GerritSSHClient
 from pygerrit.stream import GerritStream
 
-_GERRIT_VERSION_PREFIX = "gerrit version "
-
 
 class GerritClient(object):
 
@@ -46,21 +44,10 @@ class GerritClient(object):
         self._events = Queue()
         self._stream = None
         self._ssh_client = GerritSSHClient(host)
-        self._gerrit_version = self._get_gerrit_version()
 
-    def _get_gerrit_version(self):
-        """ Run `gerrit version` to get the version of Gerrit connected to.
-
-        Return the version as a string.  Empty if version was not returned.
-
-        """
-        _stdin, stdout, _stderr = self._ssh_client.run_gerrit_command("version")
-        version_string = stdout.read()
-        if version_string:
-            if version_string.startswith(_GERRIT_VERSION_PREFIX):
-                return version_string[len(_GERRIT_VERSION_PREFIX):].strip()
-            return version_string.strip()
-        return ""
+    def gerrit_version(self):
+        """ Get the version of Gerrit that is connected to. """
+        return self._ssh_client.get_remote_version()
 
     def query(self, term):
         """ Run `gerrit query` with the given term.
