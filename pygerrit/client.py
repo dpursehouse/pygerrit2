@@ -72,7 +72,10 @@ class GerritClient(object):
             # According to http://goo.gl/h13HD it should be safe to use the
             # presence of the "type" key to determine whether the dictionary
             # represents a change or if it's the query status indicator.
-            data = decoder.decode(line)
+            try:
+                data = decoder.decode(line)
+            except ValueError, err:
+                raise GerritError("Query returned invalid data: %s", err)
             if "type" in data:
                 if data["type"] == "error":
                     raise GerritError("Query error: %s" % data["message"])
