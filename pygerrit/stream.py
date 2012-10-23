@@ -27,6 +27,7 @@ THE SOFTWARE.
 """
 
 import json
+import logging
 from select import poll, POLLIN
 from threading import Thread, Event
 
@@ -63,22 +64,32 @@ class GerritStream(Thread):
         """ Stop the thread. """
         self._stop.set()
 
+    def _error_event(self, error):
+        """ Dispatch `error` to the Gerrit client. """
+        json_data = json.loads('{"type":"gerrit-stream-error",'
+                               '"error":"%s"}' % str(error))
+        self._gerrit.put_event(json_data)
+
     def run(self):
         """ Listen to the stream and send events to the client. """
         try:
             _stdin, stdout, _stderr = \
                 self._ssh_client.run_gerrit_command("stream-events")
-            poller = poll()
-            poller.register(stdout.channel)
-            while not self._stop.is_set():
-                data = poller.poll()
-                for (handle, event) in data:
-                    if handle == stdout.channel.fileno():
-                        if event == POLLIN:
+        except GerritError, e:
+            self._error_event(e)
+
+        poller = poll()
+        poller.register(stdout.channel)
+        while not self._stop.is_set():
+            data = poller.poll()
+            for (handle, event) in data:
+                if handle == stdout.channel.fileno():
+                    if event == POLLIN:
+                        try:
                             line = stdout.readline()
                             json_data = json.loads(line)
                             self._gerrit.put_event(json_data)
-        except (GerritError, ValueError, IOError), e:
-            error = json.loads('{"type":"gerrit-stream-error",'
-                               '"error":"%s"}' % str(e))
-            self._gerrit.put_event(error)
+                        except (ValueError, IOError), err:
+                            self._error_event(err)
+                        except GerritError, err:
+                            logging.error("Failed to put event: %s", err)
