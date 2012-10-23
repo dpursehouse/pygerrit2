@@ -62,9 +62,9 @@ class GerritClient(object):
             command += [escape_string(" ".join(term))]
         else:
             command += [escape_string(term)]
-        _stdin, stdout, _stderr = self._ssh_client.run_gerrit_command(command)
+        result = self._ssh_client.run_gerrit_command(command)
         decoder = JSONDecoder()
-        for line in stdout.read().splitlines():
+        for line in result.stdout.read().splitlines():
             # Gerrit's response to the query command contains one or more
             # lines of JSON-encoded strings.  The last one is a status
             # dictionary containing the key "type" whose value indicates

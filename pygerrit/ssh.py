@@ -43,6 +43,16 @@ def _extract_version(version_string, pattern):
     return ""
 
 
+class GerritSSHCommandResult(object):
+
+    """ Represents the results of a Gerrit command run over SSH. """
+
+    def __init__(self, stdin, stdout, stderr):
+        self.stdin = stdin
+        self.stdout = stdout
+        self.stderr = stderr
+
+
 class GerritSSHClient(SSHClient):
 
     """ Gerrit SSH Client, wrapping the paramiko SSH Client. """
@@ -92,11 +102,11 @@ class GerritSSHClient(SSHClient):
             self.remote_version = _extract_version(version_string, pattern)
         except AttributeError:
             try:
-                _stdin, stdout, _stderr = self.run_gerrit_command("version")
+                result = self.run_gerrit_command("version")
             except GerritError:
                 self.remote_version = ""
             else:
-                version_string = stdout.read()
+                version_string = result.stdout.read()
                 pattern = re.compile(r'^gerrit version (.*)$')
                 self.remote_version = _extract_version(version_string, pattern)
         return self.remote_version
@@ -119,4 +129,4 @@ class GerritSSHClient(SSHClient):
             raise GerritError("Command execution error: %s" % err)
         finally:
             self.lock.release()
-        return stdin, stdout, stderr
+        return GerritSSHCommandResult(stdin, stdout, stderr)

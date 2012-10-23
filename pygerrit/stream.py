@@ -70,12 +70,12 @@ class GerritStream(Thread):
     def run(self):
         """ Listen to the stream and send events to the client. """
         try:
-            _stdin, stdout, _stderr = \
-                self._ssh_client.run_gerrit_command("stream-events")
+            result = self._ssh_client.run_gerrit_command("stream-events")
         except GerritError, e:
             self._error_event(e)
 
         poller = poll()
+        stdout = result.stdout
         poller.register(stdout.channel)
         while not self._stop.is_set():
             data = poller.poll()
