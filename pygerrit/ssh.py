@@ -30,6 +30,7 @@ from threading import Lock
 from pygerrit.error import GerritError
 
 from paramiko import SSHClient, SSHConfig
+from paramiko.ssh_exception import SSHException
 
 
 class GerritSSHClient(SSHClient):
@@ -81,6 +82,10 @@ class GerritSSHClient(SSHClient):
         else:
             gerrit_command.append(command)
         self.lock.acquire()
-        stdin, stdout, stderr = self.exec_command(" ".join(gerrit_command))
-        self.lock.release()
+        try:
+            stdin, stdout, stderr = self.exec_command(" ".join(gerrit_command))
+        except SSHException, err:
+            raise GerritError("Command execution error: %s" % err)
+        finally:
+            self.lock.release()
         return stdin, stdout, stderr
