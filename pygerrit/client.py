@@ -76,10 +76,9 @@ class GerritClient(object):
                 data = decoder.decode(line)
             except ValueError, err:
                 raise GerritError("Query returned invalid data: %s", err)
-            if "type" in data:
-                if data["type"] == "error":
-                    raise GerritError("Query error: %s" % data["message"])
-            else:
+            if "type" in data and data["type"] == "error":
+                raise GerritError("Query error: %s" % data["message"])
+            elif "project" in data:
                 results.append(Change(data))
         return results
 
