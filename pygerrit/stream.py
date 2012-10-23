@@ -83,13 +83,12 @@ class GerritStream(Thread):
         while not self._stop.is_set():
             data = poller.poll()
             for (handle, event) in data:
-                if handle == stdout.channel.fileno():
-                    if event == POLLIN:
-                        try:
-                            line = stdout.readline()
-                            json_data = json.loads(line)
-                            self._gerrit.put_event(json_data)
-                        except (ValueError, IOError), err:
-                            self._error_event(err)
-                        except GerritError, err:
-                            logging.error("Failed to put event: %s", err)
+                if handle == stdout.channel.fileno() and event == POLLIN:
+                    try:
+                        line = stdout.readline()
+                        json_data = json.loads(line)
+                        self._gerrit.put_event(json_data)
+                    except (ValueError, IOError), err:
+                        self._error_event(err)
+                    except GerritError, err:
+                        logging.error("Failed to put event: %s", err)
