@@ -31,7 +31,11 @@ from select import poll, POLLIN
 from threading import Thread, Event
 
 from pygerrit.error import GerritError
-from pygerrit.events import GerritEvent, GerritEventFactory
+from pygerrit.events import GerritEvent
+# pylint: disable-msg=W0611
+# GerritEventFactory is used, but pylint does not detect it
+from pygerrit.events import GerritEventFactory
+# pylint: enable-msg=W0611
 
 
 @GerritEventFactory.register("gerrit-stream-error")
@@ -64,12 +68,12 @@ class GerritStream(Thread):
         try:
             _stdin, stdout, _stderr = \
                 self._ssh_client.run_gerrit_command("stream-events")
-            p = poll()
-            p.register(stdout.channel)
+            poller = poll()
+            poller.register(stdout.channel)
             while not self._stop.is_set():
-                data = p.poll()
-                for (fd, event) in data:
-                    if fd == stdout.channel.fileno():
+                data = poller.poll()
+                for (handle, event) in data:
+                    if handle == stdout.channel.fileno():
                         if event == POLLIN:
                             line = stdout.readline()
                             json_data = json.loads(line)
