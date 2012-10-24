@@ -33,10 +33,7 @@ from threading import Thread, Event
 
 from pygerrit.error import GerritError
 from pygerrit.events import GerritEvent
-# pylint: disable-msg=W0611
-# GerritEventFactory is used, but pylint does not detect it
 from pygerrit.events import GerritEventFactory
-# pylint: enable-msg=W0611
 
 
 @GerritEventFactory.register("gerrit-stream-error")
