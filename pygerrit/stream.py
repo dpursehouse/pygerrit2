@@ -71,7 +71,7 @@ class GerritStream(Thread):
         """ Listen to the stream and send events to the client. """
         try:
             result = self._ssh_client.run_gerrit_command("stream-events")
-        except GerritError, e:
+        except GerritError as e:
             self._error_event(e)
 
         poller = poll()
@@ -85,7 +85,7 @@ class GerritStream(Thread):
                         line = stdout.readline()
                         json_data = json.loads(line)
                         self._gerrit.put_event(json_data)
-                    except (ValueError, IOError), err:
+                    except (ValueError, IOError) as err:
                         self._error_event(err)
-                    except GerritError, err:
+                    except GerritError as err:
                         logging.error("Failed to put event: %s", err)

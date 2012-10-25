@@ -122,6 +122,6 @@ class GerritSSHClient(SSHClient):
             gerrit_command.append(command)
         try:
             stdin, stdout, stderr = self.exec_command(" ".join(gerrit_command))
-        except SSHException, err:
+        except SSHException as err:
             raise GerritError("Command execution error: %s" % err)
         return GerritSSHCommandResult(stdin, stdout, stderr)

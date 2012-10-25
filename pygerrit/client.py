@@ -74,7 +74,7 @@ class GerritClient(object):
             # represents a change or if it's the query status indicator.
             try:
                 data = decoder.decode(line)
-            except ValueError, err:
+            except ValueError as err:
                 raise GerritError("Query returned invalid data: %s", err)
             if "type" in data and data["type"] == "error":
                 raise GerritError("Query error: %s" % data["message"])

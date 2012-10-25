@@ -95,7 +95,7 @@ class PatchsetCreatedEvent(GerritEvent):
             self.change = Change(json_data["change"])
             self.patchset = Patchset(json_data["patchSet"])
             self.uploader = Account(json_data["uploader"])
-        except KeyError, e:
+        except KeyError as e:
             raise GerritError("PatchsetCreatedEvent: %s" % e)
 
 
@@ -110,7 +110,7 @@ class DraftPublishedEvent(GerritEvent):
             self.change = Change(json_data["change"])
             self.patchset = Patchset(json_data["patchSet"])
             self.uploader = Account(json_data["uploader"])
-        except KeyError, e:
+        except KeyError as e:
             raise GerritError("DraftPublishedEvent: %s" % e)
 
 
@@ -130,7 +130,7 @@ class CommentAddedEvent(GerritEvent):
                 for approval in json_data["approvals"]:
                     self.approvals.append(Approval(approval))
             self.comment = json_data["comment"]
-        except ValueError, e:
+        except (KeyError, ValueError) as e:
             raise GerritError("CommentAddedEvent: %s" % e)
 
 
@@ -145,7 +145,7 @@ class ChangeMergedEvent(GerritEvent):
             self.change = Change(json_data["change"])
             self.patchset = Patchset(json_data["patchSet"])
             self.submitter = Account(json_data["submitter"])
-        except KeyError, e:
+        except KeyError as e:
             raise GerritError("ChangeMergedEvent: %s" % e)
 
 
@@ -161,7 +161,7 @@ class ChangeAbandonedEvent(GerritEvent):
             self.patchset = Patchset.from_json(json_data)
             self.abandoner = Account(json_data["abandoner"])
             self.reason = json_data["reason"]
-        except KeyError, e:
+        except KeyError as e:
             raise GerritError("ChangeAbandonedEvent: %s" % e)
 
 
@@ -177,7 +177,7 @@ class ChangeRestoredEvent(GerritEvent):
             self.patchset = Patchset.from_json(json_data)
             self.restorer = Account(json_data["restorer"])
             self.reason = json_data["reason"]
-        except KeyError, e:
+        except KeyError as e:
             raise GerritError("ChangeRestoredEvent: %s" % e)
 
 
@@ -191,5 +191,5 @@ class RefUpdatedEvent(GerritEvent):
         try:
             self.ref_update = RefUpdate(json_data["refUpdate"])
             self.submitter = Account.from_json(json_data, "submitter")
-        except KeyError, e:
+        except KeyError as e:
             raise GerritError("RefUpdatedEvent: %s" % e)
