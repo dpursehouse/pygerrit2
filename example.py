@@ -29,9 +29,11 @@ THE SOFTWARE.
 import logging
 import optparse
 import sys
+from threading import Event
 import time
 
 from pygerrit.client import GerritClient
+from pygerrit.error import GerritError
 from pygerrit.stream import GerritStreamErrorEvent
 
 
@@ -55,9 +57,16 @@ def _main():
 
     logging.basicConfig(format='%(message)s', level=logging.INFO)
 
-    gerrit = GerritClient(host=options.hostname)
-    logging.info("Connected to Gerrit version [%s]", gerrit.gerrit_version())
-    gerrit.start_event_stream()
+    try:
+        gerrit = GerritClient(host=options.hostname)
+        logging.info("Connected to Gerrit version [%s]",
+                     gerrit.gerrit_version())
+        gerrit.start_event_stream()
+    except GerritError as err:
+        logging.error("Gerrit error: %s", err)
+        return 1
+
+    errors = Event()
     try:
         while True:
             event = gerrit.get_event(block=options.blocking,
@@ -66,6 +75,7 @@ def _main():
                 logging.info("Event: %s", str(event))
                 if isinstance(event, GerritStreamErrorEvent):
                     logging.error(event.error)
+                    errors.set()
                     break
             else:
                 logging.info("No event")
@@ -73,8 +83,12 @@ def _main():
                     time.sleep(1)
     except KeyboardInterrupt:
         logging.info("Terminated by user")
+    finally:
         gerrit.stop_event_stream()
 
+    if errors.isSet():
+        logging.error("Exited with error")
+        return 1
 
 if __name__ == "__main__":
     sys.exit(_main())
