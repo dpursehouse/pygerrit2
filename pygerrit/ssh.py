@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 from os.path import abspath, expanduser, isfile
 import re
+import socket
 
 from pygerrit.error import GerritError
 
@@ -84,10 +85,13 @@ class GerritSSHClient(SSHClient):
             port = int(data['port'])
         except ValueError:
             raise GerritError("Invalid port: %s" % data['port'])
-        self.connect(hostname=data['hostname'],
-                     port=port,
-                     username=data['user'],
-                     key_filename=key_filename)
+        try:
+            self.connect(hostname=data['hostname'],
+                         port=port,
+                         username=data['user'],
+                         key_filename=key_filename)
+        except socket.error as e:
+            raise GerritError("Failed to connect to server: %s" % e)
 
     def get_remote_version(self):
         """ Return the version of the remote Gerrit server. """
