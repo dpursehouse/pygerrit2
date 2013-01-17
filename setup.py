@@ -35,7 +35,7 @@ setup(
     author_email="david.pursehouse@sonymobile.com",
     maintainer="David Pursehouse",
     maintainer_email="david.pursehouse@sonymobile.com",
-    url="http://sonymobile.com",
+    url="https://github.com/sonyxperiadev/pygerrit",
     packages=['pygerrit'],
     keywords='gerrit, json',
     install_requires=['paramiko'],
