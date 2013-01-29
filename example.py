@@ -53,7 +53,7 @@ def _main():
 
     (options, _args) = parser.parse_args()
     if options.timeout and not options.blocking:
-        parser.error('Can only use -t with -b')
+        parser.error('Can only use --timeout with --blocking')
 
     logging.basicConfig(format='%(message)s', level=logging.INFO)
 
