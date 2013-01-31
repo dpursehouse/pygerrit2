@@ -35,6 +35,84 @@ from pygerrit.events import PatchsetCreatedEvent, \
     DraftPublishedEvent, GerritEventFactory, GerritEvent, UnhandledEvent, \
     ErrorEvent, MergeFailedEvent, ReviewerAddedEvent, TopicChangedEvent
 from pygerrit.client import GerritClient
+from pygerrit import GerritReviewMessageFormatter
+
+EXPECTED_TEST_CASE_FIELDS = ['header', 'footer', 'paragraphs', 'result']
+
+
+TEST_CASES = [
+    {'header': None,
+     'footer': None,
+     'paragraphs': [],
+     'result': ""},
+    {'header': "Header",
+     'footer': "Footer",
+     'paragraphs': [],
+     'result': ""},
+    {'header': None,
+     'footer': None,
+     'paragraphs': ["Test"],
+     'result': "Test"},
+    {'header': None,
+     'footer': None,
+     'paragraphs': ["Test", "Test"],
+     'result': "Test\n\nTest"},
+    {'header': "Header",
+     'footer': None,
+     'paragraphs': ["Test"],
+     'result': "Header\n\nTest"},
+    {'header': "Header",
+     'footer': None,
+     'paragraphs': ["Test", "Test"],
+     'result': "Header\n\nTest\n\nTest"},
+    {'header': "Header",
+     'footer': "Footer",
+     'paragraphs': ["Test", "Test"],
+     'result': "Header\n\nTest\n\nTest\n\nFooter"},
+    {'header': "Header",
+     'footer': "Footer",
+     'paragraphs': [["One"]],
+     'result': "Header\n\n* One\n\nFooter"},
+    {'header': "Header",
+     'footer': "Footer",
+     'paragraphs': [["One", "Two"]],
+     'result': "Header\n\n* One\n* Two\n\nFooter"},
+    {'header': "Header",
+     'footer': "Footer",
+     'paragraphs': ["Test", ["One"], "Test"],
+     'result': "Header\n\nTest\n\n* One\n\nTest\n\nFooter"},
+    {'header': "Header",
+     'footer': "Footer",
+     'paragraphs': ["Test", ["One", "Two"], "Test"],
+     'result': "Header\n\nTest\n\n* One\n* Two\n\nTest\n\nFooter"},
+    {'header': "Header",
+     'footer': "Footer",
+     'paragraphs': ["Test", "Test", ["One"]],
+     'result': "Header\n\nTest\n\nTest\n\n* One\n\nFooter"},
+    {'header': None,
+     'footer': None,
+     'paragraphs': [["* One", "* Two"]],
+     'result': "* One\n* Two"},
+    {'header': None,
+     'footer': None,
+     'paragraphs': [["*    One  ", "    * Two  "]],
+     'result': "* One\n* Two"},
+    {'header': None,
+     'footer': None,
+     'paragraphs': [["*", "*"]],
+     'result': ""},
+    {'header': None,
+     'footer': None,
+     'paragraphs': [["", ""]],
+     'result': ""},
+    {'header': None,
+     'footer': None,
+     'paragraphs': [["  ", "  "]],
+     'result': ""},
+    {'header': None,
+     'footer': None,
+     'paragraphs': [["* One", "  ", "* Two"]],
+     'result': "* One\n* Two"}]
 
 
 @GerritEventFactory.register("user-defined-event")
@@ -314,6 +392,40 @@ class TestGerritEvents(unittest.TestCase):
         except:
             return
         self.fail("Did not raise exception when duplicate event registered")
+
+
+class TestGerritReviewMessageFormatter(unittest.TestCase):
+
+    """ Test that the GerritReviewMessageFormatter class behaves properly. """
+
+    def _check_test_case_fields(self, test_case, i):
+        for field in EXPECTED_TEST_CASE_FIELDS:
+            self.assertTrue(field in test_case,
+                            "field '%s' not present in test case #%d" %
+                            (field, i))
+        self.assertTrue(isinstance(test_case['paragraphs'], list),
+                        "'paragraphs' field is not a list in test case #%d" % i)
+
+    def test_is_empty(self):
+        """ Test if message is empty for missing header and footer. """
+        f = GerritReviewMessageFormatter(header=None, footer=None)
+        self.assertTrue(f.is_empty())
+        f.append(['test'])
+        self.assertFalse(f.is_empty())
+
+    def test_message_formatting(self):
+        """ Test message formatter for different test cases. """
+        for i in range(len(TEST_CASES)):
+            test_case = TEST_CASES[i]
+            self._check_test_case_fields(test_case, i)
+            f = GerritReviewMessageFormatter(header=test_case['header'],
+                                             footer=test_case['footer'])
+            for paragraph in test_case['paragraphs']:
+                f.append(paragraph)
+            m = f.format()
+            self.assertEqual(m, test_case['result'],
+                             "Formatted message does not match expected "
+                             "result in test case #%d:\n[%s]" % (i, m))
 
 if __name__ == '__main__':
     unittest.main()

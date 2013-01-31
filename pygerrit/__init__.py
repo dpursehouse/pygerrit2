@@ -48,3 +48,88 @@ def escape_string(string):
     result = result.replace('\\', '\\\\')
     result = result.replace('"', '\\"')
     return '"' + result + '"'
+
+
+class GerritReviewMessageFormatter(object):
+
+    """ Helper class to format review messages that are sent to Gerrit. """
+
+    def __init__(self, header=None, footer=None):
+        """ Constructor.
+
+        If `header` is specified, it will be prepended as the first
+        paragraph of the output message.  If `footer` is specified it
+        will be appended as the last paragraph of the output message.
+
+        """
+
+        self.paragraphs = []
+        if header:
+            self.header = header.strip()
+        else:
+            self.header = ""
+        if footer:
+            self.footer = footer.strip()
+        else:
+            self.footer = ""
+
+    def append(self, data):
+        """ Append the given `data` to the output.
+
+        If `data` is a list, it is formatted as a bullet list with each
+        entry in the list being a separate bullet.  Otherwise if it is a
+        string, the string is added as a paragraph.
+
+        Raises ValueError if `data` is not a list or a string.
+
+        """
+        if not data:
+            return
+
+        if isinstance(data, list):
+            # First we need to clean up the data.
+            #
+            # Gerrit creates new bullet items when it gets newline characters
+            # within a bullet list paragraph, so unless we remove the newlines
+            # from the texts the resulting bullet list will contain multiple
+            # bullets and look crappy.
+            #
+            # We add the '*' character on the beginning of each bullet text in
+            # the next step, so we strip off any existing leading '*' that the
+            # caller has added, and then strip off any leading or trailing
+            # whitespace.
+            _items = [x.replace("\n", " ").strip().lstrip('*').strip()
+                      for x in data]
+
+            # Create the bullet list only with the items that still have any
+            # text in them after cleaning up.
+            _paragraph = "\n".join(["* %s" % x for x in _items if x])
+            if _paragraph:
+                self.paragraphs.append(_paragraph)
+        elif isinstance(data, str):
+            _paragraph = data.strip()
+            if _paragraph:
+                self.paragraphs.append(_paragraph)
+        else:
+            raise ValueError('Data must be a list or a string')
+
+    def is_empty(self):
+        """ Return True if no paragraphs have been added. """
+        return not self.paragraphs
+
+    def format(self):
+        """ Format the message parts to a string.
+
+        Return a string of all the message parts separated into paragraphs,
+        with header and footer paragraphs if they were specified in the
+        constructor.
+
+        """
+        message = ""
+        if self.paragraphs:
+            if self.header:
+                message += (self.header + '\n\n')
+            message += "\n\n".join(self.paragraphs)
+            if self.footer:
+                message += ('\n\n' + self.footer)
+        return message
