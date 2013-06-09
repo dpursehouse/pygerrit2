@@ -26,6 +26,31 @@ import json
 import requests
 
 GERRIT_MAGIC_JSON_PREFIX = ")]}\'\n"
+GERRIT_AUTH_SUFFIX = "/a"
+
+
+class GerritRestAPIAuthentication(requests.auth.HTTPDigestAuth):
+
+    """ HTTP Digest Auth with netrc credentials. """
+
+    def __init__(self, url, username=None, password=None):
+        self.username = username
+        self.password = password
+        if not (self.username and self.password):
+            (self.username, self.password) = \
+                requests.utils.get_netrc_auth(url)
+        if (self.username and self.password):
+            super(GerritRestAPIAuthentication, self).__init__(self.username,
+                                                              self.password)
+
+    def __call__(self, req):
+        if (self.username and self.password):
+            req = super(GerritRestAPIAuthentication, self).__call__(req)
+        return req
+
+    def is_authenticated(self):
+        """ Return True if authentication credentials are present. """
+        return (self.username and self.password)
 
 
 def _decode_response(response):
@@ -48,16 +73,31 @@ class GerritRestAPI(object):
 
     """ Interface to the Gerrit REST API. """
 
-    def __init__(self, url):
+    def __init__(self, url, username=None, password=None):
         """ Constructor.
 
         `url` is assumed to be the full URL to the server, including the
         'http(s)://' prefix.
 
+        HTTP digest authentication is used with the given `username` and
+        `password`.  If both are not given, an attempt is made to get them
+        from the netrc file.  If that fails, anonymous access is used and
+        functionality is limited.
+
         """
         self.kwargs = {}
         self.url = url
         self.session = requests.session()
+
+        self.url = url.rstrip('/')
+        auth = GerritRestAPIAuthentication(url, username, password)
+        if auth.is_authenticated():
+            self.kwargs['auth'] = auth
+            if not self.url.endswith(GERRIT_AUTH_SUFFIX):
+                self.url += GERRIT_AUTH_SUFFIX
+        else:
+            if self.url.endswith(GERRIT_AUTH_SUFFIX):
+                self.url = self.url[: - len(GERRIT_AUTH_SUFFIX)]
 
     def _get(self, endpoint, params=None):
         """ Send HTTP GET to `endpoint`.
