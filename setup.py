@@ -29,7 +29,7 @@ from setuptools import setup
 setup(
     name="pygerrit",
     description="Client library for interacting with Gerrit",
-    version="0.0.6",
+    version="0.0.7",
     license="The MIT License",
     author="David Pursehouse",
     author_email="david.pursehouse@sonymobile.com",
