@@ -29,7 +29,7 @@ from setuptools import setup
 
 from pygerrit import __version__
 
-REQUIRES = ['paramiko==1.11.0', 'pycrypto==2.3']
+REQUIRES = ['paramiko==1.11.0', 'pycrypto==2.3', 'requests==1.2.3']
 
 
 def _main():
