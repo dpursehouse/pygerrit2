@@ -53,13 +53,37 @@ class GerritRestAPIAuthentication(requests.auth.HTTPDigestAuth):
         return (self.username and self.password)
 
 
+class GerritRestAPIError(Exception):
+
+    """ Raised when an error occurs during Gerrit REST API access. """
+
+    def __init__(self, code, message=None):
+        super(GerritRestAPIError, self).__init__()
+        self.code = code
+        self.message = message
+
+    def __str__(self):
+        if self.message:
+            return "%d: %s" % (self.code, self.message)
+        else:
+            return "%d" % self.code
+
+
 def _decode_response(response):
     """ Decode the `response` received from a REST API call.
 
     Strip off Gerrit's magic prefix if it is there, and return decoded
     JSON content or raw text if it cannot be decoded as JSON.
 
+    Raise GerritRestAPIError if the response contains an HTTP error status
+    code.
+
     """
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        raise GerritRestAPIError(response.status_code, str(e))
+
     content = response.content
     if content.startswith(GERRIT_MAGIC_JSON_PREFIX):
         content = content[len(GERRIT_MAGIC_JSON_PREFIX):]
