@@ -52,10 +52,14 @@ class GerritSSHCommandResult(object):
 
     """ Represents the results of a Gerrit command run over SSH. """
 
-    def __init__(self, stdin, stdout, stderr):
+    def __init__(self, command, stdin, stdout, stderr):
+        self.command = command
         self.stdin = stdin
         self.stdout = stdout
         self.stderr = stderr
+
+    def __repr__(self):
+        return "<GerritSSHCommandResult [%s]>" % self.command
 
 
 class GerritSSHClient(SSHClient):
@@ -134,7 +138,7 @@ class GerritSSHClient(SSHClient):
     def run_gerrit_command(self, command):
         """ Run the given command.
 
-        Run `command` and return a tuple of stdin, stdout, and stderr.
+        Run `command` and return a `GerritSSHCommandResult`.
 
         """
         gerrit_command = ["gerrit"]
@@ -142,9 +146,10 @@ class GerritSSHClient(SSHClient):
             gerrit_command += command
         else:
             gerrit_command.append(command)
+
         try:
             c = " ".join(gerrit_command)
             stdin, stdout, stderr = self.exec_command(c)
         except SSHException as err:
             raise GerritError("Command execution error: %s" % err)
-        return GerritSSHCommandResult(stdin, stdout, stderr)
+        return GerritSSHCommandResult(command, stdin, stdout, stderr)
