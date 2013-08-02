@@ -40,9 +40,9 @@ def from_json(json_data, key):
 def escape_string(string):
     """ Escape a string for use in Gerrit commands.
 
-    Adds necessary escapes and surrounding double quotes to a
-    string so that it can be passed to any of the Gerrit commands
-    that require double-quoted strings.
+    Return the string with necessary escapes and surrounding double quotes
+    so that it can be passed to any of the Gerrit commands that require
+    double-quoted strings.
 
     """
 

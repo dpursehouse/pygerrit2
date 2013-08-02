@@ -35,7 +35,12 @@ from paramiko.ssh_exception import SSHException
 
 
 def _extract_version(version_string, pattern):
-    """ Extract the version from `version_string` using `pattern`. """
+    """ Extract the version from `version_string` using `pattern`.
+
+    Return the version as a string, with leading/trailing whitespace
+    stripped.
+
+    """
     if version_string:
         match = pattern.match(version_string.strip())
         if match:

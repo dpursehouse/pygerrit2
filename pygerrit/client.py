@@ -46,7 +46,7 @@ class GerritClient(object):
         self._ssh_client = GerritSSHClient(host)
 
     def gerrit_version(self):
-        """ Get the version of Gerrit that is connected to. """
+        """ Return the version of Gerrit that is connected to. """
         return self._ssh_client.get_remote_version()
 
     def query(self, term):
