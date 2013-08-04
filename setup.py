@@ -38,5 +38,5 @@ setup(
     url="https://github.com/sonyxperiadev/pygerrit",
     packages=['pygerrit'],
     keywords='gerrit, json',
-    install_requires=['paramiko'],
+    install_requires=['paramiko==1.7.6', 'pycrypto==2.0.1'],
 )
