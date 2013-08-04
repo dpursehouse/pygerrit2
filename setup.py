@@ -26,10 +26,12 @@ THE SOFTWARE.
 
 from setuptools import setup
 
+from pygerrit import __version__
+
 setup(
     name="pygerrit",
     description="Client library for interacting with Gerrit",
-    version="0.0.7",
+    version=__version__,
     license="The MIT License",
     author="David Pursehouse",
     author_email="david.pursehouse@sonymobile.com",

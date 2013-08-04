@@ -24,6 +24,9 @@ THE SOFTWARE.
 
 """
 
+__numversion__ = (0, 0, 7)
+__version__ = '.'.join([str(num) for num in __numversion__])
+
 
 def from_json(json_data, key):
     """ Helper method to extract values from JSON data.
