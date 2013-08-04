@@ -3,3 +3,4 @@
 build/
 dist/
 pygerrit.egg-info/
+pygerritenv/
