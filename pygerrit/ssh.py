@@ -140,16 +140,15 @@ class GerritSSHClient(SSHClient):
 
         Run `command` and return a `GerritSSHCommandResult`.
 
+        Raise `ValueError` if `command` is not a string.
+
         """
-        gerrit_command = ["gerrit"]
-        if isinstance(command, list):
-            gerrit_command += command
-        else:
-            gerrit_command.append(command)
+        if not isinstance(command, basestring):
+            raise ValueError("command must be a string")
+        gerrit_command = "gerrit " + command
 
         try:
-            c = " ".join(gerrit_command)
-            stdin, stdout, stderr = self.exec_command(c)
+            stdin, stdout, stderr = self.exec_command(gerrit_command)
         except SSHException as err:
             raise GerritError("Command execution error: %s" % err)
         return GerritSSHCommandResult(command, stdin, stdout, stderr)

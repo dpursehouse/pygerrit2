@@ -50,19 +50,22 @@ class GerritClient(object):
         return self._ssh_client.get_remote_version()
 
     def query(self, term):
-        """ Run `gerrit query` with the given term.
+        """ Run `gerrit query` with the given `term`.
 
         Return a list of results as `Change` objects.
+
+        Raise `ValueError` if `term` is not a string.
 
         """
         results = []
         command = ["query", "--current-patch-set", "--all-approvals",
                    "--format JSON", "--commit-message"]
-        if isinstance(term, list):
-            command += [escape_string(" ".join(term))]
-        else:
-            command += [escape_string(term)]
-        result = self._ssh_client.run_gerrit_command(command)
+
+        if not isinstance(term, basestring):
+            raise ValueError("term must be a string")
+
+        command.append(escape_string(term))
+        result = self._ssh_client.run_gerrit_command(" ".join(command))
         decoder = JSONDecoder()
         for line in result.stdout.read().splitlines():
             # Gerrit's response to the query command contains one or more
