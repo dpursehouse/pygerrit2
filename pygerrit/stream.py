@@ -73,19 +73,19 @@ class GerritStream(Thread):
             result = self._ssh_client.run_gerrit_command("stream-events")
         except GerritError as e:
             self._error_event(e)
-
-        poller = poll()
-        stdout = result.stdout
-        poller.register(stdout.channel)
-        while not self._stop.is_set():
-            data = poller.poll()
-            for (handle, event) in data:
-                if handle == stdout.channel.fileno() and event == POLLIN:
-                    try:
-                        line = stdout.readline()
-                        json_data = json.loads(line)
-                        self._gerrit.put_event(json_data)
-                    except (ValueError, IOError) as err:
-                        self._error_event(err)
-                    except GerritError as err:
-                        logging.error("Failed to put event: %s", err)
+        else:
+            poller = poll()
+            stdout = result.stdout
+            poller.register(stdout.channel)
+            while not self._stop.is_set():
+                data = poller.poll()
+                for (handle, event) in data:
+                    if handle == stdout.channel.fileno() and event == POLLIN:
+                        try:
+                            line = stdout.readline()
+                            json_data = json.loads(line)
+                            self._gerrit.put_event(json_data)
+                        except (ValueError, IOError) as err:
+                            self._error_event(err)
+                        except GerritError as err:
+                            logging.error("Failed to put event: %s", err)
