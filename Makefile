@@ -22,7 +22,12 @@
 
 all: test
 
-test: unittests
+test: unittests pyflakes
+
+pyflakes: envsetup
+	bash -c "\
+          source ./pygerritenv/bin/activate && \
+          git ls-files | grep \"\.py$$\" | xargs pyflakes"
 
 unittests: envsetup
 	bash -c "\

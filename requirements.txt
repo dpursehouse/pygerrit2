@@ -1,2 +1,3 @@
 paramiko==1.7.6
 pycrypto==2.0.1
+pyflakes==0.4.0
