@@ -21,12 +21,16 @@
 # THE SOFTWARE.
 
 PWD := $(shell pwd)
+TAG := $(shell git tag -l --contains HEAD)
 
 all: test
 
 test: clean unittests pyflakes pep8 pep257 pylint
 
 docs: html
+
+valid-tag:
+	@echo "$(TAG)" | grep -q "^[0-9]\+\.[0-9]\+\.[0-9]\+$$"
 
 html: sphinx
 	bash -c "\
