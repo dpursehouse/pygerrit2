@@ -106,7 +106,7 @@ class GerritClient(object):
         Return a `GerritEvent` instance, or None if:
          - `block` is False and there is no event available in the queue, or
          - `block` is True and no event is available within the time
-        specified by `timeout`.
+           specified by `timeout`.
 
         """
         try:

@@ -20,9 +20,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+PWD := $(shell pwd)
+
 all: test
 
 test: clean unittests pyflakes pep8 pep257 pylint
+
+docs: html
+
+html: sphinx
+	bash -c "\
+          source ./pygerritenv/bin/activate && \
+          export PYTHONPATH=$(PWD) && \
+          cd docs && \
+          make html && \
+          cd $(PWD)"
+
+sphinx: docenvsetup
+	bash -c "\
+          source ./pygerritenv/bin/activate && \
+          sphinx-apidoc \
+              -V \"$(TAG)\" \
+              -R \"$(TAG)\" \
+              -H \"Pygerrit\" \
+              -A \"Sony Mobile Communications\" \
+              --full \
+              --force \
+              -o docs pygerrit"
 
 pylint: testenvsetup
 	bash -c "\
@@ -55,6 +79,11 @@ testenvsetup: envsetup
           source ./pygerritenv/bin/activate && \
           pip install --upgrade -r test_requirements.txt"
 
+docenvsetup: envsetup
+	bash -c "\
+          source ./pygerritenv/bin/activate && \
+          pip install --upgrade -r doc_requirements.txt"
+
 envsetup: envinit
 	bash -c "\
           source ./pygerritenv/bin/activate && \
@@ -65,4 +94,4 @@ envinit:
 
 clean:
 	@find . -type f -name "*.pyc" -exec rm -f {} \;
-	@rm -rf pygerritenv pygerrit.egg-info build dist
+	@rm -rf pygerritenv pygerrit.egg-info build dist docs
