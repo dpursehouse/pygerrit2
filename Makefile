@@ -22,7 +22,12 @@
 
 all: test
 
-test: unittests pyflakes
+test: unittests pyflakes pep8
+
+pep8: envsetup
+	bash -c "\
+          source ./pygerritenv/bin/activate && \
+          git ls-files | grep \"\.py$$\" | xargs pep8 --max-line-length 80"
 
 pyflakes: envsetup
 	bash -c "\
