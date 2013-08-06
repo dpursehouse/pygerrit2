@@ -25,7 +25,7 @@ THE SOFTWARE.
 
 """
 
-from pygerrit import from_json
+from . import from_json
 
 
 class Account(object):

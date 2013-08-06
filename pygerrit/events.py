@@ -25,8 +25,8 @@ THE SOFTWARE.
 
 """
 
-from pygerrit.error import GerritError
-from pygerrit.models import Account, Approval, Change, Patchset, RefUpdate
+from .error import GerritError
+from .models import Account, Approval, Change, Patchset, RefUpdate
 
 
 class GerritEventFactory(object):

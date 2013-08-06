@@ -28,7 +28,7 @@ from os.path import abspath, expanduser, isfile
 import re
 import socket
 
-from pygerrit.error import GerritError
+from .error import GerritError
 
 from paramiko import SSHClient, SSHConfig
 from paramiko.ssh_exception import SSHException

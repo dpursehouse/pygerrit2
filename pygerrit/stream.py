@@ -31,9 +31,8 @@ import logging
 from select import poll, POLLIN
 from threading import Thread, Event
 
-from pygerrit.error import GerritError
-from pygerrit.events import GerritEvent
-from pygerrit.events import GerritEventFactory
+from .error import GerritError
+from .events import GerritEvent, GerritEventFactory
 
 
 @GerritEventFactory.register("gerrit-stream-error")

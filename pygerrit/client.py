@@ -27,12 +27,12 @@ THE SOFTWARE.
 from json import JSONDecoder
 from Queue import Queue, Empty, Full
 
-from pygerrit import escape_string
-from pygerrit.error import GerritError
-from pygerrit.events import GerritEventFactory
-from pygerrit.models import Change
-from pygerrit.ssh import GerritSSHClient
-from pygerrit.stream import GerritStream
+from . import escape_string
+from .error import GerritError
+from .events import GerritEventFactory
+from .models import Change
+from .ssh import GerritSSHClient
+from .stream import GerritStream
 
 
 class GerritClient(object):
