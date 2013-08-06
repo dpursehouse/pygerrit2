@@ -22,7 +22,7 @@
 
 all: test
 
-test: unittests pyflakes pep8
+test: clean unittests pyflakes pep8
 
 pep8: envsetup
 	bash -c "\
@@ -44,3 +44,7 @@ envsetup:
           [ -e ./pygerritenv/bin/activate ] || virtualenv ./pygerritenv && \
           source ./pygerritenv/bin/activate && \
           pip install --upgrade -r requirements.txt"
+
+clean:
+	@find . -type f -name "*.pyc" -exec rm -f {} \;
+	@rm -rf pygerritenv pygerrit.egg-info build dist
