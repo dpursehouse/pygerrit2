@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """ Client library for interacting with Gerrit.
 
 The MIT License
