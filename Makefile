@@ -24,36 +24,41 @@ all: test
 
 test: clean unittests pyflakes pep8 pep257 pylint
 
-pylint: envsetup
+pylint: testenvsetup
 	bash -c "\
           source ./pygerritenv/bin/activate && \
           git ls-files | grep \"\.py$$\" | grep -v "unittests" | \
           xargs pylint --rcfile=.pylintrc"
 
-pep257: envsetup
+pep257: testenvsetup
 	bash -c "\
           source ./pygerritenv/bin/activate && \
           git ls-files | grep \"\.py$$\" | xargs pep257"
 
-pep8: envsetup
+pep8: testenvsetup
 	bash -c "\
           source ./pygerritenv/bin/activate && \
           git ls-files | grep \"\.py$$\" | xargs pep8 --max-line-length 80"
 
-pyflakes: envsetup
+pyflakes: testenvsetup
 	bash -c "\
           source ./pygerritenv/bin/activate && \
           git ls-files | grep \"\.py$$\" | xargs pyflakes"
 
-unittests: envsetup
+unittests: testenvsetup
 	bash -c "\
           source ./pygerritenv/bin/activate && \
           python unittests.py"
 
+testenvsetup: envsetup
+	bash -c "\
+          source ./pygerritenv/bin/activate && \
+          pip install --upgrade -r test_requirements.txt"
+
 envsetup: envinit
 	bash -c "\
           source ./pygerritenv/bin/activate && \
-          pip install --upgrade -r requirements.txt -r test_requirements.txt"
+          pip install --upgrade -r requirements.txt"
 
 envinit:
 	bash -c "[ -e ./pygerritenv/bin/activate ] || virtualenv ./pygerritenv"
