@@ -30,6 +30,16 @@ test: clean unittests pyflakes pep8 pep257 pylint
 
 docs: html
 
+sdist: test valid-env
+	bash -c "\
+          source ./pygerritenv/bin/activate && \
+          python setup.py sdist"
+
+valid-env: valid-version valid-git-status
+
+valid-version: valid-tag
+	@python version.py $(TAG)
+
 valid-tag:
 	@echo "$(TAG)" | grep -q "^[0-9]\+\.[0-9]\+\.[0-9]\+$$"
 
