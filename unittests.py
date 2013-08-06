@@ -36,7 +36,7 @@ from pygerrit.events import PatchsetCreatedEvent, \
     ChangeAbandonedEvent, ChangeRestoredEvent, \
     DraftPublishedEvent, GerritEventFactory, GerritEvent
 from pygerrit.client import GerritClient
-from setup import requires as setup_requires
+from setup import REQUIRES as setup_requires
 
 
 @GerritEventFactory.register("user-defined-event")

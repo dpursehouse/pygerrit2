@@ -46,6 +46,7 @@ class GerritEventFactory(object):
         """
 
         def decorate(klazz):
+            """ Decorator. """
             if name in cls._events:
                 raise GerritError("Duplicate event: %s" % name)
             cls._events[name] = [klazz.__module__, klazz.__name__]
@@ -83,7 +84,7 @@ class GerritEvent(object):
         pass
 
     def __str__(self):
-        return u"%s" % self.name
+        return u"%s" % self.name  # pylint: disable=no-member
 
 
 @GerritEventFactory.register("patchset-created")

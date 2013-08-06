@@ -74,6 +74,7 @@ class GerritSSHClient(SSHClient):
         self.connected = False
 
     def _connect(self):
+        """ Connect to the remote if not already connected. """
         if self.connected:
             return
         self.load_system_host_keys()
@@ -115,7 +116,7 @@ class GerritSSHClient(SSHClient):
         except AttributeError:
             self.remote_version = None
 
-    def exec_command(self, command, bufsize=1):
+    def exec_command(self, command, bufsize=1, timeout=None, get_pty=False):
         """ Execute the command.
 
         Make sure we're connected and then execute the command.
@@ -124,7 +125,8 @@ class GerritSSHClient(SSHClient):
 
         """
         self._connect()
-        return super(GerritSSHClient, self).exec_command(command, bufsize)
+        return super(GerritSSHClient, self).\
+            exec_command(command, bufsize, timeout, get_pty)
 
     def get_remote_version(self):
         """ Return the version of the remote Gerrit server. """

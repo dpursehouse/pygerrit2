@@ -28,7 +28,7 @@ from setuptools import setup
 
 from pygerrit import __version__
 
-requires = ['paramiko==1.11.0', 'pycrypto==2.3']
+REQUIRES = ['paramiko==1.11.0', 'pycrypto==2.3']
 
 
 def _main():
@@ -44,7 +44,7 @@ def _main():
         url="https://github.com/sonyxperiadev/pygerrit",
         packages=['pygerrit'],
         keywords='gerrit, json',
-        install_requires=requires,
+        install_requires=REQUIRES,
     )
 
 
