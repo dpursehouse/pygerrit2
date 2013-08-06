@@ -28,17 +28,25 @@ from setuptools import setup
 
 from pygerrit import __version__
 
-setup(
-    name="pygerrit",
-    description="Client library for interacting with Gerrit",
-    version=__version__,
-    license="The MIT License",
-    author="David Pursehouse",
-    author_email="david.pursehouse@sonymobile.com",
-    maintainer="David Pursehouse",
-    maintainer_email="david.pursehouse@sonymobile.com",
-    url="https://github.com/sonyxperiadev/pygerrit",
-    packages=['pygerrit'],
-    keywords='gerrit, json',
-    install_requires=['paramiko==1.11.0', 'pycrypto==2.3'],
-)
+requires = ['paramiko==1.11.0', 'pycrypto==2.3']
+
+
+def _main():
+    setup(
+        name="pygerrit",
+        description="Client library for interacting with Gerrit",
+        version=__version__,
+        license="The MIT License",
+        author="David Pursehouse",
+        author_email="david.pursehouse@sonymobile.com",
+        maintainer="David Pursehouse",
+        maintainer_email="david.pursehouse@sonymobile.com",
+        url="https://github.com/sonyxperiadev/pygerrit",
+        packages=['pygerrit'],
+        keywords='gerrit, json',
+        install_requires=requires,
+    )
+
+
+if __name__ == "__main__":
+    _main()

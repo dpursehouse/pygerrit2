@@ -36,6 +36,7 @@ from pygerrit.events import PatchsetCreatedEvent, \
     ChangeAbandonedEvent, ChangeRestoredEvent, \
     DraftPublishedEvent, GerritEventFactory, GerritEvent
 from pygerrit.client import GerritClient
+from setup import requires as setup_requires
 
 
 @GerritEventFactory.register("user-defined-event")
@@ -59,6 +60,27 @@ def _create_event(name, gerrit):
     data = open(os.path.join("testdata", name + ".txt"))
     json_data = json.loads(data.read().replace("\n", ""))
     gerrit.put_event(json_data)
+
+
+class TestConsistentDependencies(unittest.TestCase):
+
+    """ Verify that dependency package versions are consistent. """
+
+    def test_dependencies(self):
+        requirements_txt = {}
+        setup_py = {}
+
+        for package in open("requirements.txt").read().strip().splitlines():
+            name, version = package.split('==')
+            requirements_txt[name] = version
+
+        for package in setup_requires:
+            name, version = package.split('==')
+            setup_py[name] = version
+
+        self.assertEquals(requirements_txt, setup_py,
+                          "Inconsistency between dependency package versions "
+                          "listed in requirements.txt and setup.py")
 
 
 class TestGerritEvents(unittest.TestCase):
