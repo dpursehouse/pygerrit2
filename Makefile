@@ -43,7 +43,7 @@ envsetup:
 	bash -c "\
           [ -e ./pygerritenv/bin/activate ] || virtualenv ./pygerritenv && \
           source ./pygerritenv/bin/activate && \
-          pip install --upgrade -r requirements.txt"
+          pip install --upgrade -r requirements.txt -r test_requirements.txt"
 
 clean:
 	@find . -type f -name "*.pyc" -exec rm -f {} \;
