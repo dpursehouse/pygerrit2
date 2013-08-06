@@ -50,11 +50,13 @@ unittests: envsetup
           source ./pygerritenv/bin/activate && \
           python unittests.py"
 
-envsetup:
+envsetup: envinit
 	bash -c "\
-          [ -e ./pygerritenv/bin/activate ] || virtualenv ./pygerritenv && \
           source ./pygerritenv/bin/activate && \
           pip install --upgrade -r requirements.txt -r test_requirements.txt"
+
+envinit:
+	bash -c "[ -e ./pygerritenv/bin/activate ] || virtualenv ./pygerritenv"
 
 clean:
 	@find . -type f -name "*.pyc" -exec rm -f {} \;
