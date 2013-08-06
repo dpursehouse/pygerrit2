@@ -22,7 +22,13 @@
 
 all: test
 
-test: clean unittests pyflakes pep8 pep257
+test: clean unittests pyflakes pep8 pep257 pylint
+
+pylint: envsetup
+	bash -c "\
+          source ./pygerritenv/bin/activate && \
+          git ls-files | grep \"\.py$$\" | grep -v "unittests" | \
+          xargs pylint --rcfile=.pylintrc"
 
 pep257: envsetup
 	bash -c "\
