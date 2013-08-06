@@ -39,6 +39,8 @@ class GerritEventFactory(object):
     def register(cls, name):
         """ Decorator to register the event identified by `name`.
 
+        Return the decorated class.
+
         Raise GerritError if the event is already registered.
 
         """
