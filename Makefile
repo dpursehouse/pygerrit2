@@ -22,6 +22,7 @@
 
 PWD := $(shell pwd)
 TAG := $(shell git tag -l --contains HEAD)
+STATUS := $(shell git status --porcelain)
 
 all: test
 
@@ -31,6 +32,9 @@ docs: html
 
 valid-tag:
 	@echo "$(TAG)" | grep -q "^[0-9]\+\.[0-9]\+\.[0-9]\+$$"
+
+valid-git-status:
+	@echo "$(STATUS)" | grep -q "^$$"
 
 html: sphinx
 	bash -c "\
