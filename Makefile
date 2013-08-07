@@ -24,13 +24,27 @@ PWD := $(shell pwd)
 TAG := $(shell git tag -l --contains HEAD)
 STATUS := $(shell git status --porcelain)
 
+VIRTUALENV := $(shell which virtualenv)
+ifeq ($(wildcard $(VIRTUALENV)),)
+  $(error virtualenv must be available)
+endif
+
+PIP := $(shell which pip)
+ifeq ($(wildcard $(PIP)),)
+  $(error pip must be available)
+endif
+
+REQUIRED_VIRTUALENV ?= 1.10
+VIRTUALENV_OK := $(shell expr `virtualenv --version | \
+    cut -f2 -d' '` \>= $(REQUIRED_VIRTUALENV))
+
 all: test
 
 test: clean unittests pyflakes pep8 pep257 pylint
 
 docs: html
 
-sdist: test valid-env
+sdist: valid-virtualenv test valid-env
 	bash -c "\
           source ./pygerritenv/bin/activate && \
           python setup.py sdist"
@@ -42,6 +56,11 @@ ddist: sdist docs
           cd $(PWD)"
 
 valid-env: valid-version valid-git-status
+
+valid-virtualenv:
+ifeq ($(VIRTUALENV_OK),0)
+  $(error virtualenv version $(REQUIRED_VIRTUALENV) or higher is needed)
+endif
 
 valid-version: valid-tag
 	@python version.py $(TAG)
