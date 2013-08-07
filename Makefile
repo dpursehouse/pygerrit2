@@ -35,6 +35,12 @@ sdist: test valid-env
           source ./pygerritenv/bin/activate && \
           python setup.py sdist"
 
+ddist: sdist docs
+	bash -c "\
+          cd docs/_build/html && \
+          zip -r $(PWD)/dist/pygerrit-$(TAG)-api-documentation.zip . && \
+          cd $(PWD)"
+
 valid-env: valid-version valid-git-status
 
 valid-version: valid-tag
