@@ -45,8 +45,18 @@ def _main():
         maintainer_email="david.pursehouse@sonymobile.com",
         url="https://github.com/sonyxperiadev/pygerrit",
         packages=['pygerrit'],
-        keywords='gerrit, json',
+        keywords='gerrit, json, ssh, stream',
         install_requires=REQUIRES,
+        classifiers=(
+            'Development Status :: 3 - Alpha',
+            'Environment :: Console',
+            'Intended Audience :: Developers',
+            'License :: OSI Approved :: MIT License',
+            'Natural Language :: English',
+            'Programming Language :: Python',
+            'Programming Language :: Python :: 2.6',
+            'Programming Language :: Python :: 2.7',
+        ),
     )
 
 
