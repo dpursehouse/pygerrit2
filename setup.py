@@ -38,7 +38,7 @@ def _main():
         description="Client library for interacting with Gerrit",
         long_description=open('README.rst').read(),
         version=__version__,
-        license="The MIT License",
+        license=open('LICENSE').read(),
         author="David Pursehouse",
         author_email="david.pursehouse@sonymobile.com",
         maintainer="David Pursehouse",
