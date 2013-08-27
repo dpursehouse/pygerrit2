@@ -36,10 +36,10 @@ class GerritRestAPIAuthentication(requests.auth.HTTPDigestAuth):
     def __init__(self, url, username=None, password=None):
         self.username = username
         self.password = password
-        if not (self.username and self.password):
+        if not self.has_credentials():
             (self.username, self.password) = \
                 requests.utils.get_netrc_auth(url)
-        if (self.username and self.password):
+        if self.has_credentials():
             super(GerritRestAPIAuthentication, self).__init__(self.username,
                                                               self.password)
 
@@ -48,9 +48,9 @@ class GerritRestAPIAuthentication(requests.auth.HTTPDigestAuth):
             req = super(GerritRestAPIAuthentication, self).__call__(req)
         return req
 
-    def is_authenticated(self):
+    def has_credentials(self):
         """ Return True if authentication credentials are present. """
-        return (self.username and self.password)
+        return (self.username is not None and self.password is not None)
 
 
 class GerritRestAPIError(Exception):
@@ -115,7 +115,7 @@ class GerritRestAPI(object):
 
         self.url = url.rstrip('/')
         auth = GerritRestAPIAuthentication(url, username, password)
-        if auth.is_authenticated():
+        if auth.has_credentials():
             self.kwargs['auth'] = auth
             if not self.url.endswith(GERRIT_AUTH_SUFFIX):
                 self.url += GERRIT_AUTH_SUFFIX
