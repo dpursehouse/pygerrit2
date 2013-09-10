@@ -25,6 +25,7 @@
 from os.path import abspath, expanduser, isfile
 import re
 import socket
+from threading import Event, Lock
 
 from .error import GerritError
 
@@ -69,12 +70,11 @@ class GerritSSHClient(SSHClient):
         super(GerritSSHClient, self).__init__()
         self.remote_version = None
         self.hostname = hostname
-        self.connected = False
+        self.connected = Event()
+        self.lock = Lock()
 
-    def _connect(self):
-        """ Connect to the remote if not already connected. """
-        if self.connected:
-            return
+    def _do_connect(self):
+        """ Connect to the remote. """
         self.load_system_host_keys()
         configfile = expanduser("~/.ssh/config")
         if not isfile(configfile):
@@ -103,7 +103,6 @@ class GerritSSHClient(SSHClient):
                          port=port,
                          username=data['user'],
                          key_filename=key_filename)
-            self.connected = True
         except socket.error as e:
             raise GerritError("Failed to connect to server: %s" % e)
 
@@ -113,6 +112,21 @@ class GerritSSHClient(SSHClient):
             self.remote_version = _extract_version(version_string, pattern)
         except AttributeError:
             self.remote_version = None
+
+    def _connect(self):
+        """ Connect to the remote if not already connected. """
+        if not self.connected.is_set():
+            try:
+                self.lock.acquire()
+                # Another thread may have connected while we were
+                # waiting to acquire the lock
+                if not self.connected.is_set():
+                    self._do_connect()
+                    self.connected.set()
+            except GerritError:
+                raise
+            finally:
+                self.lock.release()
 
     def exec_command(self, command, bufsize=1, timeout=None, get_pty=False):
         """ Execute the command.
