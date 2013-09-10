@@ -28,7 +28,7 @@ Class to listen to the Gerrit event stream and dispatch events.
 
 import json
 import logging
-from select import poll, POLLIN
+from select import select
 from threading import Thread, Event
 
 from .error import GerritError
@@ -73,18 +73,16 @@ class GerritStream(Thread):
         except GerritError as e:
             self._error_event(e)
         else:
-            poller = poll()
             stdout = result.stdout
-            poller.register(stdout.channel)
+            inputready, _outputready, _exceptready = \
+                select([stdout.channel], [], [])
             while not self._stop.is_set():
-                data = poller.poll()
-                for (handle, event) in data:
-                    if handle == stdout.channel.fileno() and event == POLLIN:
-                        try:
-                            line = stdout.readline()
-                            json_data = json.loads(line)
-                            self._gerrit.put_event(json_data)
-                        except (ValueError, IOError) as err:
-                            self._error_event(err)
-                        except GerritError as err:
-                            logging.error("Failed to put event: %s", err)
+                for _event in inputready:
+                    try:
+                        line = stdout.readline()
+                        json_data = json.loads(line)
+                        self._gerrit.put_event(json_data)
+                    except (ValueError, IOError) as err:
+                        self._error_event(err)
+                    except GerritError as err:
+                        logging.error("Failed to put event: %s", err)
