@@ -81,9 +81,6 @@ class GerritEvent(object):
     def __init__(self):
         pass
 
-    def __str__(self):
-        return u"%s" % self.name  # pylint: disable=no-member
-
 
 @GerritEventFactory.register("patchset-created")
 class PatchsetCreatedEvent(GerritEvent):
@@ -99,6 +96,11 @@ class PatchsetCreatedEvent(GerritEvent):
         except KeyError as e:
             raise GerritError("PatchsetCreatedEvent: %s" % e)
 
+    def __repr__(self):
+        return u"<PatchsetCreatedEvent>: %s %s %s" % (self.change,
+                                                      self.patchset,
+                                                      self.uploader)
+
 
 @GerritEventFactory.register("draft-published")
 class DraftPublishedEvent(GerritEvent):
@@ -113,6 +115,11 @@ class DraftPublishedEvent(GerritEvent):
             self.uploader = Account(json_data["uploader"])
         except KeyError as e:
             raise GerritError("DraftPublishedEvent: %s" % e)
+
+    def __repr__(self):
+        return u"<DraftPublishedEvent>: %s %s %s" % (self.change,
+                                                     self.patchset,
+                                                     self.uploader)
 
 
 @GerritEventFactory.register("comment-added")
@@ -134,6 +141,11 @@ class CommentAddedEvent(GerritEvent):
         except (KeyError, ValueError) as e:
             raise GerritError("CommentAddedEvent: %s" % e)
 
+    def __repr__(self):
+        return u"<CommentAddedEvent>: %s %s %s" % (self.change,
+                                                   self.patchset,
+                                                   self.author)
+
 
 @GerritEventFactory.register("change-merged")
 class ChangeMergedEvent(GerritEvent):
@@ -148,6 +160,11 @@ class ChangeMergedEvent(GerritEvent):
             self.submitter = Account(json_data["submitter"])
         except KeyError as e:
             raise GerritError("ChangeMergedEvent: %s" % e)
+
+    def __repr__(self):
+        return u"<ChangeMergedEvent>: %s %s %s" % (self.change,
+                                                   self.patchset,
+                                                   self.submitter)
 
 
 @GerritEventFactory.register("change-abandoned")
@@ -165,6 +182,11 @@ class ChangeAbandonedEvent(GerritEvent):
         except KeyError as e:
             raise GerritError("ChangeAbandonedEvent: %s" % e)
 
+    def __repr__(self):
+        return u"<ChangeAbandonedEvent>: %s %s %s" % (self.change,
+                                                      self.patchset,
+                                                      self.abandoner)
+
 
 @GerritEventFactory.register("change-restored")
 class ChangeRestoredEvent(GerritEvent):
@@ -181,6 +203,11 @@ class ChangeRestoredEvent(GerritEvent):
         except KeyError as e:
             raise GerritError("ChangeRestoredEvent: %s" % e)
 
+    def __repr__(self):
+        return u"<ChangeRestoredEvent>: %s %s %s" % (self.change,
+                                                     self.patchset,
+                                                     self.restorer)
+
 
 @GerritEventFactory.register("ref-updated")
 class RefUpdatedEvent(GerritEvent):
@@ -194,3 +221,6 @@ class RefUpdatedEvent(GerritEvent):
             self.submitter = Account.from_json(json_data, "submitter")
         except KeyError as e:
             raise GerritError("RefUpdatedEvent: %s" % e)
+
+    def __repr__(self):
+        return u"<RefUpdatedEvent>: %s %s" % (self.ref_update, self.submitter)

@@ -71,7 +71,7 @@ def _main():
             event = gerrit.get_event(block=options.blocking,
                                      timeout=options.timeout)
             if event:
-                logging.info("Event: %s", str(event))
+                logging.info("Event: %s", event)
                 if isinstance(event, GerritStreamErrorEvent):
                     logging.error(event.error)
                     errors.set()
