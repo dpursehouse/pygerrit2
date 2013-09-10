@@ -128,18 +128,6 @@ class GerritSSHClient(SSHClient):
             finally:
                 self.lock.release()
 
-    def exec_command(self, command, bufsize=1, timeout=None, get_pty=False):
-        """ Execute the command.
-
-        Make sure we're connected and then execute the command.
-
-        Return a tuple of stdin, stdout, stderr.
-
-        """
-        self._connect()
-        return super(GerritSSHClient, self).\
-            exec_command(command, bufsize, timeout, get_pty)
-
     def get_remote_version(self):
         """ Return the version of the remote Gerrit server. """
         if self.remote_version is None:
@@ -152,17 +140,24 @@ class GerritSSHClient(SSHClient):
     def run_gerrit_command(self, command):
         """ Run the given command.
 
-        Run `command` and return a `GerritSSHCommandResult`.
+        Make sure we're connected to the remote server, and run `command`.
 
-        Raise `ValueError` if `command` is not a string.
+        Return the results as a `GerritSSHCommandResult`.
+
+        Raise `ValueError` if `command` is not a string, or `GerritError` if
+        command execution fails.
 
         """
         if not isinstance(command, basestring):
             raise ValueError("command must be a string")
         gerrit_command = "gerrit " + command
 
+        self._connect()
         try:
-            stdin, stdout, stderr = self.exec_command(gerrit_command)
+            stdin, stdout, stderr = self.exec_command(gerrit_command,
+                                                      bufsize=1,
+                                                      timeout=None,
+                                                      get_pty=False)
         except SSHException as err:
             raise GerritError("Command execution error: %s" % err)
         return GerritSSHCommandResult(command, stdin, stdout, stderr)
