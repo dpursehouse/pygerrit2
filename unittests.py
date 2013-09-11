@@ -33,7 +33,7 @@ from pygerrit.events import PatchsetCreatedEvent, \
     RefUpdatedEvent, ChangeMergedEvent, CommentAddedEvent, \
     ChangeAbandonedEvent, ChangeRestoredEvent, \
     DraftPublishedEvent, GerritEventFactory, GerritEvent, UnhandledEvent, \
-    ErrorEvent
+    ErrorEvent, MergeFailedEvent
 from pygerrit.client import GerritClient
 from setup import REQUIRES as setup_requires
 
@@ -172,6 +172,31 @@ class TestGerritEvents(unittest.TestCase):
         self.assertEquals(event.patchset.uploader.email, "uploader@example.com")
         self.assertEquals(event.submitter.name, "Submitter Name")
         self.assertEquals(event.submitter.email, "submitter@example.com")
+
+    def test_merge_failed(self):
+        _create_event("merge-failed-event", self.gerrit)
+        event = self.gerrit.get_event(False)
+        self.assertTrue(isinstance(event, MergeFailedEvent))
+        self.assertEquals(event.name, "merge-failed")
+        self.assertEquals(event.change.project, "project-name")
+        self.assertEquals(event.change.branch, "branch-name")
+        self.assertEquals(event.change.topic, "topic-name")
+        self.assertEquals(event.change.change_id,
+                          "Ideadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
+        self.assertEquals(event.change.number, "123456")
+        self.assertEquals(event.change.subject, "Commit message subject")
+        self.assertEquals(event.change.url, "http://review.example.com/123456")
+        self.assertEquals(event.change.owner.name, "Owner Name")
+        self.assertEquals(event.change.owner.email, "owner@example.com")
+        self.assertEquals(event.patchset.number, "4")
+        self.assertEquals(event.patchset.revision,
+                          "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
+        self.assertEquals(event.patchset.ref, "refs/changes/56/123456/4")
+        self.assertEquals(event.patchset.uploader.name, "Uploader Name")
+        self.assertEquals(event.patchset.uploader.email, "uploader@example.com")
+        self.assertEquals(event.submitter.name, "Submitter Name")
+        self.assertEquals(event.submitter.email, "submitter@example.com")
+        self.assertEquals(event.reason, "Merge failed reason")
 
     def test_comment_added(self):
         _create_event("comment-added-event", self.gerrit)

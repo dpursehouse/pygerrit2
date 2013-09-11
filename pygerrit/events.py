@@ -203,6 +203,27 @@ class ChangeMergedEvent(GerritEvent):
                                                    self.submitter)
 
 
+@GerritEventFactory.register("merge-failed")
+class MergeFailedEvent(GerritEvent):
+
+    """ Gerrit "merge-failed" event. """
+
+    def __init__(self, json_data):
+        super(MergeFailedEvent, self).__init__(json_data)
+        try:
+            self.change = Change(json_data["change"])
+            self.patchset = Patchset(json_data["patchSet"])
+            self.submitter = Account(json_data["submitter"])
+            self.reason = json_data["reason"]
+        except KeyError as e:
+            raise GerritError("MergeFailedEvent: %s" % e)
+
+    def __repr__(self):
+        return u"<MergeFailedEvent>: %s %s %s" % (self.change,
+                                                  self.patchset,
+                                                  self.submitter)
+
+
 @GerritEventFactory.register("change-abandoned")
 class ChangeAbandonedEvent(GerritEvent):
 
