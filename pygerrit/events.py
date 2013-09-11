@@ -109,6 +109,7 @@ class ErrorEvent(GerritEvent):
 
     def __init__(self, json_data):
         super(ErrorEvent, self).__init__(json_data)
+        self.error= json_data["error"]
 
     @classmethod
     def error_json(cls, error):
