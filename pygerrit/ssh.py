@@ -90,7 +90,7 @@ class GerritSSHClient(SSHClient):
             raise GerritError("Missing configuration data in %s" % configfile)
         key_filename = None
         if 'identityfile' in data:
-            key_filename = abspath(expanduser(data['identityfile']))
+            key_filename = abspath(expanduser(data['identityfile'][0]))
             if not isfile(key_filename):
                 raise GerritError("Identity file '%s' does not exist" %
                                   key_filename)
