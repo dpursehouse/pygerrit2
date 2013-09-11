@@ -112,15 +112,15 @@ class GerritClient(object):
         except Empty:
             return None
 
-    def put_event(self, json_data):
-        """ Create event from `json_data` and add it to the queue.
+    def put_event(self, data):
+        """ Create event from `data` and add it to the queue.
 
         Raise GerritError if the queue is full, or the factory could not
         create the event.
 
         """
         try:
-            event = self._factory.create(json_data)
+            event = self._factory.create(data)
             self._events.put(event)
         except Full:
             raise GerritError("Unable to add event: queue is full")

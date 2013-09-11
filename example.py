@@ -33,7 +33,7 @@ import time
 
 from pygerrit.client import GerritClient
 from pygerrit.error import GerritError
-from pygerrit.stream import GerritStreamErrorEvent
+from pygerrit.events import ErrorEvent
 
 
 def _main():
@@ -77,7 +77,7 @@ def _main():
                                      timeout=options.timeout)
             if event:
                 logging.info("Event: %s", event)
-                if isinstance(event, GerritStreamErrorEvent):
+                if isinstance(event, ErrorEvent):
                     logging.error(event.error)
                     errors.set()
                     break

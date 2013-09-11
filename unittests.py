@@ -32,7 +32,8 @@ import unittest
 from pygerrit.events import PatchsetCreatedEvent, \
     RefUpdatedEvent, ChangeMergedEvent, CommentAddedEvent, \
     ChangeAbandonedEvent, ChangeRestoredEvent, \
-    DraftPublishedEvent, GerritEventFactory, GerritEvent, UnhandledEvent
+    DraftPublishedEvent, GerritEventFactory, GerritEvent, UnhandledEvent, \
+    ErrorEvent
 from pygerrit.client import GerritClient
 from setup import REQUIRES as setup_requires
 
@@ -55,10 +56,10 @@ def _create_event(name, gerrit):
     data, then add as an event in the `gerrit` client.
 
     """
-    data = open(os.path.join("testdata", name + ".txt"))
-    json_data = json.loads(data.read().replace("\n", ""))
-    gerrit.put_event(json_data)
-    return json_data
+    testfile = open(os.path.join("testdata", name + ".txt"))
+    data = testfile.read().replace("\n", "")
+    gerrit.put_event(data)
+    return data
 
 
 class TestConsistentDependencies(unittest.TestCase):
@@ -249,10 +250,15 @@ class TestGerritEvents(unittest.TestCase):
         self.assertEquals(event.description, "Event description")
 
     def test_unhandled_event(self):
-        json_data = _create_event("unhandled-event", self.gerrit)
+        data = _create_event("unhandled-event", self.gerrit)
         event = self.gerrit.get_event(False)
         self.assertTrue(isinstance(event, UnhandledEvent))
-        self.assertEquals(event.json, json_data)
+        self.assertEquals(event.json, json.loads(data))
+
+    def test_invalid_json(self):
+        _create_event("invalid-json", self.gerrit)
+        event = self.gerrit.get_event(False)
+        self.assertTrue(isinstance(event, ErrorEvent))
 
     def test_add_duplicate_event(self):
         try:

@@ -23,6 +23,9 @@
 
 """ Gerrit event classes. """
 
+import json
+import logging
+
 from .error import GerritError
 from .models import Account, Approval, Change, Patchset, RefUpdate
 
@@ -53,13 +56,22 @@ class GerritEventFactory(object):
         return decorate
 
     @classmethod
-    def create(cls, json_data):
+    def create(cls, data):
         """ Create a new event instance.
 
-        Return an instance of the `GerritEvent` subclass from `json_data`
-        Raise GerritError if `json_data` does not contain a `type` key.
+        Return an instance of the `GerritEvent` subclass after converting
+        `data` to json.
+
+        Raise GerritError if json parsed from `data` does not contain a `type`
+        key.
 
         """
+        try:
+            json_data = json.loads(data)
+        except ValueError as err:
+            logging.debug("Failed to load json data: %s: [%s]", str(err), data)
+            json_data = ErrorEvent.error_json(str(err))
+
         if not "type" in json_data:
             raise GerritError("`type` not in json_data")
         name = json_data["type"]
@@ -88,6 +100,22 @@ class UnhandledEvent(GerritEvent):
 
     def __init__(self, json_data):
         super(UnhandledEvent, self).__init__(json_data)
+
+
+@GerritEventFactory.register("error-event")
+class ErrorEvent(GerritEvent):
+
+    """ Error occurred when processing json data from Gerrit's event stream. """
+
+    def __init__(self, json_data):
+        super(ErrorEvent, self).__init__(json_data)
+
+    @classmethod
+    def error_json(cls, error):
+        """ Return a json string for the `error`. """
+        data = '{"type":"error-event",' \
+               '"error":"%s"}' % str(error)
+        return json.loads(data)
 
 
 @GerritEventFactory.register("patchset-created")
