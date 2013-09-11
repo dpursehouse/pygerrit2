@@ -32,7 +32,7 @@ import unittest
 from pygerrit.events import PatchsetCreatedEvent, \
     RefUpdatedEvent, ChangeMergedEvent, CommentAddedEvent, \
     ChangeAbandonedEvent, ChangeRestoredEvent, \
-    DraftPublishedEvent, GerritEventFactory, GerritEvent
+    DraftPublishedEvent, GerritEventFactory, GerritEvent, UnhandledEvent
 from pygerrit.client import GerritClient
 from setup import REQUIRES as setup_requires
 
@@ -58,6 +58,7 @@ def _create_event(name, gerrit):
     data = open(os.path.join("testdata", name + ".txt"))
     json_data = json.loads(data.read().replace("\n", ""))
     gerrit.put_event(json_data)
+    return json_data
 
 
 class TestConsistentDependencies(unittest.TestCase):
@@ -246,6 +247,12 @@ class TestGerritEvents(unittest.TestCase):
         self.assertTrue(isinstance(event, UserDefinedEvent))
         self.assertEquals(event.title, "Event title")
         self.assertEquals(event.description, "Event description")
+
+    def test_unhandled_event(self):
+        json_data = _create_event("unhandled-event", self.gerrit)
+        event = self.gerrit.get_event(False)
+        self.assertTrue(isinstance(event, UnhandledEvent))
+        self.assertEquals(event.json, json_data)
 
     def test_add_duplicate_event(self):
         try:

@@ -57,15 +57,14 @@ class GerritEventFactory(object):
         """ Create a new event instance.
 
         Return an instance of the `GerritEvent` subclass from `json_data`
-        Raise GerritError if `json_data` does not contain a `type` key, or
-        no corresponding event is registered.
+        Raise GerritError if `json_data` does not contain a `type` key.
 
         """
         if not "type" in json_data:
             raise GerritError("`type` not in json_data")
         name = json_data["type"]
         if not name in cls._events:
-            raise GerritError("Unknown event: %s" % name)
+            name = 'unhandled-event'
         event = cls._events[name]
         module_name = event[0]
         class_name = event[1]
@@ -80,6 +79,15 @@ class GerritEvent(object):
 
     def __init__(self, json_data):
         self.json = json_data
+
+
+@GerritEventFactory.register("unhandled-event")
+class UnhandledEvent(GerritEvent):
+
+    """ Unknown event type received in json data from Gerrit's event stream. """
+
+    def __init__(self, json_data):
+        super(UnhandledEvent, self).__init__(json_data)
 
 
 @GerritEventFactory.register("patchset-created")
