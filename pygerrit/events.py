@@ -78,8 +78,8 @@ class GerritEvent(object):
 
     """ Gerrit event base class. """
 
-    def __init__(self):
-        pass
+    def __init__(self, json_data):
+        self.json = json_data
 
 
 @GerritEventFactory.register("patchset-created")
@@ -88,7 +88,7 @@ class PatchsetCreatedEvent(GerritEvent):
     """ Gerrit "patchset-created" event. """
 
     def __init__(self, json_data):
-        super(PatchsetCreatedEvent, self).__init__()
+        super(PatchsetCreatedEvent, self).__init__(json_data)
         try:
             self.change = Change(json_data["change"])
             self.patchset = Patchset(json_data["patchSet"])
@@ -108,7 +108,7 @@ class DraftPublishedEvent(GerritEvent):
     """ Gerrit "draft-published" event. """
 
     def __init__(self, json_data):
-        super(DraftPublishedEvent, self).__init__()
+        super(DraftPublishedEvent, self).__init__(json_data)
         try:
             self.change = Change(json_data["change"])
             self.patchset = Patchset(json_data["patchSet"])
@@ -128,7 +128,7 @@ class CommentAddedEvent(GerritEvent):
     """ Gerrit "comment-added" event. """
 
     def __init__(self, json_data):
-        super(CommentAddedEvent, self).__init__()
+        super(CommentAddedEvent, self).__init__(json_data)
         try:
             self.change = Change(json_data["change"])
             self.patchset = Patchset(json_data["patchSet"])
@@ -153,7 +153,7 @@ class ChangeMergedEvent(GerritEvent):
     """ Gerrit "change-merged" event. """
 
     def __init__(self, json_data):
-        super(ChangeMergedEvent, self).__init__()
+        super(ChangeMergedEvent, self).__init__(json_data)
         try:
             self.change = Change(json_data["change"])
             self.patchset = Patchset(json_data["patchSet"])
@@ -173,7 +173,7 @@ class ChangeAbandonedEvent(GerritEvent):
     """ Gerrit "change-abandoned" event. """
 
     def __init__(self, json_data):
-        super(ChangeAbandonedEvent, self).__init__()
+        super(ChangeAbandonedEvent, self).__init__(json_data)
         try:
             self.change = Change(json_data["change"])
             self.patchset = Patchset.from_json(json_data)
@@ -194,7 +194,7 @@ class ChangeRestoredEvent(GerritEvent):
     """ Gerrit "change-restored" event. """
 
     def __init__(self, json_data):
-        super(ChangeRestoredEvent, self).__init__()
+        super(ChangeRestoredEvent, self).__init__(json_data)
         try:
             self.change = Change(json_data["change"])
             self.patchset = Patchset.from_json(json_data)
@@ -215,7 +215,7 @@ class RefUpdatedEvent(GerritEvent):
     """ Gerrit "ref-updated" event. """
 
     def __init__(self, json_data):
-        super(RefUpdatedEvent, self).__init__()
+        super(RefUpdatedEvent, self).__init__(json_data)
         try:
             self.ref_update = RefUpdate(json_data["refUpdate"])
             self.submitter = Account.from_json(json_data, "submitter")

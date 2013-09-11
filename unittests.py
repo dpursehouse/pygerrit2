@@ -43,7 +43,7 @@ class UserDefinedEvent(GerritEvent):
     """ Dummy event class to test event registration. """
 
     def __init__(self, json_data):
-        super(UserDefinedEvent, self).__init__()
+        super(UserDefinedEvent, self).__init__(json_data)
         self.title = json_data['title']
         self.description = json_data['description']
 
