@@ -281,3 +281,23 @@ class RefUpdatedEvent(GerritEvent):
 
     def __repr__(self):
         return u"<RefUpdatedEvent>: %s %s" % (self.ref_update, self.submitter)
+
+
+@GerritEventFactory.register("reviewer-added")
+class ReviewerAddedEvent(GerritEvent):
+
+    """ Gerrit "reviewer-added" event. """
+
+    def __init__(self, json_data):
+        super(ReviewerAddedEvent, self).__init__(json_data)
+        try:
+            self.change = Change(json_data["change"])
+            self.patchset = Patchset.from_json(json_data)
+            self.reviewer = Account(json_data["reviewer"])
+        except KeyError as e:
+            raise GerritError("ReviewerAddedEvent: %s" % e)
+
+    def __repr__(self):
+        return u"<ReviewerAddedEvent>: %s %s %s" % (self.change,
+                                                    self.patchset,
+                                                    self.reviewer)

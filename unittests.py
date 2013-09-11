@@ -33,7 +33,7 @@ from pygerrit.events import PatchsetCreatedEvent, \
     RefUpdatedEvent, ChangeMergedEvent, CommentAddedEvent, \
     ChangeAbandonedEvent, ChangeRestoredEvent, \
     DraftPublishedEvent, GerritEventFactory, GerritEvent, UnhandledEvent, \
-    ErrorEvent, MergeFailedEvent
+    ErrorEvent, MergeFailedEvent, ReviewerAddedEvent
 from pygerrit.client import GerritClient
 from setup import REQUIRES as setup_requires
 
@@ -228,6 +228,30 @@ class TestGerritEvents(unittest.TestCase):
         self.assertEquals(event.approvals[1].value, "1")
         self.assertEquals(event.author.name, "Author Name")
         self.assertEquals(event.author.email, "author@example.com")
+
+    def test_reviewer_added(self):
+        _create_event("reviewer-added-event", self.gerrit)
+        event = self.gerrit.get_event(False)
+        self.assertTrue(isinstance(event, ReviewerAddedEvent))
+        self.assertEquals(event.name, "reviewer-added")
+        self.assertEquals(event.change.project, "project-name")
+        self.assertEquals(event.change.branch, "branch-name")
+        self.assertEquals(event.change.topic, "topic-name")
+        self.assertEquals(event.change.change_id,
+                          "Ideadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
+        self.assertEquals(event.change.number, "123456")
+        self.assertEquals(event.change.subject, "Commit message subject")
+        self.assertEquals(event.change.url, "http://review.example.com/123456")
+        self.assertEquals(event.change.owner.name, "Owner Name")
+        self.assertEquals(event.change.owner.email, "owner@example.com")
+        self.assertEquals(event.patchset.number, "4")
+        self.assertEquals(event.patchset.revision,
+                          "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
+        self.assertEquals(event.patchset.ref, "refs/changes/56/123456/4")
+        self.assertEquals(event.patchset.uploader.name, "Uploader Name")
+        self.assertEquals(event.patchset.uploader.email, "uploader@example.com")
+        self.assertEquals(event.reviewer.name, "Reviewer Name")
+        self.assertEquals(event.reviewer.email, "reviewer@example.com")
 
     def test_change_abandoned(self):
         _create_event("change-abandoned-event", self.gerrit)
