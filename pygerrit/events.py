@@ -301,3 +301,26 @@ class ReviewerAddedEvent(GerritEvent):
         return u"<ReviewerAddedEvent>: %s %s %s" % (self.change,
                                                     self.patchset,
                                                     self.reviewer)
+
+
+@GerritEventFactory.register("topic-changed")
+class TopicChangedEvent(GerritEvent):
+
+    """ Gerrit "topic-changed" event. """
+
+    def __init__(self, json_data):
+        super(TopicChangedEvent, self).__init__(json_data)
+        try:
+            self.change = Change(json_data["change"])
+            self.changer = Account(json_data["changer"])
+            if "oldTopic" in json_data:
+                self.oldtopic = json_data["oldTopic"]
+            else:
+                self.oldtopic = ""
+        except KeyError as e:
+            raise GerritError("TopicChangedEvent: %s" % e)
+
+    def __repr__(self):
+        return u"<TopicChangedEvent>: %s %s [%s]" % (self.change,
+                                                     self.changer,
+                                                     self.oldtopic)

@@ -33,7 +33,7 @@ from pygerrit.events import PatchsetCreatedEvent, \
     RefUpdatedEvent, ChangeMergedEvent, CommentAddedEvent, \
     ChangeAbandonedEvent, ChangeRestoredEvent, \
     DraftPublishedEvent, GerritEventFactory, GerritEvent, UnhandledEvent, \
-    ErrorEvent, MergeFailedEvent, ReviewerAddedEvent
+    ErrorEvent, MergeFailedEvent, ReviewerAddedEvent, TopicChangedEvent
 from pygerrit.client import GerritClient
 from setup import REQUIRES as setup_requires
 
@@ -290,6 +290,25 @@ class TestGerritEvents(unittest.TestCase):
         self.assertEquals(event.restorer.name, "Restorer Name")
         self.assertEquals(event.restorer.email, "restorer@example.com")
         self.assertEquals(event.reason, "Restore reason")
+
+    def test_topic_changed(self):
+        _create_event("topic-changed-event", self.gerrit)
+        event = self.gerrit.get_event(False)
+        self.assertTrue(isinstance(event, TopicChangedEvent))
+        self.assertEquals(event.name, "topic-changed")
+        self.assertEquals(event.change.project, "project-name")
+        self.assertEquals(event.change.branch, "branch-name")
+        self.assertEquals(event.change.topic, "topic-name")
+        self.assertEquals(event.change.change_id,
+                          "Ideadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
+        self.assertEquals(event.change.number, "123456")
+        self.assertEquals(event.change.subject, "Commit message subject")
+        self.assertEquals(event.change.url, "http://review.example.com/123456")
+        self.assertEquals(event.change.owner.name, "Owner Name")
+        self.assertEquals(event.change.owner.email, "owner@example.com")
+        self.assertEquals(event.changer.name, "Changer Name")
+        self.assertEquals(event.changer.email, "changer@example.com")
+        self.assertEquals(event.oldtopic, "old-topic")
 
     def test_user_defined_event(self):
         _create_event("user-defined-event", self.gerrit)
