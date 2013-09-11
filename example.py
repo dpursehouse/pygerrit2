@@ -49,12 +49,17 @@ def _main():
                       default=None, type='int',
                       help='timeout (seconds) for blocking event get '
                            '(default: None)')
+    parser.add_option('-v', '--verbose', dest='verbose',
+                      action='store_true',
+                      help='enable verbose (debug) logging')
 
     (options, _args) = parser.parse_args()
     if options.timeout and not options.blocking:
         parser.error('Can only use --timeout with --blocking')
 
-    logging.basicConfig(format='%(message)s', level=logging.INFO)
+    level = logging.DEBUG if options.verbose else logging.INFO
+    logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
+                        level=level)
 
     try:
         gerrit = GerritClient(host=options.hostname)
@@ -83,6 +88,7 @@ def _main():
     except KeyboardInterrupt:
         logging.info("Terminated by user")
     finally:
+        logging.debug("Stopping event stream...")
         gerrit.stop_event_stream()
 
     if errors.isSet():
