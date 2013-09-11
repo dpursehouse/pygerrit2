@@ -52,6 +52,9 @@ def _main():
     parser.add_option('-v', '--verbose', dest='verbose',
                       action='store_true',
                       help='enable verbose (debug) logging')
+    parser.add_option('-i', '--ignore-stream-errors', dest='ignore',
+                      action='store_true',
+                      help='do not exit when an error event is received')
 
     (options, _args) = parser.parse_args()
     if options.timeout and not options.blocking:
@@ -77,7 +80,7 @@ def _main():
                                      timeout=options.timeout)
             if event:
                 logging.info("Event: %s", event)
-                if isinstance(event, ErrorEvent):
+                if isinstance(event, ErrorEvent) and not options.ignore:
                     logging.error(event.error)
                     errors.set()
                     break
