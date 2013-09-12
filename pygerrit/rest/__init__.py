@@ -122,6 +122,18 @@ class GerritRestAPI(object):
         else:
             if self.url.endswith(GERRIT_AUTH_SUFFIX):
                 self.url = self.url[: - len(GERRIT_AUTH_SUFFIX)]
+        if not self.url.endswith('/'):
+            self.url += '/'
+
+    def make_url(self, endpoint):
+        """ Make the necessary url from `endpoint`.
+
+        Strip leading slashes off the endpoint, and return the full
+        url.
+
+        """
+        endpoint = endpoint.lstrip('/')
+        return self.url + endpoint
 
     def get(self, endpoint, params=None):
         """ Send HTTP GET to `endpoint`.
@@ -132,7 +144,7 @@ class GerritRestAPI(object):
         kwargs = self.kwargs.copy()
         if params:
             kwargs['params'] = params
-        response = self.session.get(self.url + endpoint, **kwargs)
+        response = self.session.get(self.make_url(endpoint), **kwargs)
         return _decode_response(response)
 
     def put(self, endpoint, params=None, data=None):
@@ -146,7 +158,7 @@ class GerritRestAPI(object):
             kwargs['params'] = params
         if data:
             kwargs['data'] = data
-        response = self.session.put(self.url + endpoint, **kwargs)
+        response = self.session.put(self.make_url(endpoint), **kwargs)
         return _decode_response(response)
 
     def post(self, endpoint, params=None, data=None):
@@ -160,7 +172,7 @@ class GerritRestAPI(object):
             kwargs['params'] = params
         if data:
             kwargs['data'] = data
-        response = self.session.post(self.url + endpoint, **kwargs)
+        response = self.session.post(self.make_url(endpoint), **kwargs)
         return _decode_response(response)
 
     def delete(self, endpoint):
@@ -170,5 +182,5 @@ class GerritRestAPI(object):
 
         """
         kwargs = self.kwargs.copy()
-        response = self.session.delete(self.url + endpoint, **kwargs)
+        response = self.session.delete(self.make_url(endpoint), **kwargs)
         return _decode_response(response)
