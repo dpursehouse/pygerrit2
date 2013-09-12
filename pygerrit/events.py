@@ -70,7 +70,7 @@ class GerritEventFactory(object):
             json_data = json.loads(data)
         except ValueError as err:
             logging.debug("Failed to load json data: %s: [%s]", str(err), data)
-            json_data = ErrorEvent.error_json(str(err))
+            json_data = json.loads(ErrorEvent.error_json(err))
 
         if not "type" in json_data:
             raise GerritError("`type` not in json_data")
@@ -117,9 +117,8 @@ class ErrorEvent(GerritEvent):
     @classmethod
     def error_json(cls, error):
         """ Return a json string for the `error`. """
-        data = '{"type":"error-event",' \
+        return '{"type":"error-event",' \
                '"error":"%s"}' % str(error)
-        return json.loads(data)
 
     def __repr__(self):
         return u"<ErrorEvent: %s>" % self.error
