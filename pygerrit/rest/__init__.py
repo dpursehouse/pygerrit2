@@ -23,34 +23,11 @@
 """ Interface to the Gerrit REST API. """
 
 import json
+import logging
 import requests
 
 GERRIT_MAGIC_JSON_PREFIX = ")]}\'\n"
 GERRIT_AUTH_SUFFIX = "/a"
-
-
-class GerritRestAPIAuthentication(requests.auth.HTTPDigestAuth):
-
-    """ HTTP Digest Auth with netrc credentials. """
-
-    def __init__(self, url, username=None, password=None):
-        self.username = username
-        self.password = password
-        if not self.has_credentials():
-            (self.username, self.password) = \
-                requests.utils.get_netrc_auth(url)
-        if self.has_credentials():
-            super(GerritRestAPIAuthentication, self).__init__(self.username,
-                                                              self.password)
-
-    def __call__(self, req):
-        if (self.username and self.password):
-            req = super(GerritRestAPIAuthentication, self).__call__(req)
-        return req
-
-    def has_credentials(self):
-        """ Return True if authentication credentials are present. """
-        return (self.username is not None and self.password is not None)
 
 
 class GerritRestAPIError(Exception):
@@ -97,33 +74,35 @@ class GerritRestAPI(object):
 
     """ Interface to the Gerrit REST API. """
 
-    def __init__(self, url, username=None, password=None):
+    def __init__(self, url, auth=None):
         """ Constructor.
 
         `url` is assumed to be the full URL to the server, including the
         'http(s)://' prefix.
 
-        HTTP digest authentication is used with the given `username` and
-        `password`.  If both are not given, an attempt is made to get them
-        from the netrc file.  If that fails, anonymous access is used and
-        functionality is limited.
+        If `auth` is specified, it must be a derivation of the `AuthBase`
+        class from the `requests` module.  The `url` will be adjusted if
+        necessary to make sure it includes Gerrit's authentication suffix.
 
         """
-        self.kwargs = {}
-        self.url = url
+        self.kwargs = {'auth': auth}
+        self.url = url.rstrip('/')
         self.session = requests.session()
 
-        self.url = url.rstrip('/')
-        auth = GerritRestAPIAuthentication(url, username, password)
-        if auth.has_credentials():
-            self.kwargs['auth'] = auth
+        if auth:
+            if not isinstance(auth, requests.auth.AuthBase):
+                raise GerritRestAPIError('Invalid auth type; must be derived '
+                                         'from requests.auth.AuthBase')
+
             if not self.url.endswith(GERRIT_AUTH_SUFFIX):
                 self.url += GERRIT_AUTH_SUFFIX
         else:
             if self.url.endswith(GERRIT_AUTH_SUFFIX):
                 self.url = self.url[: - len(GERRIT_AUTH_SUFFIX)]
+
         if not self.url.endswith('/'):
             self.url += '/'
+        logging.debug("url %s", self.url)
 
     def make_url(self, endpoint):
         """ Make the necessary url from `endpoint`.
