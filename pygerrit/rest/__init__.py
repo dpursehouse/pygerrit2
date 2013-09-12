@@ -123,7 +123,7 @@ class GerritRestAPI(object):
             if self.url.endswith(GERRIT_AUTH_SUFFIX):
                 self.url = self.url[: - len(GERRIT_AUTH_SUFFIX)]
 
-    def _get(self, endpoint, params=None):
+    def get(self, endpoint, params=None):
         """ Send HTTP GET to `endpoint`.
 
         Return JSON decoded result.
@@ -135,7 +135,7 @@ class GerritRestAPI(object):
         response = self.session.get(self.url + endpoint, **kwargs)
         return _decode_response(response)
 
-    def _put(self, endpoint, params=None, data=None):
+    def put(self, endpoint, params=None, data=None):
         """ Send HTTP PUT to `endpoint`.
 
         Return JSON decoded result.
@@ -149,7 +149,7 @@ class GerritRestAPI(object):
         response = self.session.put(self.url + endpoint, **kwargs)
         return _decode_response(response)
 
-    def _post(self, endpoint, params=None, data=None):
+    def post(self, endpoint, params=None, data=None):
         """ Send HTTP POST to `endpoint`.
 
         Return JSON decoded result.
@@ -163,7 +163,7 @@ class GerritRestAPI(object):
         response = self.session.post(self.url + endpoint, **kwargs)
         return _decode_response(response)
 
-    def _delete(self, endpoint):
+    def delete(self, endpoint):
         """ Send HTTP DELETE to `endpoint`.
 
         Return JSON decoded result.
