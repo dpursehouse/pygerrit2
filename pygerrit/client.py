@@ -37,11 +37,11 @@ class GerritClient(object):
 
     """ Gerrit client interface. """
 
-    def __init__(self, host):
+    def __init__(self, host, username=None, port=None):
         self._factory = GerritEventFactory()
         self._events = Queue()
         self._stream = None
-        self._ssh_client = GerritSSHClient(host)
+        self._ssh_client = GerritSSHClient(host, username=username, port=port)
 
     def gerrit_version(self):
         """ Return the version of Gerrit that is connected to. """

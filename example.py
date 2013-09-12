@@ -42,6 +42,11 @@ def _main():
     parser.add_option('-g', '--gerrit-hostname', dest='hostname',
                       default='review',
                       help='gerrit server hostname (default: %default)')
+    parser.add_option('-p', '--port', dest='port',
+                      type='int', default=29418,
+                      help='port number (default: %default)')
+    parser.add_option('-u', '--username', dest='username',
+                      help='username')
     parser.add_option('-b', '--blocking', dest='blocking',
                       action='store_true',
                       help='block on event get (default: False)')
@@ -65,7 +70,9 @@ def _main():
                         level=level)
 
     try:
-        gerrit = GerritClient(host=options.hostname)
+        gerrit = GerritClient(host=options.hostname,
+                              username=options.username,
+                              port=options.port)
         logging.info("Connected to Gerrit version [%s]",
                      gerrit.gerrit_version())
         gerrit.start_event_stream()
