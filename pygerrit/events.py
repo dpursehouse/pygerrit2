@@ -101,6 +101,9 @@ class UnhandledEvent(GerritEvent):
     def __init__(self, json_data):
         super(UnhandledEvent, self).__init__(json_data)
 
+    def __repr__(self):
+        return u"<UnhandledEvent>"
+
 
 @GerritEventFactory.register("error-event")
 class ErrorEvent(GerritEvent):
@@ -109,7 +112,7 @@ class ErrorEvent(GerritEvent):
 
     def __init__(self, json_data):
         super(ErrorEvent, self).__init__(json_data)
-        self.error= json_data["error"]
+        self.error = json_data["error"]
 
     @classmethod
     def error_json(cls, error):
@@ -117,6 +120,9 @@ class ErrorEvent(GerritEvent):
         data = '{"type":"error-event",' \
                '"error":"%s"}' % str(error)
         return json.loads(data)
+
+    def __repr__(self):
+        return u"<ErrorEvent: %s>" % self.error
 
 
 @GerritEventFactory.register("patchset-created")
