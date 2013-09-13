@@ -32,7 +32,8 @@ import unittest
 from pygerrit.events import PatchsetCreatedEvent, \
     RefUpdatedEvent, ChangeMergedEvent, CommentAddedEvent, \
     ChangeAbandonedEvent, ChangeRestoredEvent, \
-    DraftPublishedEvent, GerritEventFactory, GerritEvent
+    DraftPublishedEvent, GerritEventFactory, GerritEvent, UnhandledEvent, \
+    ErrorEvent, MergeFailedEvent, ReviewerAddedEvent, TopicChangedEvent
 from pygerrit.client import GerritClient
 from setup import REQUIRES as setup_requires
 
@@ -43,7 +44,7 @@ class UserDefinedEvent(GerritEvent):
     """ Dummy event class to test event registration. """
 
     def __init__(self, json_data):
-        super(UserDefinedEvent, self).__init__()
+        super(UserDefinedEvent, self).__init__(json_data)
         self.title = json_data['title']
         self.description = json_data['description']
 
@@ -55,9 +56,10 @@ def _create_event(name, gerrit):
     data, then add as an event in the `gerrit` client.
 
     """
-    data = open(os.path.join("testdata", name + ".txt"))
-    json_data = json.loads(data.read().replace("\n", ""))
-    gerrit.put_event(json_data)
+    testfile = open(os.path.join("testdata", name + ".txt"))
+    data = testfile.read().replace("\n", "")
+    gerrit.put_event(data)
+    return data
 
 
 class TestConsistentDependencies(unittest.TestCase):
@@ -171,6 +173,31 @@ class TestGerritEvents(unittest.TestCase):
         self.assertEquals(event.submitter.name, "Submitter Name")
         self.assertEquals(event.submitter.email, "submitter@example.com")
 
+    def test_merge_failed(self):
+        _create_event("merge-failed-event", self.gerrit)
+        event = self.gerrit.get_event(False)
+        self.assertTrue(isinstance(event, MergeFailedEvent))
+        self.assertEquals(event.name, "merge-failed")
+        self.assertEquals(event.change.project, "project-name")
+        self.assertEquals(event.change.branch, "branch-name")
+        self.assertEquals(event.change.topic, "topic-name")
+        self.assertEquals(event.change.change_id,
+                          "Ideadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
+        self.assertEquals(event.change.number, "123456")
+        self.assertEquals(event.change.subject, "Commit message subject")
+        self.assertEquals(event.change.url, "http://review.example.com/123456")
+        self.assertEquals(event.change.owner.name, "Owner Name")
+        self.assertEquals(event.change.owner.email, "owner@example.com")
+        self.assertEquals(event.patchset.number, "4")
+        self.assertEquals(event.patchset.revision,
+                          "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
+        self.assertEquals(event.patchset.ref, "refs/changes/56/123456/4")
+        self.assertEquals(event.patchset.uploader.name, "Uploader Name")
+        self.assertEquals(event.patchset.uploader.email, "uploader@example.com")
+        self.assertEquals(event.submitter.name, "Submitter Name")
+        self.assertEquals(event.submitter.email, "submitter@example.com")
+        self.assertEquals(event.reason, "Merge failed reason")
+
     def test_comment_added(self):
         _create_event("comment-added-event", self.gerrit)
         event = self.gerrit.get_event(False)
@@ -201,6 +228,30 @@ class TestGerritEvents(unittest.TestCase):
         self.assertEquals(event.approvals[1].value, "1")
         self.assertEquals(event.author.name, "Author Name")
         self.assertEquals(event.author.email, "author@example.com")
+
+    def test_reviewer_added(self):
+        _create_event("reviewer-added-event", self.gerrit)
+        event = self.gerrit.get_event(False)
+        self.assertTrue(isinstance(event, ReviewerAddedEvent))
+        self.assertEquals(event.name, "reviewer-added")
+        self.assertEquals(event.change.project, "project-name")
+        self.assertEquals(event.change.branch, "branch-name")
+        self.assertEquals(event.change.topic, "topic-name")
+        self.assertEquals(event.change.change_id,
+                          "Ideadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
+        self.assertEquals(event.change.number, "123456")
+        self.assertEquals(event.change.subject, "Commit message subject")
+        self.assertEquals(event.change.url, "http://review.example.com/123456")
+        self.assertEquals(event.change.owner.name, "Owner Name")
+        self.assertEquals(event.change.owner.email, "owner@example.com")
+        self.assertEquals(event.patchset.number, "4")
+        self.assertEquals(event.patchset.revision,
+                          "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
+        self.assertEquals(event.patchset.ref, "refs/changes/56/123456/4")
+        self.assertEquals(event.patchset.uploader.name, "Uploader Name")
+        self.assertEquals(event.patchset.uploader.email, "uploader@example.com")
+        self.assertEquals(event.reviewer.name, "Reviewer Name")
+        self.assertEquals(event.reviewer.email, "reviewer@example.com")
 
     def test_change_abandoned(self):
         _create_event("change-abandoned-event", self.gerrit)
@@ -240,12 +291,42 @@ class TestGerritEvents(unittest.TestCase):
         self.assertEquals(event.restorer.email, "restorer@example.com")
         self.assertEquals(event.reason, "Restore reason")
 
+    def test_topic_changed(self):
+        _create_event("topic-changed-event", self.gerrit)
+        event = self.gerrit.get_event(False)
+        self.assertTrue(isinstance(event, TopicChangedEvent))
+        self.assertEquals(event.name, "topic-changed")
+        self.assertEquals(event.change.project, "project-name")
+        self.assertEquals(event.change.branch, "branch-name")
+        self.assertEquals(event.change.topic, "topic-name")
+        self.assertEquals(event.change.change_id,
+                          "Ideadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
+        self.assertEquals(event.change.number, "123456")
+        self.assertEquals(event.change.subject, "Commit message subject")
+        self.assertEquals(event.change.url, "http://review.example.com/123456")
+        self.assertEquals(event.change.owner.name, "Owner Name")
+        self.assertEquals(event.change.owner.email, "owner@example.com")
+        self.assertEquals(event.changer.name, "Changer Name")
+        self.assertEquals(event.changer.email, "changer@example.com")
+        self.assertEquals(event.oldtopic, "old-topic")
+
     def test_user_defined_event(self):
         _create_event("user-defined-event", self.gerrit)
         event = self.gerrit.get_event(False)
         self.assertTrue(isinstance(event, UserDefinedEvent))
         self.assertEquals(event.title, "Event title")
         self.assertEquals(event.description, "Event description")
+
+    def test_unhandled_event(self):
+        data = _create_event("unhandled-event", self.gerrit)
+        event = self.gerrit.get_event(False)
+        self.assertTrue(isinstance(event, UnhandledEvent))
+        self.assertEquals(event.json, json.loads(data))
+
+    def test_invalid_json(self):
+        _create_event("invalid-json", self.gerrit)
+        event = self.gerrit.get_event(False)
+        self.assertTrue(isinstance(event, ErrorEvent))
 
     def test_add_duplicate_event(self):
         try:

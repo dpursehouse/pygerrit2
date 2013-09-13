@@ -34,6 +34,10 @@ class Account(object):
         self.name = from_json(json_data, "name")
         self.email = from_json(json_data, "email")
 
+    def __repr__(self):
+        return u"<Account %s%s>" % (self.name,
+                                    " (%s)" % self.email if self.email else "")
+
     @staticmethod
     def from_json(json_data, key):
         """ Create an Account instance.
@@ -61,6 +65,9 @@ class Change(object):
         self.url = from_json(json_data, "url")
         self.owner = Account.from_json(json_data, "owner")
 
+    def __repr__(self):
+        return u"<Change %s, %s, %s>" % (self.number, self.project, self.branch)
+
 
 class Patchset(object):
 
@@ -71,6 +78,9 @@ class Patchset(object):
         self.revision = from_json(json_data, "revision")
         self.ref = from_json(json_data, "ref")
         self.uploader = Account.from_json(json_data, "uploader")
+
+    def __repr__(self):
+        return u"<Patchset %s, %s>" % (self.number, self.revision)
 
     @staticmethod
     def from_json(json_data):
@@ -94,6 +104,9 @@ class Approval(object):
         self.value = from_json(json_data, "value")
         self.description = from_json(json_data, "description")
 
+    def __repr__(self):
+        return u"<Approval %s %s>" % (self.description, self.value)
+
 
 class RefUpdate(object):
 
@@ -104,3 +117,7 @@ class RefUpdate(object):
         self.newrev = from_json(json_data, "newRev")
         self.refname = from_json(json_data, "refName")
         self.project = from_json(json_data, "project")
+
+    def __repr__(self):
+        return "<RefUpdate %s %s %s %s>" % \
+            (self.project, self.refname, self.oldrev, self.newrev)

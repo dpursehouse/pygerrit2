@@ -26,23 +26,9 @@ Class to listen to the Gerrit event stream and dispatch events.
 
 """
 
-import json
-import logging
-from select import poll, POLLIN
 from threading import Thread, Event
 
-from .error import GerritError
-from .events import GerritEvent, GerritEventFactory
-
-
-@GerritEventFactory.register("gerrit-stream-error")
-class GerritStreamErrorEvent(GerritEvent):
-
-    """ Represents an error when handling the gerrit event stream. """
-
-    def __init__(self, json_data):
-        super(GerritStreamErrorEvent, self).__init__()
-        self.error = json_data["error"]
+from .events import ErrorEvent
 
 
 class GerritStream(Thread):
@@ -62,29 +48,22 @@ class GerritStream(Thread):
 
     def _error_event(self, error):
         """ Dispatch `error` to the Gerrit client. """
-        json_data = json.loads('{"type":"gerrit-stream-error",'
-                               '"error":"%s"}' % str(error))
-        self._gerrit.put_event(json_data)
+        self._gerrit.put_event(ErrorEvent.error_json(error))
 
     def run(self):
         """ Listen to the stream and send events to the client. """
-        try:
-            result = self._ssh_client.run_gerrit_command("stream-events")
-        except GerritError as e:
-            self._error_event(e)
-        else:
-            poller = poll()
-            stdout = result.stdout
-            poller.register(stdout.channel)
-            while not self._stop.is_set():
-                data = poller.poll()
-                for (handle, event) in data:
-                    if handle == stdout.channel.fileno() and event == POLLIN:
-                        try:
-                            line = stdout.readline()
-                            json_data = json.loads(line)
-                            self._gerrit.put_event(json_data)
-                        except (ValueError, IOError) as err:
-                            self._error_event(err)
-                        except GerritError as err:
-                            logging.error("Failed to put event: %s", err)
+        channel = self._ssh_client.get_transport().open_session()
+        channel.exec_command("gerrit stream-events")
+        stdout = channel.makefile()
+        stderr = channel.makefile_stderr()
+        while not self._stop.is_set():
+            if channel.exit_status_ready():
+                if channel.recv_stderr_ready():
+                    error = stderr.readline().strip()
+                else:
+                    error = "Remote server connection closed"
+                self._error_event(error)
+                self._stop.set()
+            elif channel.recv_ready():
+                data = stdout.readline()
+                self._gerrit.put_event(data)

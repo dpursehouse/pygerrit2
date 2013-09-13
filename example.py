@@ -33,7 +33,7 @@ import time
 
 from pygerrit.client import GerritClient
 from pygerrit.error import GerritError
-from pygerrit.stream import GerritStreamErrorEvent
+from pygerrit.events import ErrorEvent
 
 
 def _main():
@@ -42,6 +42,11 @@ def _main():
     parser.add_option('-g', '--gerrit-hostname', dest='hostname',
                       default='review',
                       help='gerrit server hostname (default: %default)')
+    parser.add_option('-p', '--port', dest='port',
+                      type='int', default=29418,
+                      help='port number (default: %default)')
+    parser.add_option('-u', '--username', dest='username',
+                      help='username')
     parser.add_option('-b', '--blocking', dest='blocking',
                       action='store_true',
                       help='block on event get (default: False)')
@@ -49,15 +54,25 @@ def _main():
                       default=None, type='int',
                       help='timeout (seconds) for blocking event get '
                            '(default: None)')
+    parser.add_option('-v', '--verbose', dest='verbose',
+                      action='store_true',
+                      help='enable verbose (debug) logging')
+    parser.add_option('-i', '--ignore-stream-errors', dest='ignore',
+                      action='store_true',
+                      help='do not exit when an error event is received')
 
     (options, _args) = parser.parse_args()
     if options.timeout and not options.blocking:
         parser.error('Can only use --timeout with --blocking')
 
-    logging.basicConfig(format='%(message)s', level=logging.INFO)
+    level = logging.DEBUG if options.verbose else logging.INFO
+    logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
+                        level=level)
 
     try:
-        gerrit = GerritClient(host=options.hostname)
+        gerrit = GerritClient(host=options.hostname,
+                              username=options.username,
+                              port=options.port)
         logging.info("Connected to Gerrit version [%s]",
                      gerrit.gerrit_version())
         gerrit.start_event_stream()
@@ -71,8 +86,8 @@ def _main():
             event = gerrit.get_event(block=options.blocking,
                                      timeout=options.timeout)
             if event:
-                logging.info("Event: %s", str(event))
-                if isinstance(event, GerritStreamErrorEvent):
+                logging.info("Event: %s", event)
+                if isinstance(event, ErrorEvent) and not options.ignore:
                     logging.error(event.error)
                     errors.set()
                     break
@@ -83,6 +98,7 @@ def _main():
     except KeyboardInterrupt:
         logging.info("Terminated by user")
     finally:
+        logging.debug("Stopping event stream...")
         gerrit.stop_event_stream()
 
     if errors.isSet():

@@ -25,6 +25,7 @@
 from os.path import abspath, expanduser, isfile
 import re
 import socket
+from threading import Event, Lock
 
 from .error import GerritError
 
@@ -64,18 +65,19 @@ class GerritSSHClient(SSHClient):
 
     """ Gerrit SSH Client, wrapping the paramiko SSH Client. """
 
-    def __init__(self, hostname):
+    def __init__(self, hostname, username=None, port=None):
         """ Initialise and connect to SSH. """
         super(GerritSSHClient, self).__init__()
         self.remote_version = None
         self.hostname = hostname
-        self.connected = False
+        self.username = username
+        self.key_filename = None
+        self.port = port
+        self.connected = Event()
+        self.lock = Lock()
 
-    def _connect(self):
-        """ Connect to the remote if not already connected. """
-        if self.connected:
-            return
-        self.load_system_host_keys()
+    def _configure(self):
+        """ Configure the ssh parameters from the config file. """
         configfile = expanduser("~/.ssh/config")
         if not isfile(configfile):
             raise GerritError("ssh config file '%s' does not exist" %
@@ -88,22 +90,29 @@ class GerritSSHClient(SSHClient):
             raise GerritError("No ssh config for host %s" % self.hostname)
         if not 'hostname' in data or not 'port' in data or not 'user' in data:
             raise GerritError("Missing configuration data in %s" % configfile)
-        key_filename = None
+        self.hostname = data['hostname']
+        self.username = data['user']
         if 'identityfile' in data:
-            key_filename = abspath(expanduser(data['identityfile']))
+            key_filename = abspath(expanduser(data['identityfile'][0]))
             if not isfile(key_filename):
                 raise GerritError("Identity file '%s' does not exist" %
                                   key_filename)
+            self.key_filename = key_filename
         try:
-            port = int(data['port'])
+            self.port = int(data['port'])
         except ValueError:
             raise GerritError("Invalid port: %s" % data['port'])
+
+    def _do_connect(self):
+        """ Connect to the remote. """
+        self.load_system_host_keys()
+        if self.username is None or self.port is None:
+            self._configure()
         try:
-            self.connect(hostname=data['hostname'],
-                         port=port,
-                         username=data['user'],
-                         key_filename=key_filename)
-            self.connected = True
+            self.connect(hostname=self.hostname,
+                         port=self.port,
+                         username=self.username,
+                         key_filename=self.key_filename)
         except socket.error as e:
             raise GerritError("Failed to connect to server: %s" % e)
 
@@ -114,17 +123,20 @@ class GerritSSHClient(SSHClient):
         except AttributeError:
             self.remote_version = None
 
-    def exec_command(self, command, bufsize=1, timeout=None, get_pty=False):
-        """ Execute the command.
-
-        Make sure we're connected and then execute the command.
-
-        Return a tuple of stdin, stdout, stderr.
-
-        """
-        self._connect()
-        return super(GerritSSHClient, self).\
-            exec_command(command, bufsize, timeout, get_pty)
+    def _connect(self):
+        """ Connect to the remote if not already connected. """
+        if not self.connected.is_set():
+            try:
+                self.lock.acquire()
+                # Another thread may have connected while we were
+                # waiting to acquire the lock
+                if not self.connected.is_set():
+                    self._do_connect()
+                    self.connected.set()
+            except GerritError:
+                raise
+            finally:
+                self.lock.release()
 
     def get_remote_version(self):
         """ Return the version of the remote Gerrit server. """
@@ -138,17 +150,24 @@ class GerritSSHClient(SSHClient):
     def run_gerrit_command(self, command):
         """ Run the given command.
 
-        Run `command` and return a `GerritSSHCommandResult`.
+        Make sure we're connected to the remote server, and run `command`.
 
-        Raise `ValueError` if `command` is not a string.
+        Return the results as a `GerritSSHCommandResult`.
+
+        Raise `ValueError` if `command` is not a string, or `GerritError` if
+        command execution fails.
 
         """
         if not isinstance(command, basestring):
             raise ValueError("command must be a string")
         gerrit_command = "gerrit " + command
 
+        self._connect()
         try:
-            stdin, stdout, stderr = self.exec_command(gerrit_command)
+            stdin, stdout, stderr = self.exec_command(gerrit_command,
+                                                      bufsize=1,
+                                                      timeout=None,
+                                                      get_pty=False)
         except SSHException as err:
             raise GerritError("Command execution error: %s" % err)
         return GerritSSHCommandResult(command, stdin, stdout, stderr)

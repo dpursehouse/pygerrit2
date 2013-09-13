@@ -37,11 +37,11 @@ class GerritClient(object):
 
     """ Gerrit client interface. """
 
-    def __init__(self, host):
+    def __init__(self, host, username=None, port=None):
         self._factory = GerritEventFactory()
         self._events = Queue()
         self._stream = None
-        self._ssh_client = GerritSSHClient(host)
+        self._ssh_client = GerritSSHClient(host, username=username, port=port)
 
     def gerrit_version(self):
         """ Return the version of Gerrit that is connected to. """
@@ -112,15 +112,15 @@ class GerritClient(object):
         except Empty:
             return None
 
-    def put_event(self, json_data):
-        """ Create event from `json_data` and add it to the queue.
+    def put_event(self, data):
+        """ Create event from `data` and add it to the queue.
 
         Raise GerritError if the queue is full, or the factory could not
         create the event.
 
         """
         try:
-            event = self._factory.create(json_data)
+            event = self._factory.create(data)
             self._events.put(event)
         except Full:
             raise GerritError("Unable to add event: queue is full")
