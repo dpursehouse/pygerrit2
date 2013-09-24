@@ -74,7 +74,7 @@ class GerritRestAPI(object):
 
     """ Interface to the Gerrit REST API. """
 
-    def __init__(self, url, auth=None):
+    def __init__(self, url, auth=None, verify=True):
         """ Constructor.
 
         `url` is assumed to be the full URL to the server, including the
@@ -84,8 +84,12 @@ class GerritRestAPI(object):
         class from the `requests` module.  The `url` will be adjusted if
         necessary to make sure it includes Gerrit's authentication suffix.
 
+        If `verify` is False, the underlying requests library will be
+        configured to not attempt to verify SSL certificates.
+
         """
-        self.kwargs = {'auth': auth}
+        self.kwargs = {'auth': auth,
+                       'verify': verify}
         self.url = url.rstrip('/')
         self.session = requests.session()
 
