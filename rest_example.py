@@ -30,6 +30,10 @@ import optparse
 import sys
 
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
+try:
+    from requests_kerberos import HTTPKerberosAuth, OPTIONAL
+except ImportError:
+    HTTPKerberosAuth = None
 
 from pygerrit.rest import GerritRestAPI
 from pygerrit.rest.auth import HTTPDigestAuthFromNetrc, HTTPBasicAuthFromNetrc
@@ -44,6 +48,10 @@ def _main():
     parser.add_option('-b', '--basic-auth', dest='basic_auth',
                       action='store_true',
                       help='use basic auth instead of digest')
+    if HTTPKerberosAuth:
+        parser.add_option('-k', '--kerberos-auth', dest='kerberos_auth',
+                          action='store_true',
+                          help='use kerberos auth')
     parser.add_option('-u', '--username', dest='username',
                       help='username')
     parser.add_option('-p', '--password', dest='password',
@@ -64,7 +72,13 @@ def _main():
     if not options.gerrit_url:
         parser.error("Must specify Gerrit URL with --gerrit-url")
 
-    if options.username and options.password:
+    if HTTPKerberosAuth and options.kerberos_auth:
+        if options.username or options.password \
+                or options.basic_auth or options.netrc:
+            parser.error("--kerberos-auth may not be used together with "
+                         "--username, --password, --basic-auth or --netrc")
+        auth = HTTPKerberosAuth(mutual_authentication=OPTIONAL)
+    elif options.username and options.password:
         if options.netrc:
             logging.warning("--netrc option ignored")
         if options.basic_auth:
