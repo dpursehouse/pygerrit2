@@ -64,6 +64,6 @@ class GerritStream(Thread):
                     error = "Remote server connection closed"
                 self._error_event(error)
                 self._stop.set()
-            elif channel.recv_ready():
+            else:
                 data = stdout.readline()
                 self._gerrit.put_event(data)
