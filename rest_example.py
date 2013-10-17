@@ -32,8 +32,9 @@ import sys
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 try:
     from requests_kerberos import HTTPKerberosAuth, OPTIONAL
+    _kerberos_support = True
 except ImportError:
-    HTTPKerberosAuth = None
+    _kerberos_support = False
 
 from pygerrit.rest import GerritRestAPI
 from pygerrit.rest.auth import HTTPDigestAuthFromNetrc, HTTPBasicAuthFromNetrc
@@ -72,7 +73,7 @@ def _main():
     if not options.gerrit_url:
         parser.error("Must specify Gerrit URL with --gerrit-url")
 
-    if HTTPKerberosAuth and options.kerberos_auth:
+    if _kerberos_support and options.kerberos_auth:
         if options.username or options.password \
                 or options.basic_auth or options.netrc:
             parser.error("--kerberos-auth may not be used together with "
