@@ -220,7 +220,8 @@ class MergeFailedEvent(GerritEvent):
             self.change = Change(json_data["change"])
             self.patchset = Patchset(json_data["patchSet"])
             self.submitter = Account(json_data["submitter"])
-            self.reason = json_data["reason"]
+            if 'reason' in json_data:
+                self.reason = json_data["reason"]
         except KeyError as e:
             raise GerritError("MergeFailedEvent: %s" % e)
 
@@ -241,7 +242,8 @@ class ChangeAbandonedEvent(GerritEvent):
             self.change = Change(json_data["change"])
             self.patchset = Patchset.from_json(json_data)
             self.abandoner = Account(json_data["abandoner"])
-            self.reason = json_data["reason"]
+            if 'reason' in json_data:
+                self.reason = json_data["reason"]
         except KeyError as e:
             raise GerritError("ChangeAbandonedEvent: %s" % e)
 
@@ -262,7 +264,8 @@ class ChangeRestoredEvent(GerritEvent):
             self.change = Change(json_data["change"])
             self.patchset = Patchset.from_json(json_data)
             self.restorer = Account(json_data["restorer"])
-            self.reason = json_data["reason"]
+            if 'reason' in json_data:
+                self.reason = json_data["reason"]
         except KeyError as e:
             raise GerritError("ChangeRestoredEvent: %s" % e)
 
