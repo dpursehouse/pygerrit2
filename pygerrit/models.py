@@ -64,6 +64,8 @@ class Change(object):
         self.subject = from_json(json_data, "subject")
         self.url = from_json(json_data, "url")
         self.owner = Account.from_json(json_data, "owner")
+        if 'sortKey' in json_data:
+	    self.sortkey = from_json(json_data, "sortKey")
 
     def __repr__(self):
         return u"<Change %s, %s, %s>" % (self.number, self.project, self.branch)
