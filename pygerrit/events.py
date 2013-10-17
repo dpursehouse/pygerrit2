@@ -240,7 +240,6 @@ class ChangeAbandonedEvent(GerritEvent):
         super(ChangeAbandonedEvent, self).__init__(json_data)
         try:
             self.change = Change(json_data["change"])
-            self.patchset = Patchset.from_json(json_data)
             self.abandoner = Account(json_data["abandoner"])
             if 'reason' in json_data:
                 self.reason = json_data["reason"]
@@ -248,9 +247,8 @@ class ChangeAbandonedEvent(GerritEvent):
             raise GerritError("ChangeAbandonedEvent: %s" % e)
 
     def __repr__(self):
-        return u"<ChangeAbandonedEvent>: %s %s %s" % (self.change,
-                                                      self.patchset,
-                                                      self.abandoner)
+        return u"<ChangeAbandonedEvent>: %s %s" % (self.change,
+                                                   self.abandoner)
 
 
 @GerritEventFactory.register("change-restored")
@@ -262,7 +260,6 @@ class ChangeRestoredEvent(GerritEvent):
         super(ChangeRestoredEvent, self).__init__(json_data)
         try:
             self.change = Change(json_data["change"])
-            self.patchset = Patchset.from_json(json_data)
             self.restorer = Account(json_data["restorer"])
             if 'reason' in json_data:
                 self.reason = json_data["reason"]
@@ -270,9 +267,8 @@ class ChangeRestoredEvent(GerritEvent):
             raise GerritError("ChangeRestoredEvent: %s" % e)
 
     def __repr__(self):
-        return u"<ChangeRestoredEvent>: %s %s %s" % (self.change,
-                                                     self.patchset,
-                                                     self.restorer)
+        return u"<ChangeRestoredEvent>: %s %s" % (self.change,
+                                                  self.restorer)
 
 
 @GerritEventFactory.register("ref-updated")
