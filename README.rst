@@ -2,7 +2,7 @@ Pygerrit - Client library for interacting with Gerrit Code Review
 =================================================================
 
 Pygerrit is a Python library to interact with the
-`Gerrit Code Review`_ system over ssh.
+`Gerrit Code Review`_ system over ssh or via the REST API.
 
 Installation
 ------------
@@ -80,6 +80,23 @@ installation with non-standard events.
 Refer to the `example`_ script for a more detailed example of how the SSH
 event stream interface works.
 
+REST API
+--------
+
+Gerrit offers a feature-rich REST API.  This library provides a simple
+interface for clients to interact with Gerrit via the REST API.
+
+.. code-block:: pycon
+
+    >>> from requests.auth import HTTPDigestAuth
+    >>> from pygerrit.rest import GerritRestAPI
+    >>> auth = HTTPDigestAuth('username', 'password')
+    >>> rest = GerritRestAPI(url='http://review.example.net', auth=auth)
+    >>> changes = rest.get("/changes/?q=owner:self%20status:open")
+
+
+Refer to the `rest_example`_ script for a more detailed example of how the
+REST API interface works.
 
 Copyright and License
 ---------------------
@@ -93,4 +110,5 @@ license details.
 
 .. _`Gerrit Code Review`: https://code.google.com/p/gerrit/
 .. _example: https://github.com/sonyxperiadev/pygerrit/blob/master/example.py
+.. _rest_example: https://github.com/sonyxperiadev/pygerrit/blob/master/rest_example.py
 .. _LICENSE: https://github.com/sonyxperiadev/pygerrit/blob/master/LICENSE
