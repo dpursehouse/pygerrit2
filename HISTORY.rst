@@ -3,6 +3,16 @@
 History
 -------
 
+0.2.0 (2013-10-21)
+++++++++++++++++++
+
+- Add basic support for Gerrit's REST API
+- Fix crash in stream-events handling when events do not have ``reason`` field
+- Add ``sortKey`` to query results to allow resuming queries
+- Remove unused ``patchset`` member from ``change-abandoned`` and ``change-restored`` events
+- Fix busy loop when processing stream events
+- Ensure errors in JSON parsing don't leave everything in a broken state
+
 0.1.1 (2013-09-13)
 ++++++++++++++++++
 
