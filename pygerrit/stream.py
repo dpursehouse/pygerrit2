@@ -57,13 +57,17 @@ class GerritStream(Thread):
         stdout = channel.makefile()
         stderr = channel.makefile_stderr()
         while not self._stop.is_set():
-            if channel.exit_status_ready():
-                if channel.recv_stderr_ready():
-                    error = stderr.readline().strip()
+            try:
+                if channel.exit_status_ready():
+                    if channel.recv_stderr_ready():
+                        error = stderr.readline().strip()
+                    else:
+                        error = "Remote server connection closed"
+                    self._error_event(error)
+                    self._stop.set()
                 else:
-                    error = "Remote server connection closed"
-                self._error_event(error)
+                    data = stdout.readline()
+                    self._gerrit.put_event(data)
+            except Exception as e:
+                self._error_event(repr(e))
                 self._stop.set()
-            elif channel.recv_ready():
-                data = stdout.readline()
-                self._gerrit.put_event(data)
