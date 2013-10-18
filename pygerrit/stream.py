@@ -68,6 +68,6 @@ class GerritStream(Thread):
                 else:
                     data = stdout.readline()
                     self._gerrit.put_event(data)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=W0703
                 self._error_event(repr(e))
                 self._stop.set()
