@@ -17,8 +17,8 @@ To install pygerrit, simply:
 Prerequisites
 -------------
 
-Pygerrit runs on Ubuntu 10.4 and Mac OSX 10.8.4 with Python 2.6.x and 2.7.x.
-Support for other platforms and Python versions is not guaranteed.
+Pygerrit has been tested on Ubuntu 10.4 and Mac OSX 10.8.4, with Python 2.6.x
+and 2.7.x.  Support for other platforms and Python versions is not guaranteed.
 
 
 Configuration
