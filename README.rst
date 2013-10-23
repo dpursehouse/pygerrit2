@@ -36,6 +36,18 @@ file:
       User username
 
 
+For easier connection to the review server over the REST API, the user's
+HTTP username and password can be given in the user's ``.netrc`` file:
+
+.. code-block:: bash
+
+    machine review login MyUsername password MyPassword
+
+
+For instructions on how to obtain the HTTP password, refer to Gerrit's
+`HTTP upload settings`_ documentation.
+
+
 SSH Interface
 -------------
 
@@ -116,4 +128,5 @@ license details.
 .. _`Gerrit Code Review`: https://code.google.com/p/gerrit/
 .. _example: https://github.com/sonyxperiadev/pygerrit/blob/master/example.py
 .. _rest_example: https://github.com/sonyxperiadev/pygerrit/blob/master/rest_example.py
+.. _`HTTP upload settings`: http://gerrit-documentation.googlecode.com/svn/Documentation/2.7/user-upload.html#http
 .. _LICENSE: https://github.com/sonyxperiadev/pygerrit/blob/master/LICENSE
