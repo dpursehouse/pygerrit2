@@ -20,6 +20,10 @@ Prerequisites
 Pygerrit runs on Ubuntu 10.4 and Mac OSX 10.8.4 with Python 2.6.x and 2.7.x.
 Support for other platforms and Python versions is not guaranteed.
 
+
+Configuration
+-------------
+
 For easier connection to the review server over ssh, the ssh connection
 parameters (hostname, port, username) can be given in the user's ``.ssh/config``
 file:
@@ -30,6 +34,7 @@ file:
       HostName review.example.net
       Port 29418
       User username
+
 
 SSH Interface
 -------------
