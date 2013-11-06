@@ -33,6 +33,7 @@ class Account(object):
     def __init__(self, json_data):
         self.name = from_json(json_data, "name")
         self.email = from_json(json_data, "email")
+        self.username = from_json(json_data, "username")
 
     def __repr__(self):
         return u"<Account %s%s>" % (self.name,
