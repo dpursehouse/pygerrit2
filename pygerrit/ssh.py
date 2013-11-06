@@ -147,6 +147,11 @@ class GerritSSHClient(SSHClient):
             self.remote_version = _extract_version(version_string, pattern)
         return self.remote_version
 
+    def get_remote_info(self):
+        """ Return the username, and version of the remote Gerrit server. """
+        version = self.get_remote_version()
+        return (self.username, version)
+
     def run_gerrit_command(self, command):
         """ Run the given command.
 

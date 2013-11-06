@@ -47,6 +47,10 @@ class GerritClient(object):
         """ Return the version of Gerrit that is connected to. """
         return self._ssh_client.get_remote_version()
 
+    def gerrit_info(self):
+        """ Return the username, and version of Gerrit that is connected to. """
+        return self._ssh_client.get_remote_info()
+
     def query(self, term):
         """ Run `gerrit query` with the given `term`.
 
