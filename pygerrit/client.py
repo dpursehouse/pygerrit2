@@ -51,6 +51,12 @@ class GerritClient(object):
         """ Return the username, and version of Gerrit that is connected to. """
         return self._ssh_client.get_remote_info()
 
+    def run_command(self, command):
+        """ Run the command.  Return the result. """
+        if not isinstance(command, basestring):
+            raise ValueError("command must be a string")
+        return self._ssh_client.run_gerrit_command(command)
+
     def query(self, term):
         """ Run `gerrit query` with the given `term`.
 
