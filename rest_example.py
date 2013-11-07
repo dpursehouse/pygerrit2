@@ -30,6 +30,7 @@ import optparse
 import sys
 
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
+from requests.exceptions import RequestException
 try:
     # pylint: disable=F0401
     from requests_kerberos import HTTPKerberosAuth, OPTIONAL
@@ -98,10 +99,13 @@ def _main():
 
     rest = GerritRestAPI(url=options.gerrit_url, auth=auth)
 
-    changes = rest.get("/changes/?q=owner:self%20status:open")
-    logging.info("%d changes", len(changes))
-    for change in changes:
-        logging.info(change['change_id'])
+    try:
+        changes = rest.get("/changes/?q=owner:self%20status:open")
+        logging.info("%d changes", len(changes))
+        for change in changes:
+            logging.info(change['change_id'])
+    except RequestException as err:
+        logging.error("Error: %s", str(err))
 
 if __name__ == "__main__":
     sys.exit(_main())
