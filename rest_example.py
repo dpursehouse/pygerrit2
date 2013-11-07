@@ -51,7 +51,7 @@ def _main():
     parser.add_option('-b', '--basic-auth', dest='basic_auth',
                       action='store_true',
                       help='use basic auth instead of digest')
-    if HTTPKerberosAuth:
+    if _kerberos_support:
         parser.add_option('-k', '--kerberos-auth', dest='kerberos_auth',
                           action='store_true',
                           help='use kerberos auth')
