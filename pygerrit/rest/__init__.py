@@ -30,37 +30,17 @@ GERRIT_MAGIC_JSON_PREFIX = ")]}\'\n"
 GERRIT_AUTH_SUFFIX = "/a"
 
 
-class GerritRestAPIError(Exception):
-
-    """ Raised when an error occurs during Gerrit REST API access. """
-
-    def __init__(self, code, message=None):
-        super(GerritRestAPIError, self).__init__()
-        self.code = code
-        self.message = message
-
-    def __str__(self):
-        if self.message:
-            return "%d: %s" % (self.code, self.message)
-        else:
-            return "%d" % self.code
-
-
 def _decode_response(response):
     """ Decode the `response` received from a REST API call.
 
     Strip off Gerrit's magic prefix if it is there, and return decoded
     JSON content or raw text if it cannot be decoded as JSON.
 
-    Raise GerritRestAPIError if the response contains an HTTP error status
+    Raise requests.HTTPError if the response contains an HTTP error status
     code.
 
     """
-    try:
-        response.raise_for_status()
-    except requests.exceptions.HTTPError as e:
-        raise GerritRestAPIError(response.status_code, str(e))
-
+    response.raise_for_status()
     content = response.content
     if content.startswith(GERRIT_MAGIC_JSON_PREFIX):
         content = content[len(GERRIT_MAGIC_JSON_PREFIX):]
@@ -95,8 +75,8 @@ class GerritRestAPI(object):
 
         if auth:
             if not isinstance(auth, requests.auth.AuthBase):
-                raise GerritRestAPIError('Invalid auth type; must be derived '
-                                         'from requests.auth.AuthBase')
+                raise ValueError('Invalid auth type; must be derived '
+                                 'from requests.auth.AuthBase')
 
             if not self.url.endswith(GERRIT_AUTH_SUFFIX):
                 self.url += GERRIT_AUTH_SUFFIX
@@ -114,6 +94,8 @@ class GerritRestAPI(object):
         Strip leading slashes off the endpoint, and return the full
         url.
 
+        Raise requests.RequestException on timeout or connection error.
+
         """
         endpoint = endpoint.lstrip('/')
         return self.url + endpoint
@@ -122,6 +104,8 @@ class GerritRestAPI(object):
         """ Send HTTP GET to `endpoint`.
 
         Return JSON decoded result.
+
+        Raise requests.RequestException on timeout or connection error.
 
         """
         kwargs = self.kwargs.copy()
@@ -134,6 +118,8 @@ class GerritRestAPI(object):
         """ Send HTTP PUT to `endpoint`.
 
         Return JSON decoded result.
+
+        Raise requests.RequestException on timeout or connection error.
 
         """
         kwargs = self.kwargs.copy()
@@ -149,6 +135,8 @@ class GerritRestAPI(object):
 
         Return JSON decoded result.
 
+        Raise requests.RequestException on timeout or connection error.
+
         """
         kwargs = self.kwargs.copy()
         if params:
@@ -162,6 +150,8 @@ class GerritRestAPI(object):
         """ Send HTTP DELETE to `endpoint`.
 
         Return JSON decoded result.
+
+        Raise requests.RequestException on timeout or connection error.
 
         """
         kwargs = self.kwargs.copy()

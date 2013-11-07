@@ -25,8 +25,6 @@
 from requests.auth import HTTPDigestAuth, HTTPBasicAuth
 from requests.utils import get_netrc_auth
 
-from . import GerritRestAPIError
-
 
 class HTTPDigestAuthFromNetrc(HTTPDigestAuth):
 
@@ -35,8 +33,7 @@ class HTTPDigestAuthFromNetrc(HTTPDigestAuth):
     def __init__(self, url):
         auth = get_netrc_auth(url)
         if not auth:
-            raise GerritRestAPIError("netrc missing or no credentials found "
-                                     "in netrc")
+            raise ValueError("netrc missing or no credentials found in netrc")
         username, password = auth
         super(HTTPDigestAuthFromNetrc, self).__init__(username, password)
 
@@ -51,8 +48,7 @@ class HTTPBasicAuthFromNetrc(HTTPBasicAuth):
     def __init__(self, url):
         auth = get_netrc_auth(url)
         if not auth:
-            raise GerritRestAPIError("netrc missing or no credentials found "
-                                     "in netrc")
+            raise ValueError("netrc missing or no credentials found in netrc")
         username, password = auth
         super(HTTPBasicAuthFromNetrc, self).__init__(username, password)
 
