@@ -3,6 +3,19 @@
 History
 -------
 
+0.2.2 (2013-11-15)
+++++++++++++++++++
+
+- Fix exception and handle errors in the REST API example script
+- Allow to get the SSH username from the client session
+- Allow to run a command from the client session
+- Add ``username`` field in the Account model
+- Simplify error handling in the REST API
+- Make sure ``sortkey`` always gets initialised in the Change model
+- Add ``status`` field in the Change model
+- Add ``current_patchset`` field in the Change model
+- Add ``approver`` field in the Approval model
+
 0.2.1 (2013-10-21)
 ++++++++++++++++++
 
