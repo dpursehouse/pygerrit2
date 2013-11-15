@@ -67,6 +67,7 @@ class Change(object):
         self.owner = Account.from_json(json_data, "owner")
         self.sortkey = from_json(json_data, "sortKey")
         self.status = from_json(json_data, "status")
+        self.current_patchset = CurrentPatchset.from_json(json_data)
 
     def __repr__(self):
         return u"<Change %s, %s, %s>" % (self.number, self.project, self.branch)
@@ -95,6 +96,35 @@ class Patchset(object):
         """
         if "patchSet" in json_data:
             return Patchset(json_data["patchSet"])
+        return None
+
+
+class CurrentPatchset(Patchset):
+
+    """ Gerrit current patch set. """
+
+    def __init__(self, json_data):
+        super(CurrentPatchset, self).__init__(json_data)
+        self.author = Account.from_json(json_data, "author")
+        self.approvals = []
+        if "approvals" in json_data:
+            for approval in json_data["approvals"]:
+                self.approvals.append(Approval(approval))
+
+    def __repr__(self):
+        return u"<CurrentPatchset %s, %s>" % (self.number, self.revision)
+
+    @staticmethod
+    def from_json(json_data):
+        r""" Create a CurrentPatchset instance.
+
+        Return an instance of CurrentPatchset initialised with values from
+        "currentPatchSet" in `json_data`, or None if `json_data` does not
+        contain "currentPatchSet".
+
+        """
+        if "currentPatchSet" in json_data:
+            return CurrentPatchset(json_data["currentPatchSet"])
         return None
 
 
