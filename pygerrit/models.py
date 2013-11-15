@@ -136,6 +136,7 @@ class Approval(object):
         self.category = from_json(json_data, "type")
         self.value = from_json(json_data, "value")
         self.description = from_json(json_data, "description")
+        self.approver = Account.from_json(json_data, "by")
 
     def __repr__(self):
         return u"<Approval %s %s>" % (self.description, self.value)
