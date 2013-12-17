@@ -3,6 +3,11 @@
 History
 -------
 
+0.2.3 (2013-12-17)
+++++++++++++++++++
+
+- Fix packaging to include REST subpackage
+
 0.2.2 (2013-11-15)
 ++++++++++++++++++
 
