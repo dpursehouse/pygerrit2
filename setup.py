@@ -25,7 +25,7 @@
 
 """ Client library for interacting with Gerrit. """
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 from pygerrit import __version__
 
@@ -44,7 +44,7 @@ def _main():
         maintainer="David Pursehouse",
         maintainer_email="david.pursehouse@sonymobile.com",
         url="https://github.com/sonyxperiadev/pygerrit",
-        packages=['pygerrit'],
+        packages=find_packages(),
         keywords='gerrit, json, ssh, stream',
         install_requires=REQUIRES,
         classifiers=(
