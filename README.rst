@@ -7,9 +7,7 @@ Pygerrit is a Python library to interact with the
 Installation
 ------------
 
-To install pygerrit, simply:
-
-.. code-block:: bash
+To install pygerrit, simply::
 
     $ pip install pygerrit
 
@@ -26,9 +24,7 @@ Configuration
 
 For easier connection to the review server over ssh, the ssh connection
 parameters (hostname, port, username) can be given in the user's ``.ssh/config``
-file:
-
-.. code-block:: bash
+file::
 
     Host review
       HostName review.example.net
@@ -37,9 +33,7 @@ file:
 
 
 For easier connection to the review server over the REST API, the user's
-HTTP username and password can be given in the user's ``.netrc`` file:
-
-.. code-block:: bash
+HTTP username and password can be given in the user's ``.netrc`` file::
 
     machine review login MyUsername password MyPassword
 
@@ -51,9 +45,7 @@ For instructions on how to obtain the HTTP password, refer to Gerrit's
 SSH Interface
 -------------
 
-The SSH interface can be used to run commands on the Gerrit server.
-
-.. code-block:: pycon
+The SSH interface can be used to run commands on the Gerrit server::
 
     >>> from pygerrit.ssh import GerritSSHClient
     >>> client = GerritSSHClient("review")
@@ -77,9 +69,7 @@ This library handles the parsing of the JSON text from the event stream,
 encapsulating the data in event objects (Python classes), and allowing the
 client to fetch them from a queue. It also allows users to easily add handling
 of custom event types, for example if they are running a customised Gerrit
-installation with non-standard events.
-
-.. code-block:: pycon
+installation with non-standard events::
 
     >>> from pygerrit.client import GerritClient
     >>> client = GerritClient("review")
@@ -101,9 +91,7 @@ REST API
 --------
 
 Gerrit offers a feature-rich REST API.  This library provides a simple
-interface for clients to interact with Gerrit via the REST API.
-
-.. code-block:: pycon
+interface for clients to interact with Gerrit via the REST API::
 
     >>> from requests.auth import HTTPDigestAuth
     >>> from pygerrit.rest import GerritRestAPI
