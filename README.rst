@@ -1,6 +1,12 @@
 Pygerrit - Client library for interacting with Gerrit Code Review
 =================================================================
 
+.. image:: https://badge.fury.io/py/pygerrit.png
+    :target: http://badge.fury.io/py/pygerrit
+
+.. image:: https://pypip.in/d/pygerrit/badge.png
+        :target: https://crate.io/packages/pygerrit/
+
 Pygerrit is a Python library to interact with the
 `Gerrit Code Review`_ system over ssh or via the REST API.
 
