@@ -100,7 +100,7 @@ class GerritRestAPI(object):
         endpoint = endpoint.lstrip('/')
         return self.url + endpoint
 
-    def get(self, endpoint, params=None):
+    def get(self, endpoint, **kwargs):
         """ Send HTTP GET to `endpoint`.
 
         Return JSON decoded result.
@@ -108,13 +108,11 @@ class GerritRestAPI(object):
         Raise requests.RequestException on timeout or connection error.
 
         """
-        kwargs = self.kwargs.copy()
-        if params:
-            kwargs['params'] = params
+        kwargs.update(self.kwargs.copy())
         response = self.session.get(self.make_url(endpoint), **kwargs)
         return _decode_response(response)
 
-    def put(self, endpoint, params=None, data=None):
+    def put(self, endpoint, **kwargs):
         """ Send HTTP PUT to `endpoint`.
 
         Return JSON decoded result.
@@ -122,15 +120,11 @@ class GerritRestAPI(object):
         Raise requests.RequestException on timeout or connection error.
 
         """
-        kwargs = self.kwargs.copy()
-        if params:
-            kwargs['params'] = params
-        if data:
-            kwargs['data'] = data
+        kwargs.update(self.kwargs.copy())
         response = self.session.put(self.make_url(endpoint), **kwargs)
         return _decode_response(response)
 
-    def post(self, endpoint, params=None, data=None):
+    def post(self, endpoint, **kwargs):
         """ Send HTTP POST to `endpoint`.
 
         Return JSON decoded result.
@@ -138,15 +132,11 @@ class GerritRestAPI(object):
         Raise requests.RequestException on timeout or connection error.
 
         """
-        kwargs = self.kwargs.copy()
-        if params:
-            kwargs['params'] = params
-        if data:
-            kwargs['data'] = data
+        kwargs.update(self.kwargs.copy())
         response = self.session.post(self.make_url(endpoint), **kwargs)
         return _decode_response(response)
 
-    def delete(self, endpoint):
+    def delete(self, endpoint, **kwargs):
         """ Send HTTP DELETE to `endpoint`.
 
         Return JSON decoded result.
@@ -154,6 +144,6 @@ class GerritRestAPI(object):
         Raise requests.RequestException on timeout or connection error.
 
         """
-        kwargs = self.kwargs.copy()
+        kwargs.update(self.kwargs.copy())
         response = self.session.delete(self.make_url(endpoint), **kwargs)
         return _decode_response(response)
