@@ -1,3 +1,0 @@
-{"type":"this-event-is-not-handled",
- "title":"Unhandled event title",
- "description":"Unhandled event description"}

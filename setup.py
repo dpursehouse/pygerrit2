@@ -29,7 +29,7 @@ from setuptools import setup, find_packages
 
 from pygerrit import __version__
 
-REQUIRES = ['paramiko==1.11.0', 'pycrypto==2.3', 'requests==2.0.1']
+REQUIRES = ['requests==2.0.1']
 
 
 def _main():
@@ -45,7 +45,7 @@ def _main():
         maintainer_email="david.pursehouse@sonymobile.com",
         url="https://github.com/sonyxperiadev/pygerrit",
         packages=find_packages(),
-        keywords='gerrit, json, ssh, stream',
+        keywords='gerrit, json, rest, http',
         install_requires=REQUIRES,
         classifiers=(
             'Development Status :: 3 - Alpha',
