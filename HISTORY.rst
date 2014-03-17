@@ -3,6 +3,14 @@
 History
 -------
 
+0.2.4 (2014-03-17)
+++++++++++++++++++
+
+- Accept kwargs for request functions
+- Add badges to the README
+- Fix README markup to work properly in Gitlab
+- Update link to Gerrit documentation
+
 0.2.3 (2013-12-17)
 ++++++++++++++++++
 

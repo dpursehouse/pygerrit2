@@ -22,7 +22,7 @@
 
 """ Module to interface with Gerrit. """
 
-__numversion__ = (0, 2, 3)
+__numversion__ = (0, 2, 4)
 __version__ = '.'.join([str(num) for num in __numversion__])
 
 

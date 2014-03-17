@@ -12,3 +12,4 @@ Patches and Suggestions
 
 - Ernst Sjöstrand <ernst.sjostrand@sonymobile.com>
 - Jens Andersen <jens.andersen@gmail.com>
+- Christopher Zee <christopher.xs.zee@gmail.com>
