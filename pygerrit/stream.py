@@ -41,10 +41,13 @@ class GerritStream(Thread):
         self._gerrit = gerrit
         self._ssh_client = ssh_client
         self._stop = Event()
+        self._channel = None
 
     def stop(self):
         """ Stop the thread. """
         self._stop.set()
+        if self._channel is not None:
+            self._channel.close()
 
     def _error_event(self, error):
         """ Dispatch `error` to the Gerrit client. """
@@ -53,6 +56,7 @@ class GerritStream(Thread):
     def run(self):
         """ Listen to the stream and send events to the client. """
         channel = self._ssh_client.get_transport().open_session()
+        self._channel = channel
         channel.exec_command("gerrit stream-events")
         stdout = channel.makefile()
         stderr = channel.makefile_stderr()
