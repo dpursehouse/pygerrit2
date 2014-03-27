@@ -26,7 +26,7 @@
 """ Example of using the Gerrit client REST API. """
 
 import logging
-import optparse
+import argparse
 import sys
 
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
@@ -44,37 +44,34 @@ from pygerrit.rest.auth import HTTPDigestAuthFromNetrc, HTTPBasicAuthFromNetrc
 
 
 def _main():
-    usage = "usage: %prog [options]"
-    parser = optparse.OptionParser(usage=usage)
-
-    parser.add_option('-g', '--gerrit-url', dest='gerrit_url',
-                      help='gerrit server url')
-    parser.add_option('-b', '--basic-auth', dest='basic_auth',
-                      action='store_true',
-                      help='use basic auth instead of digest')
+    descr = 'Send request using Gerrit HTTP API'
+    parser = argparse.ArgumentParser(description=descr)
+    parser.add_argument('-g', '--gerrit-url', dest='gerrit_url',
+                        required=True,
+                        help='gerrit server url')
+    parser.add_argument('-b', '--basic-auth', dest='basic_auth',
+                        action='store_true',
+                        help='use basic auth instead of digest')
     if _kerberos_support:
-        parser.add_option('-k', '--kerberos-auth', dest='kerberos_auth',
-                          action='store_true',
-                          help='use kerberos auth')
-    parser.add_option('-u', '--username', dest='username',
-                      help='username')
-    parser.add_option('-p', '--password', dest='password',
-                      help='password')
-    parser.add_option('-n', '--netrc', dest='netrc',
-                      action='store_true',
-                      help='Use credentials from netrc')
-    parser.add_option('-v', '--verbose', dest='verbose',
-                      action='store_true',
-                      help='enable verbose (debug) logging')
+        parser.add_argument('-k', '--kerberos-auth', dest='kerberos_auth',
+                            action='store_true',
+                            help='use kerberos auth')
+    parser.add_argument('-u', '--username', dest='username',
+                        help='username')
+    parser.add_argument('-p', '--password', dest='password',
+                        help='password')
+    parser.add_argument('-n', '--netrc', dest='netrc',
+                        action='store_true',
+                        help='Use credentials from netrc')
+    parser.add_argument('-v', '--verbose', dest='verbose',
+                        action='store_true',
+                        help='enable verbose (debug) logging')
 
     (options, _args) = parser.parse_args()
 
     level = logging.DEBUG if options.verbose else logging.INFO
     logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                         level=level)
-
-    if not options.gerrit_url:
-        parser.error("Must specify Gerrit URL with --gerrit-url")
 
     if _kerberos_support and options.kerberos_auth:
         if options.username or options.password \

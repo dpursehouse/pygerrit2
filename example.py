@@ -26,7 +26,7 @@
 """ Example of using the Gerrit client class. """
 
 import logging
-import optparse
+import argparse
 import sys
 from threading import Event
 import time
@@ -37,29 +37,29 @@ from pygerrit.events import ErrorEvent
 
 
 def _main():
-    usage = "usage: %prog [options]"
-    parser = optparse.OptionParser(usage=usage)
-    parser.add_option('-g', '--gerrit-hostname', dest='hostname',
-                      default='review',
-                      help='gerrit server hostname (default: %default)')
-    parser.add_option('-p', '--port', dest='port',
-                      type='int', default=29418,
-                      help='port number (default: %default)')
-    parser.add_option('-u', '--username', dest='username',
-                      help='username')
-    parser.add_option('-b', '--blocking', dest='blocking',
-                      action='store_true',
-                      help='block on event get (default: False)')
-    parser.add_option('-t', '--timeout', dest='timeout',
-                      default=None, type='int',
-                      help='timeout (seconds) for blocking event get '
-                           '(default: None)')
-    parser.add_option('-v', '--verbose', dest='verbose',
-                      action='store_true',
-                      help='enable verbose (debug) logging')
-    parser.add_option('-i', '--ignore-stream-errors', dest='ignore',
-                      action='store_true',
-                      help='do not exit when an error event is received')
+    descr = 'Send request using Gerrit ssh API'
+    parser = argparse.ArgumentParser(description=descr)
+    parser.add_argument('-g', '--gerrit-hostname', dest='hostname',
+                        default='review',
+                        help='gerrit server hostname (default: %default)')
+    parser.add_argument('-p', '--port', dest='port',
+                        type='int', default=29418,
+                        help='port number (default: %default)')
+    parser.add_argument('-u', '--username', dest='username',
+                        help='username')
+    parser.add_argument('-b', '--blocking', dest='blocking',
+                        action='store_true',
+                        help='block on event get (default: False)')
+    parser.add_argument('-t', '--timeout', dest='timeout',
+                        default=None, type='int',
+                        help='timeout (seconds) for blocking event get '
+                        '(default: None)')
+    parser.add_argument('-v', '--verbose', dest='verbose',
+                        action='store_true',
+                        help='enable verbose (debug) logging')
+    parser.add_argument('-i', '--ignore-stream-errors', dest='ignore',
+                        action='store_true',
+                        help='do not exit when an error event is received')
 
     (options, _args) = parser.parse_args()
     if options.timeout and not options.blocking:
