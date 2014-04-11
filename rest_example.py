@@ -25,8 +25,8 @@
 
 """ Example of using the Gerrit client REST API. """
 
-import logging
 import argparse
+import logging
 import sys
 
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
@@ -45,7 +45,9 @@ from pygerrit.rest.auth import HTTPDigestAuthFromNetrc, HTTPBasicAuthFromNetrc
 
 def _main():
     descr = 'Send request using Gerrit HTTP API'
-    parser = argparse.ArgumentParser(description=descr)
+    parser = argparse.ArgumentParser(
+        description=descr,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-g', '--gerrit-url', dest='gerrit_url',
                         required=True,
                         help='gerrit server url')
@@ -67,7 +69,7 @@ def _main():
                         action='store_true',
                         help='enable verbose (debug) logging')
 
-    (options, _args) = parser.parse_args()
+    options = parser.parse_args()
 
     level = logging.DEBUG if options.verbose else logging.INFO
     logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',

@@ -25,8 +25,8 @@
 
 """ Example of using the Gerrit client class. """
 
-import logging
 import argparse
+import logging
 import sys
 from threading import Event
 import time
@@ -38,22 +38,24 @@ from pygerrit.events import ErrorEvent
 
 def _main():
     descr = 'Send request using Gerrit ssh API'
-    parser = argparse.ArgumentParser(description=descr)
+    parser = argparse.ArgumentParser(
+        description=descr,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-g', '--gerrit-hostname', dest='hostname',
                         default='review',
-                        help='gerrit server hostname (default: %default)')
+                        help='gerrit server hostname')
     parser.add_argument('-p', '--port', dest='port',
-                        type='int', default=29418,
-                        help='port number (default: %default)')
+                        type=int, default=29418,
+                        help='port number')
     parser.add_argument('-u', '--username', dest='username',
                         help='username')
     parser.add_argument('-b', '--blocking', dest='blocking',
                         action='store_true',
-                        help='block on event get (default: False)')
+                        help='block on event get')
     parser.add_argument('-t', '--timeout', dest='timeout',
-                        default=None, type='int',
-                        help='timeout (seconds) for blocking event get '
-                        '(default: None)')
+                        default=None, type=int,
+                        metavar='SECONDS',
+                        help='timeout for blocking event get')
     parser.add_argument('-v', '--verbose', dest='verbose',
                         action='store_true',
                         help='enable verbose (debug) logging')
@@ -61,7 +63,7 @@ def _main():
                         action='store_true',
                         help='do not exit when an error event is received')
 
-    (options, _args) = parser.parse_args()
+    options = parser.parse_args()
     if options.timeout and not options.blocking:
         parser.error('Can only use --timeout with --blocking')
 
