@@ -3,6 +3,11 @@
 History
 -------
 
+0.2.5 (2014-04-17)
+++++++++++++++++++
+- Update examples to use argparse instead of optparse
+- Fix hanging ssh connections when stream closes
+
 0.2.4 (2014-03-17)
 ++++++++++++++++++
 

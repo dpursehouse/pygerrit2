@@ -13,3 +13,5 @@ Patches and Suggestions
 - Ernst Sjöstrand <ernst.sjostrand@sonymobile.com>
 - Jens Andersen <jens.andersen@gmail.com>
 - Christopher Zee <christopher.xs.zee@gmail.com>
+- Johannes Richter <johannes.richter@kernkonzept.com>
+- Andrey Devyatkin <andrey.a.devyatkin@gmail.com>
