@@ -40,7 +40,7 @@ VIRTUALENV_OK := $(shell expr `virtualenv --version | \
 
 all: test
 
-test: clean unittests pyflakes pep8 pep257 pylint
+test: clean unittests pyflakes pep8 pep257
 
 docs: html
 
@@ -90,12 +90,6 @@ sphinx: docenvsetup
               --full \
               --force \
               -o docs pygerrit"
-
-pylint: testenvsetup
-	bash -c "\
-          source ./pygerritenv/bin/activate && \
-          git ls-files | grep \"\.py$$\" | grep -v "unittests" | \
-          xargs pylint --rcfile=.pylintrc"
 
 pep257: testenvsetup
 	bash -c "\
