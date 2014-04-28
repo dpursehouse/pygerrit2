@@ -27,29 +27,6 @@
 
 import unittest
 
-from setup import REQUIRES as setup_requires
-
-
-class TestConsistentDependencies(unittest.TestCase):
-
-    """ Verify that dependency package versions are consistent. """
-
-    def test_dependencies(self):
-        requirements_txt = {}
-        setup_py = {}
-
-        for package in open("requirements.txt").read().strip().splitlines():
-            name, version = package.split('==')
-            requirements_txt[name] = version
-
-        for package in setup_requires:
-            name, version = package.split('==')
-            setup_py[name] = version
-
-        self.assertEquals(requirements_txt, setup_py,
-                          "Inconsistency between dependency package versions "
-                          "listed in requirements.txt and setup.py")
-
 
 if __name__ == '__main__':
     unittest.main()

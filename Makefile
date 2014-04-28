@@ -22,7 +22,6 @@
 
 PWD := $(shell pwd)
 TAG := $(shell git tag -l --contains HEAD)
-STATUS := $(shell git status --porcelain)
 
 VIRTUALENV := $(shell which virtualenv)
 ifeq ($(wildcard $(VIRTUALENV)),)
@@ -44,7 +43,7 @@ test: clean unittests pyflakes pep8 pep257
 
 docs: html
 
-sdist: valid-virtualenv test valid-env
+sdist: valid-virtualenv test
 	bash -c "\
           source ./pygerritenv/bin/activate && \
           python setup.py sdist"
@@ -55,21 +54,10 @@ ddist: sdist docs
           zip -r $(PWD)/dist/pygerrit-$(TAG)-api-documentation.zip . && \
           cd $(PWD)"
 
-valid-env: valid-version valid-git-status
-
 valid-virtualenv:
 ifeq ($(VIRTUALENV_OK),0)
   $(error virtualenv version $(REQUIRED_VIRTUALENV) or higher is needed)
 endif
-
-valid-version: valid-tag
-	@python version.py $(TAG)
-
-valid-tag:
-	@echo "$(TAG)" | grep -q "^[0-9]\+\.[0-9]\+\.[0-9]\+$$"
-
-valid-git-status:
-	@echo "$(STATUS)" | grep -q "^$$"
 
 html: sphinx
 	bash -c "\
@@ -127,7 +115,7 @@ envsetup: envinit
           pip install --upgrade -r requirements.txt"
 
 envinit:
-	bash -c "[ -e ./pygerritenv/bin/activate ] || virtualenv ./pygerritenv"
+	bash -c "[ -e ./pygerritenv/bin/activate ] || virtualenv --system-site-packages ./pygerritenv"
 
 clean:
 	@find . -type f -name "*.pyc" -exec rm -f {} \;

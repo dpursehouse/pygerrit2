@@ -1,8 +1,12 @@
 *.pyc
+.project
+.pydevproject
 .settings
 build/
 dist/
 docs/
 pygerrit.egg-info/
 pygerritenv/
+ChangeLog
+AUTHORS
 MANIFEST

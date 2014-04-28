@@ -22,9 +22,6 @@
 
 """ Module to interface with Gerrit. """
 
-__numversion__ = (0, 2, 5)
-__version__ = '.'.join([str(num) for num in __numversion__])
-
 
 def from_json(json_data, key):
     """ Helper method to extract values from JSON data.

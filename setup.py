@@ -25,40 +25,14 @@
 
 """ Client library for interacting with Gerrit. """
 
-from setuptools import setup, find_packages
-
-from pygerrit import __version__
-
-REQUIRES = ['requests==2.0.1']
+import setuptools
 
 
 def _main():
-    setup(
-        name="pygerrit",
-        description="Client library for interacting with Gerrit",
-        long_description=open('README.rst').read(),
-        version=__version__,
-        license=open('LICENSE').read(),
-        author="David Pursehouse",
-        author_email="david.pursehouse@sonymobile.com",
-        maintainer="David Pursehouse",
-        maintainer_email="david.pursehouse@sonymobile.com",
-        url="https://github.com/sonyxperiadev/pygerrit",
-        packages=find_packages(),
-        keywords='gerrit, json, rest, http',
-        install_requires=REQUIRES,
-        classifiers=(
-            'Development Status :: 3 - Alpha',
-            'Environment :: Console',
-            'Intended Audience :: Developers',
-            'License :: OSI Approved :: MIT License',
-            'Natural Language :: English',
-            'Programming Language :: Python',
-            'Programming Language :: Python :: 2.6',
-            'Programming Language :: Python :: 2.7',
-        ),
-    )
-
+    setuptools.setup(
+        packages=setuptools.find_packages(),
+        setup_requires=['pbr'],
+        pbr=True)
 
 if __name__ == "__main__":
     _main()
