@@ -68,8 +68,11 @@ class GerritRestAPI(object):
         configured to not attempt to verify SSL certificates.
 
         """
+        headers = {'Accept': 'application/json',
+                   'Accept-Encoding': 'gzip'}
         self.kwargs = {'auth': auth,
-                       'verify': verify}
+                       'verify': verify,
+                       'headers': headers}
         self.url = url.rstrip('/')
         self.session = requests.session()
 
