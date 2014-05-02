@@ -124,6 +124,8 @@ class GerritRestAPI(object):
 
         """
         kwargs.update(self.kwargs.copy())
+        kwargs["headers"].update(
+            {"Content-Type": "application/json;charset=UTF-8"})
         response = self.session.put(self.make_url(endpoint), **kwargs)
         return _decode_response(response)
 
@@ -136,6 +138,8 @@ class GerritRestAPI(object):
 
         """
         kwargs.update(self.kwargs.copy())
+        kwargs["headers"].update(
+            {"Content-Type": "application/json;charset=UTF-8"})
         response = self.session.post(self.make_url(endpoint), **kwargs)
         return _decode_response(response)
 
