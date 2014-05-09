@@ -29,7 +29,7 @@ from threading import Event, Lock
 
 from .error import GerritError
 
-from paramiko import SSHClient, SSHConfig
+from paramiko import SSHClient, SSHConfig, ProxyCommand
 from paramiko.ssh_exception import SSHException
 
 
@@ -75,6 +75,7 @@ class GerritSSHClient(SSHClient):
         self.port = port
         self.connected = Event()
         self.lock = Lock()
+        self.proxy = None
 
     def _configure(self):
         """ Configure the ssh parameters from the config file. """
@@ -102,6 +103,8 @@ class GerritSSHClient(SSHClient):
             self.port = int(data['port'])
         except ValueError:
             raise GerritError("Invalid port: %s" % data['port'])
+        if 'proxycommand' in data:
+            self.proxy = ProxyCommand(data['proxycommand'])
 
     def _do_connect(self):
         """ Connect to the remote. """
@@ -112,7 +115,8 @@ class GerritSSHClient(SSHClient):
             self.connect(hostname=self.hostname,
                          port=self.port,
                          username=self.username,
-                         key_filename=self.key_filename)
+                         key_filename=self.key_filename,
+                         sock=self.proxy)
         except socket.error as e:
             raise GerritError("Failed to connect to server: %s" % e)
 
