@@ -1,0 +1,13 @@
+{"type":"change-restored",
+ "change":{"project":"project-name",
+           "branch":"branch-name",
+           "topic":"topic-name",
+           "id":"Ideadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+           "number":"123456",
+           "subject":"Commit message subject",
+           "owner":{"name":"Owner Name",
+                    "email":"owner@example.com"},
+           "url":"http://review.example.com/123456"},
+ "restorer":{"name":"Restorer Name",
+             "email":"restorer@example.com"},
+ "reason":"Restore reason"}

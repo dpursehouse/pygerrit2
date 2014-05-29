@@ -1,0 +1,4 @@
+)]}'
+{"type":"user-defined-event",
+ "title":"Event title",
+ "description":"Event description"}

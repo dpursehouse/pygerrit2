@@ -1,0 +1,13 @@
+{"type":"change-abandoned",
+ "change":{"project":"project-name",
+           "branch":"branch-name",
+           "topic":"topic-name",
+           "id":"Ideadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+           "number":"123456",
+           "subject":"Commit message subject",
+           "owner":{"name":"Owner Name",
+                    "email":"owner@example.com"},
+           "url":"http://review.example.com/123456"},
+ "abandoner":{"name":"Abandoner Name",
+              "email":"abandoner@example.com"},
+ "reason":"Abandon reason"}
