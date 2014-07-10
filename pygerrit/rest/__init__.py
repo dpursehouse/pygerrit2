@@ -154,3 +154,88 @@ class GerritRestAPI(object):
         kwargs.update(self.kwargs.copy())
         response = self.session.delete(self.make_url(endpoint), **kwargs)
         return _decode_response(response)
+
+    def review(self, change_id, revision, review):
+        """ Send HTTP POST with review parameters.
+
+        Return JSON decoded result.
+
+        Raise requests.RequestException on timeout or connection error.
+
+        """
+
+        endpoint = "changes/%s/revisions/%s/review" % (change_id, revision)
+        self.post(endpoint, data=str(review))
+
+
+class GerritReview(object):
+
+    """Class to handle inline reviews."""
+
+    def __init__(self, message=None, labels=None, comments=None):
+        """ Initialization.
+
+        Format Eg:
+        labels :
+        {'Verified': 1, 'Code-Review': -1}
+        comments :
+        [{'filename': 'Makefile', 'line': 10, 'message': 'inline message'}]
+
+        """
+        self.message = message if message else ""
+        if labels:
+            if not isinstance(labels, dict):
+                raise ValueError("labels must be a dict.")
+            self.labels = labels
+        else:
+            self.labels = {}
+        if comments:
+            if not isinstance(comments, list):
+                raise ValueError("comments must be a list.")
+            self.comments = {}
+            self.add_comments(comments)
+        else:
+            self.comments = {}
+
+    def set_message(self, message):
+        """Set review message."""
+        self.message = message
+
+    def add_labels(self, labels):
+        """Set Labels.
+
+        Format Eg:  {'Verified': 1, 'Code-Review': -1}
+
+        """
+        self.labels.update(labels)
+
+    def add_comments(self, comments):
+        """Add inline comments.
+
+        Format Eg:
+        [{'filename': 'Makefile', 'line': 10, 'message': 'inline message'}]
+
+        """
+        for comment in comments:
+            if 'filename' and 'line' and 'message' in comment.keys():
+                line_msg = {"line": comment['line'],
+                            "message": comment['message']}
+                file_comment = {comment['filename']: [line_msg]}
+                if self.comments:
+                    if comment['filename'] in self.comments.keys():
+                        self.comments[comment['filename']].append(line_msg)
+                    else:
+                        self.comments.update(file_comment)
+                else:
+                    self.comments.update(file_comment)
+
+    def __str__(self):
+        """Return review in str format."""
+        review_input = {}
+        if self.message:
+            review_input.update({'message': self.message})
+        if self.labels:
+            review_input.update({'labels': self.labels})
+        if self.comments:
+            review_input.update({'comments': self.comments})
+        return json.dumps(review_input)
