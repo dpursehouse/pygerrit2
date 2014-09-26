@@ -2,4 +2,4 @@ ecdsa==0.11
 paramiko==1.14.0
 pbr==0.8.0
 pycrypto==2.3
-requests==2.3.0
+requests==2.4.1
