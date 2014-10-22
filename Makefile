@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 
 PWD := $(shell pwd)
-TAG := $(shell git tag -l --contains HEAD)
+VERSION := $(shell git describe)
 
 VIRTUALENV := $(shell which virtualenv)
 ifeq ($(wildcard $(VIRTUALENV)),)
@@ -51,7 +51,7 @@ sdist: valid-virtualenv test
 ddist: sdist docs
 	bash -c "\
           cd docs/_build/html && \
-          zip -r $(PWD)/dist/pygerrit-$(TAG)-api-documentation.zip . && \
+          zip -r $(PWD)/dist/pygerrit-$(VERSION)-api-documentation.zip . && \
           cd $(PWD)"
 
 valid-virtualenv:
@@ -71,8 +71,8 @@ sphinx: docenvsetup
 	bash -c "\
           source ./pygerritenv/bin/activate && \
           sphinx-apidoc \
-              -V \"$(TAG)\" \
-              -R \"$(TAG)\" \
+              -V \"$(VERSION)\" \
+              -R \"$(VERSION)\" \
               -H \"Pygerrit\" \
               -A \"Sony Mobile Communications\" \
               --full \
