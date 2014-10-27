@@ -31,13 +31,14 @@ GERRIT_AUTH_SUFFIX = "/a"
 
 
 def _decode_response(response):
-    """ Decode the `response` received from a REST API call.
+    """ Strip off Gerrit's magic prefix and decode a response.
 
-    Strip off Gerrit's magic prefix if it is there, and return decoded
-    JSON content or raw text if it cannot be decoded as JSON.
+    :returns:
+        Decoded JSON content as a dict, or raw text if content could not be
+        decoded as JSON.
 
-    Raise requests.HTTPError if the response contains an HTTP error status
-    code.
+    :raises:
+        requests.HTTPError if the response contains an HTTP error status code.
 
     """
     response.raise_for_status()
@@ -52,22 +53,19 @@ def _decode_response(response):
 
 class GerritRestAPI(object):
 
-    """ Interface to the Gerrit REST API. """
+    """ Interface to the Gerrit REST API.
+
+    :arg str url: The full URL to the server, including the `http(s)://` prefix.
+        If `auth` is given, `url` will be automatically adjusted to include
+        Gerrit's authentication suffix.
+    :arg auth: (optional) Authentication handler.  Must be derived from
+        `requests.auth.AuthBase`.
+    :arg boolean verify: (optional) Set to False to disable verification of
+        SSL certificates.
+
+    """
 
     def __init__(self, url, auth=None, verify=True):
-        """ Constructor.
-
-        `url` is assumed to be the full URL to the server, including the
-        'http(s)://' prefix.
-
-        If `auth` is specified, it must be a derivation of the `AuthBase`
-        class from the `requests` module.  The `url` will be adjusted if
-        necessary to make sure it includes Gerrit's authentication suffix.
-
-        If `verify` is False, the underlying requests library will be
-        configured to not attempt to verify SSL certificates.
-
-        """
         headers = {'Accept': 'application/json',
                    'Accept-Encoding': 'gzip'}
         self.kwargs = {'auth': auth,
@@ -92,23 +90,30 @@ class GerritRestAPI(object):
         logging.debug("url %s", self.url)
 
     def make_url(self, endpoint):
-        """ Make the necessary url from `endpoint`.
+        """ Make the full url for the endpoint.
 
-        Strip leading slashes off the endpoint, and return the full
-        url.
+        :arg str endpoint: The endpoint.
 
-        Raise requests.RequestException on timeout or connection error.
+        :returns:
+            The full url with leading slashes stripped.
+
+        :raises:
+            requests.RequestException on timeout or connection error.
 
         """
         endpoint = endpoint.lstrip('/')
         return self.url + endpoint
 
     def get(self, endpoint, **kwargs):
-        """ Send HTTP GET to `endpoint`.
+        """ Send HTTP GET to the endpoint.
 
-        Return JSON decoded result.
+        :arg str endpoint: The endpoint to send to.
 
-        Raise requests.RequestException on timeout or connection error.
+        :returns:
+            JSON decoded result.
+
+        :raises:
+            requests.RequestException on timeout or connection error.
 
         """
         kwargs.update(self.kwargs.copy())
@@ -116,11 +121,15 @@ class GerritRestAPI(object):
         return _decode_response(response)
 
     def put(self, endpoint, **kwargs):
-        """ Send HTTP PUT to `endpoint`.
+        """ Send HTTP PUT to the endpoint.
 
-        Return JSON decoded result.
+        :arg str endpoint: The endpoint to send to.
 
-        Raise requests.RequestException on timeout or connection error.
+        :returns:
+            JSON decoded result.
+
+        :raises:
+            requests.RequestException on timeout or connection error.
 
         """
         kwargs.update(self.kwargs.copy())
@@ -130,11 +139,15 @@ class GerritRestAPI(object):
         return _decode_response(response)
 
     def post(self, endpoint, **kwargs):
-        """ Send HTTP POST to `endpoint`.
+        """ Send HTTP POST to the endpoint.
 
-        Return JSON decoded result.
+        :arg str endpoint: The endpoint to send to.
 
-        Raise requests.RequestException on timeout or connection error.
+        :returns:
+            JSON decoded result.
+
+        :raises:
+            requests.RequestException on timeout or connection error.
 
         """
         kwargs.update(self.kwargs.copy())
@@ -144,11 +157,15 @@ class GerritRestAPI(object):
         return _decode_response(response)
 
     def delete(self, endpoint, **kwargs):
-        """ Send HTTP DELETE to `endpoint`.
+        """ Send HTTP DELETE to the endpoint.
 
-        Return JSON decoded result.
+        :arg str endpoint: The endpoint to send to.
 
-        Raise requests.RequestException on timeout or connection error.
+        :returns:
+            JSON decoded result.
+
+        :raises:
+            requests.RequestException on timeout or connection error.
 
         """
         kwargs.update(self.kwargs.copy())
@@ -156,11 +173,17 @@ class GerritRestAPI(object):
         return _decode_response(response)
 
     def review(self, change_id, revision, review):
-        """ Send HTTP POST with review parameters.
+        """ Submit a review.
 
-        Return JSON decoded result.
+        :arg str change_id: The change ID.
+        :arg str revision: The revision.
+        :arg str review: The review details as a :class:`GerritReview`.
 
-        Raise requests.RequestException on timeout or connection error.
+        :returns:
+            JSON decoded result.
+
+        :raises:
+            requests.RequestException on timeout or connection error.
 
         """
 
@@ -170,18 +193,15 @@ class GerritRestAPI(object):
 
 class GerritReview(object):
 
-    """Class to handle inline reviews."""
+    """ Encapsulation of a Gerrit review.
+
+    :arg str message: (optional) Cover message.
+    :arg dict labels: (optional) Review labels.
+    :arg dict comments: (optional) Inline comments.
+
+    """
 
     def __init__(self, message=None, labels=None, comments=None):
-        """ Initialization.
-
-        Format Eg:
-        labels :
-        {'Verified': 1, 'Code-Review': -1}
-        comments :
-        [{'filename': 'Makefile', 'line': 10, 'message': 'inline message'}]
-
-        """
         self.message = message if message else ""
         if labels:
             if not isinstance(labels, dict):
@@ -198,22 +218,36 @@ class GerritReview(object):
             self.comments = {}
 
     def set_message(self, message):
-        """Set review message."""
+        """ Set review cover message.
+
+        :arg str message: Cover message.
+
+        """
         self.message = message
 
     def add_labels(self, labels):
-        """Set Labels.
+        """ Add labels.
 
-        Format Eg:  {'Verified': 1, 'Code-Review': -1}
+        :arg dict labels: Labels to add, for example
+
+        Usage::
+
+            add_labels({'Verified': 1,
+                        'Code-Review': -1})
 
         """
         self.labels.update(labels)
 
     def add_comments(self, comments):
-        """Add inline comments.
+        """ Add inline comments.
 
-        Format Eg:
-        [{'filename': 'Makefile', 'line': 10, 'message': 'inline message'}]
+        :arg dict comments: Comments to add.
+
+        Usage::
+
+            add_comments([{'filename': 'Makefile',
+                           'line': 10,
+                           'message': 'inline message'}])
 
         """
         for comment in comments:
@@ -230,7 +264,6 @@ class GerritReview(object):
                     self.comments.update(file_comment)
 
     def __str__(self):
-        """Return review in str format."""
         review_input = {}
         if self.message:
             review_input.update({'message': self.message})

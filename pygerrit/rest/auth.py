@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-""" Authentication classes. """
+""" Authentication handlers. """
 
 from requests.auth import HTTPDigestAuth, HTTPBasicAuth
 from requests.utils import get_netrc_auth

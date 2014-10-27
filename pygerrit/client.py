@@ -35,7 +35,13 @@ from .stream import GerritStream
 
 class GerritClient(object):
 
-    """ Gerrit client interface. """
+    """ Gerrit client interface.
+
+    :arg str host: The hostname.
+    :arg str username: (optional) The username to use when connecting.
+    :arg str port: (optional) The port number to connect to.
+
+    """
 
     def __init__(self, host, username=None, port=None):
         self._factory = GerritEventFactory()
@@ -44,25 +50,45 @@ class GerritClient(object):
         self._ssh_client = GerritSSHClient(host, username=username, port=port)
 
     def gerrit_version(self):
-        """ Return the version of Gerrit that is connected to. """
+        """ Get the Gerrit version.
+
+        :Returns: The version of Gerrit that is connected to, as a string.
+
+        """
         return self._ssh_client.get_remote_version()
 
     def gerrit_info(self):
-        """ Return the username, and version of Gerrit that is connected to. """
+        """ Get connection information.
+
+        :Returns: A tuple of the username, and version of Gerrit that is
+            connected to.
+
+        """
+
         return self._ssh_client.get_remote_info()
 
     def run_command(self, command):
-        """ Run the command.  Return the result. """
+        """ Run a command.
+
+        :arg str command: The command to run.
+
+        :Return: The result as a string.
+
+        :Raises: `ValueError` if `command` is not a string.
+
+        """
         if not isinstance(command, basestring):
             raise ValueError("command must be a string")
         return self._ssh_client.run_gerrit_command(command)
 
     def query(self, term):
-        """ Run `gerrit query` with the given `term`.
+        """ Run a query.
 
-        Return a list of results as `Change` objects.
+        :arg str term: The query term to run.
 
-        Raise `ValueError` if `term` is not a string.
+        :Returns: A list of results as :class:`pygerrit.models.Change` objects.
+
+        :Raises: `ValueError` if `term` is not a string.
 
         """
         results = []
@@ -111,10 +137,14 @@ class GerritClient(object):
     def get_event(self, block=True, timeout=None):
         """ Get the next event from the queue.
 
-        Return a `GerritEvent` instance, or None if:
-         - `block` is False and there is no event available in the queue, or
-         - `block` is True and no event is available within the time
-           specified by `timeout`.
+        :arg boolean block: Set to True to block if no event is available.
+        :arg seconds timeout: Timeout to wait if no event is available.
+
+        :Returns: The next event as a :class:`pygerrit.events.GerritEvent`
+            instance, or `None` if:
+             - `block` is False and there is no event available in the queue, or
+             - `block` is True and no event is available within the time
+               specified by `timeout`.
 
         """
         try:
@@ -125,8 +155,10 @@ class GerritClient(object):
     def put_event(self, data):
         """ Create event from `data` and add it to the queue.
 
-        Raise GerritError if the queue is full, or the factory could not
-        create the event.
+        :arg json data: The JSON data from which to create the event.
+
+        :Raises: :class:`pygerrit.error.GerritError` if the queue is full, or
+            the factory could not create the event.
 
         """
         try:

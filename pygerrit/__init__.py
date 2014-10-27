@@ -26,8 +26,11 @@
 def from_json(json_data, key):
     """ Helper method to extract values from JSON data.
 
-    Return the value of `key` from `json_data`, or None if `json_data`
-    does not contain `key`.
+    :arg dict json_data: The JSON data
+    :arg str key: Key to get data for.
+
+    :Returns: The value of `key` from `json_data`, or None if `json_data`
+        does not contain `key`.
 
     """
     if key in json_data:
@@ -38,9 +41,11 @@ def from_json(json_data, key):
 def escape_string(string):
     """ Escape a string for use in Gerrit commands.
 
-    Return the string with necessary escapes and surrounding double quotes
-    so that it can be passed to any of the Gerrit commands that require
-    double-quoted strings.
+    :arg str string: The string to escape.
+
+    :returns: The string with necessary escapes and surrounding double quotes
+        so that it can be passed to any of the Gerrit commands that require
+        double-quoted strings.
 
     """
 
@@ -52,17 +57,16 @@ def escape_string(string):
 
 class GerritReviewMessageFormatter(object):
 
-    """ Helper class to format review messages that are sent to Gerrit. """
+    """ Helper class to format review messages that are sent to Gerrit.
+
+    :arg str header: (optional) If specified, will be prepended as the first
+        paragraph of the output message.
+    :arg str footer: (optional) If specified, will be appended as the last
+        paragraph of the output message.
+
+    """
 
     def __init__(self, header=None, footer=None):
-        """ Constructor.
-
-        If `header` is specified, it will be prepended as the first
-        paragraph of the output message.  If `footer` is specified it
-        will be appended as the last paragraph of the output message.
-
-        """
-
         self.paragraphs = []
         if header:
             self.header = header.strip()
@@ -76,11 +80,11 @@ class GerritReviewMessageFormatter(object):
     def append(self, data):
         """ Append the given `data` to the output.
 
-        If `data` is a list, it is formatted as a bullet list with each
-        entry in the list being a separate bullet.  Otherwise if it is a
-        string, the string is added as a paragraph.
+        :arg data: If a list, it is formatted as a bullet list with each
+            entry in the list being a separate bullet.  Otherwise if it is a
+            string, the string is added as a paragraph.
 
-        Raises ValueError if `data` is not a list or a string.
+        :raises: ValueError if `data` is not a list or a string.
 
         """
         if not data:
@@ -114,15 +118,19 @@ class GerritReviewMessageFormatter(object):
             raise ValueError('Data must be a list or a string')
 
     def is_empty(self):
-        """ Return True if no paragraphs have been added. """
+        """ Check if the formatter is empty.
+
+        :Returns: True if empty, i.e. no paragraphs have been added.
+
+        """
         return not self.paragraphs
 
     def format(self):
         """ Format the message parts to a string.
 
-        Return a string of all the message parts separated into paragraphs,
-        with header and footer paragraphs if they were specified in the
-        constructor.
+        :Returns: A string of all the message parts separated into paragraphs,
+            with header and footer paragraphs if they were specified in the
+            constructor.
 
         """
         message = ""
