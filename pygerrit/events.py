@@ -72,10 +72,10 @@ class GerritEventFactory(object):
             logging.debug("Failed to load json data: %s: [%s]", str(err), data)
             json_data = json.loads(ErrorEvent.error_json(err))
 
-        if not "type" in json_data:
+        if "type" not in json_data:
             raise GerritError("`type` not in json_data")
         name = json_data["type"]
-        if not name in cls._events:
+        if name not in cls._events:
             name = 'unhandled-event'
         event = cls._events[name]
         module_name = event[0]

@@ -459,7 +459,8 @@ class TestGerritReview(unittest.TestCase):
 
         obj5 = GerritReview(comments=[{'filename': 'Makefile', 'line': 15,
                             'message': 'test'}, {'filename': 'Make',
-                            'line': 10, 'message': 'test1'}])
+                                                 'line': 10,
+                                                 'message': 'test1'}])
         self.assertEqual(
             str(obj5),
             '{"comments": {"Make": [{"line": 10, "message": "test1"}],'

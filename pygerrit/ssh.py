@@ -89,7 +89,7 @@ class GerritSSHClient(SSHClient):
         data = config.lookup(self.hostname)
         if not data:
             raise GerritError("No ssh config for host %s" % self.hostname)
-        if not 'hostname' in data or not 'port' in data or not 'user' in data:
+        if 'hostname' not in data or 'port' not in data or 'user' not in data:
             raise GerritError("Missing configuration data in %s" % configfile)
         self.hostname = data['hostname']
         self.username = data['user']
