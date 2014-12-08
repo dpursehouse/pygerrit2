@@ -95,10 +95,7 @@ class GerritRestAPI(object):
         :arg str endpoint: The endpoint.
 
         :returns:
-            The full url with leading slashes stripped.
-
-        :raises:
-            requests.RequestException on timeout or connection error.
+            The full url.
 
         """
         endpoint = endpoint.lstrip('/')
