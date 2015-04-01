@@ -171,6 +171,12 @@ class GerritSSHClient(SSHClient):
             raise ValueError("command must be a string")
         gerrit_command = "gerrit " + command
 
+        # are we sending non-ascii data?
+        try:
+            gerrit_command.encode('ascii')
+        except UnicodeEncodeError:
+            gerrit_command = gerrit_command.encode('utf-8')
+
         self._connect()
         try:
             stdin, stdout, stderr = self.exec_command(gerrit_command,
