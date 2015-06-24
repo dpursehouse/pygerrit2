@@ -41,8 +41,9 @@ def _decode_response(response):
         requests.HTTPError if the response contains an HTTP error status code.
 
     """
-    response.raise_for_status()
     content = response.content
+    logging.debug(content[:512])
+    response.raise_for_status()
     if content.startswith(GERRIT_MAGIC_JSON_PREFIX):
         content = content[len(GERRIT_MAGIC_JSON_PREFIX):]
     try:
