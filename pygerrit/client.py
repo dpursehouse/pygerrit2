@@ -40,14 +40,19 @@ class GerritClient(object):
     :arg str host: The hostname.
     :arg str username: (optional) The username to use when connecting.
     :arg str port: (optional) The port number to connect to.
+    :arg int keepalive: (optional) Keepalive interval in seconds.
 
     """
 
-    def __init__(self, host, username=None, port=None):
+    def __init__(self, host, username=None, port=None, keepalive=None):
         self._factory = GerritEventFactory()
         self._events = Queue()
         self._stream = None
-        self._ssh_client = GerritSSHClient(host, username=username, port=port)
+        self.keepalive = keepalive
+        self._ssh_client = GerritSSHClient(host,
+                                           username=username,
+                                           port=port,
+                                           keepalive=keepalive)
 
     def gerrit_version(self):
         """ Get the Gerrit version.

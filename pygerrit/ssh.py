@@ -65,7 +65,7 @@ class GerritSSHClient(SSHClient):
 
     """ Gerrit SSH Client, wrapping the paramiko SSH Client. """
 
-    def __init__(self, hostname, username=None, port=None):
+    def __init__(self, hostname, username=None, port=None, keepalive=None):
         """ Initialise and connect to SSH. """
         super(GerritSSHClient, self).__init__()
         self.remote_version = None
@@ -76,6 +76,7 @@ class GerritSSHClient(SSHClient):
         self.connected = Event()
         self.lock = Lock()
         self.proxy = None
+        self.keepalive = keepalive
 
     def _configure(self):
         """ Configure the ssh parameters from the config file. """
@@ -136,6 +137,8 @@ class GerritSSHClient(SSHClient):
                 # waiting to acquire the lock
                 if not self.connected.is_set():
                     self._do_connect()
+                    if self.keepalive:
+                        self._transport.set_keepalive(self.keepalive)
                     self.connected.set()
             except GerritError:
                 raise
