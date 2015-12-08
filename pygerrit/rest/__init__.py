@@ -41,7 +41,7 @@ def _decode_response(response):
         requests.HTTPError if the response contains an HTTP error status code.
 
     """
-    content = response.content
+    content = response.content.strip()
     logging.debug(content[:512])
     response.raise_for_status()
     if content.startswith(GERRIT_MAGIC_JSON_PREFIX):
@@ -49,7 +49,8 @@ def _decode_response(response):
     try:
         return json.loads(content)
     except ValueError:
-        return content.strip()
+        logging.error('Invalid json content: %s' % content)
+        raise
 
 
 class GerritRestAPI(object):
