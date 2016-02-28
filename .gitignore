@@ -2,6 +2,7 @@
 .project
 .pydevproject
 .settings
+.idea
 build/
 dist/
 docs/

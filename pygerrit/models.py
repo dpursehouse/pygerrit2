@@ -72,6 +72,12 @@ class Change(object):
     def __repr__(self):
         return u"<Change %s, %s, %s>" % (self.number, self.project, self.branch)
 
+    @staticmethod
+    def from_json(json_data):
+        if "change" in json_data:
+            return Change(json_data["change"])
+        return None
+
 
 class Patchset(object):
 
