@@ -74,6 +74,12 @@ class Change(object):
 
     @staticmethod
     def from_json(json_data):
+        r""" Create a Change instance.
+
+        Return an instance of Change initialised with values from "change"
+        in `json_data`, or None if `json_data` does not contain "change".
+
+        """
         if "change" in json_data:
             return Change(json_data["change"])
         return None
