@@ -379,6 +379,8 @@ class TestGerritEvents(unittest.TestCase):
         event = self.gerrit.get_event(False)
         self.assertTrue(isinstance(event, UnhandledEvent))
         self.assertEqual(event.json, json.loads(data))
+        self.assertEqual(
+            repr(event), "<UnhandledEvent> this-event-is-not-handled")
 
     def test_invalid_json(self):
         _create_event("invalid-json", self.gerrit)

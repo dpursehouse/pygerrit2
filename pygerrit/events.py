@@ -102,7 +102,7 @@ class UnhandledEvent(GerritEvent):
         super(UnhandledEvent, self).__init__(json_data)
 
     def __repr__(self):
-        return u"<UnhandledEvent>"
+        return u"<UnhandledEvent> %s" % self.json["type"]
 
 
 @GerritEventFactory.register("error-event")
