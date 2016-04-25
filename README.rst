@@ -128,5 +128,5 @@ license details.
 .. _`paramiko`: https://github.com/paramiko/paramiko
 .. _example: https://github.com/sonyxperiadev/pygerrit/blob/master/example.py
 .. _rest_example: https://github.com/sonyxperiadev/pygerrit/blob/master/rest_example.py
-.. _`HTTP upload settings`: https://gerrit-documentation.storage.googleapis.com/Documentation/2.8/user-upload.html#http
+.. _`HTTP upload settings`: https://gerrit-documentation.storage.googleapis.com/Documentation/2.12/user-upload.html#http
 .. _LICENSE: https://github.com/sonyxperiadev/pygerrit/blob/master/LICENSE
