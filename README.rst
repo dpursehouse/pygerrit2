@@ -123,7 +123,7 @@ Copyright 2012 Sony Mobile Communications. All rights reserved.
 Licensed under The MIT License.  Please refer to the `LICENSE`_ file for full
 license details.
 
-.. _`Gerrit Code Review`: https://code.google.com/p/gerrit/
+.. _`Gerrit Code Review`: https://gerritcodereview.com/
 .. _`requests`: https://github.com/kennethreitz/requests
 .. _`paramiko`: https://github.com/paramiko/paramiko
 .. _example: https://github.com/sonyxperiadev/pygerrit/blob/master/example.py
