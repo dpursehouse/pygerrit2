@@ -3,7 +3,7 @@
 
 # The MIT License
 #
-# Copyright 2012 Sony Mobile Communications. All rights reserved.
+# Copyright 2013 Sony Mobile Communications. All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,89 +23,88 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-""" Example of using the Gerrit client class. """
+""" Example of using the Gerrit client REST API. """
 
 import argparse
 import logging
 import sys
-from threading import Event
-import time
 
-from pygerrit.client import GerritClient
-from pygerrit.error import GerritError
-from pygerrit.events import ErrorEvent
+from requests.auth import HTTPBasicAuth, HTTPDigestAuth
+from requests.exceptions import RequestException
+try:
+    # pylint: disable=F0401
+    from requests_kerberos import HTTPKerberosAuth, OPTIONAL
+    # pylint: enable=F0401
+    _kerberos_support = True
+except ImportError:
+    _kerberos_support = False
+
+from pygerrit2.rest import GerritRestAPI
+from pygerrit2.rest.auth import HTTPDigestAuthFromNetrc, HTTPBasicAuthFromNetrc
 
 
 def _main():
-    descr = 'Send request using Gerrit ssh API'
+    descr = 'Send request using Gerrit HTTP API'
     parser = argparse.ArgumentParser(
         description=descr,
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-g', '--gerrit-hostname', dest='hostname',
-                        default='review',
-                        help='gerrit server hostname')
-    parser.add_argument('-p', '--port', dest='port',
-                        type=int, default=29418,
-                        help='port number')
+    parser.add_argument('-g', '--gerrit-url', dest='gerrit_url',
+                        required=True,
+                        help='gerrit server url')
+    parser.add_argument('-b', '--basic-auth', dest='basic_auth',
+                        action='store_true',
+                        help='use basic auth instead of digest')
+    if _kerberos_support:
+        parser.add_argument('-k', '--kerberos-auth', dest='kerberos_auth',
+                            action='store_true',
+                            help='use kerberos auth')
     parser.add_argument('-u', '--username', dest='username',
                         help='username')
-    parser.add_argument('-b', '--blocking', dest='blocking',
+    parser.add_argument('-p', '--password', dest='password',
+                        help='password')
+    parser.add_argument('-n', '--netrc', dest='netrc',
                         action='store_true',
-                        help='block on event get')
-    parser.add_argument('-t', '--timeout', dest='timeout',
-                        default=None, type=int,
-                        metavar='SECONDS',
-                        help='timeout for blocking event get')
+                        help='Use credentials from netrc')
     parser.add_argument('-v', '--verbose', dest='verbose',
                         action='store_true',
                         help='enable verbose (debug) logging')
-    parser.add_argument('-i', '--ignore-stream-errors', dest='ignore',
-                        action='store_true',
-                        help='do not exit when an error event is received')
 
     options = parser.parse_args()
-    if options.timeout and not options.blocking:
-        parser.error('Can only use --timeout with --blocking')
 
     level = logging.DEBUG if options.verbose else logging.INFO
     logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                         level=level)
 
-    try:
-        gerrit = GerritClient(host=options.hostname,
-                              username=options.username,
-                              port=options.port)
-        logging.info("Connected to Gerrit version [%s]",
-                     gerrit.gerrit_version())
-        gerrit.start_event_stream()
-    except GerritError as err:
-        logging.error("Gerrit error: %s", err)
-        return 1
+    if _kerberos_support and options.kerberos_auth:
+        if options.username or options.password \
+                or options.basic_auth or options.netrc:
+            parser.error("--kerberos-auth may not be used together with "
+                         "--username, --password, --basic-auth or --netrc")
+        auth = HTTPKerberosAuth(mutual_authentication=OPTIONAL)
+    elif options.username and options.password:
+        if options.netrc:
+            logging.warning("--netrc option ignored")
+        if options.basic_auth:
+            auth = HTTPBasicAuth(options.username, options.password)
+        else:
+            auth = HTTPDigestAuth(options.username, options.password)
+    elif options.netrc:
+        if options.basic_auth:
+            auth = HTTPBasicAuthFromNetrc(url=options.gerrit_url)
+        else:
+            auth = HTTPDigestAuthFromNetrc(url=options.gerrit_url)
+    else:
+        auth = None
 
-    errors = Event()
-    try:
-        while True:
-            event = gerrit.get_event(block=options.blocking,
-                                     timeout=options.timeout)
-            if event:
-                logging.info("Event: %s", event)
-                if isinstance(event, ErrorEvent) and not options.ignore:
-                    logging.error(event.error)
-                    errors.set()
-                    break
-            else:
-                logging.info("No event")
-                if not options.blocking:
-                    time.sleep(1)
-    except KeyboardInterrupt:
-        logging.info("Terminated by user")
-    finally:
-        logging.debug("Stopping event stream...")
-        gerrit.stop_event_stream()
+    rest = GerritRestAPI(url=options.gerrit_url, auth=auth)
 
-    if errors.isSet():
-        logging.error("Exited with error")
-        return 1
+    try:
+        changes = rest.get("/changes/?q=owner:self%20status:open")
+        logging.info("%d changes", len(changes))
+        for change in changes:
+            logging.info(change['change_id'])
+    except RequestException as err:
+        logging.error("Error: %s", str(err))
 
 if __name__ == "__main__":
     sys.exit(_main())

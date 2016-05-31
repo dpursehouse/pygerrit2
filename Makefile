@@ -45,13 +45,13 @@ docs: html
 
 sdist: valid-virtualenv test
 	bash -c "\
-          source ./pygerritenv/bin/activate && \
+          source ./pygerrit2env/bin/activate && \
           python setup.py sdist"
 
 ddist: sdist docs
 	bash -c "\
           cd docs/_build/html && \
-          zip -r $(PWD)/dist/pygerrit-$(VERSION)-api-documentation.zip . && \
+          zip -r $(PWD)/dist/pygerrit2-$(VERSION)-api-documentation.zip . && \
           cd $(PWD)"
 
 valid-virtualenv:
@@ -61,7 +61,7 @@ endif
 
 html: sphinx
 	bash -c "\
-          source ./pygerritenv/bin/activate && \
+          source ./pygerrit2env/bin/activate && \
           export PYTHONPATH=$(PWD) && \
           cd docs && \
           make html && \
@@ -69,54 +69,54 @@ html: sphinx
 
 sphinx: docenvsetup
 	bash -c "\
-          source ./pygerritenv/bin/activate && \
+          source ./pygerrit2env/bin/activate && \
           sphinx-apidoc \
               -V \"$(VERSION)\" \
               -R \"$(VERSION)\" \
-              -H \"Pygerrit\" \
-              -A \"Sony Mobile Communications\" \
+              -H \"Pygerrit2\" \
+              -A \"David Pursehouse\" \
               --full \
               --force \
-              -o docs pygerrit"
+              -o docs pygerrit2"
 
 pep257: testenvsetup
 	bash -c "\
-          source ./pygerritenv/bin/activate && \
+          source ./pygerrit2env/bin/activate && \
           git ls-files | grep \"\.py$$\" | xargs pep257"
 
 pep8: testenvsetup
 	bash -c "\
-          source ./pygerritenv/bin/activate && \
+          source ./pygerrit2env/bin/activate && \
           git ls-files | grep \"\.py$$\" | xargs pep8 --max-line-length 80"
 
 pyflakes: testenvsetup
 	bash -c "\
-          source ./pygerritenv/bin/activate && \
+          source ./pygerrit2env/bin/activate && \
           git ls-files | grep \"\.py$$\" | xargs pyflakes"
 
 unittests: testenvsetup
 	bash -c "\
-          source ./pygerritenv/bin/activate && \
+          source ./pygerrit2env/bin/activate && \
           python unittests.py"
 
 testenvsetup: envsetup
 	bash -c "\
-          source ./pygerritenv/bin/activate && \
+          source ./pygerrit2env/bin/activate && \
           pip install --upgrade -r test_requirements.txt"
 
 docenvsetup: envsetup
 	bash -c "\
-          source ./pygerritenv/bin/activate && \
+          source ./pygerrit2env/bin/activate && \
           pip install --upgrade -r doc_requirements.txt"
 
 envsetup: envinit
 	bash -c "\
-          source ./pygerritenv/bin/activate && \
+          source ./pygerrit2env/bin/activate && \
           pip install --upgrade -r requirements.txt"
 
 envinit:
-	bash -c "[ -e ./pygerritenv/bin/activate ] || virtualenv --system-site-packages ./pygerritenv"
+	bash -c "[ -e ./pygerrit2env/bin/activate ] || virtualenv --system-site-packages ./pygerrit2env"
 
 clean:
 	@find . -type f -name "*.pyc" -exec rm -f {} \;
-	@rm -rf pygerritenv pygerrit.egg-info build dist docs
+	@rm -rf pygerrit2env pygerrit2.egg-info build dist docs

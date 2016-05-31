@@ -6,8 +6,8 @@
 build/
 dist/
 docs/
-pygerrit.egg-info/
-pygerritenv/
+pygerrit2.egg-info/
+pygerrit2env/
 ChangeLog
 AUTHORS
 MANIFEST
