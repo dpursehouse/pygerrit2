@@ -99,7 +99,12 @@ def _main():
     rest = GerritRestAPI(url=options.gerrit_url, auth=auth)
 
     try:
-        changes = rest.get("/changes/?q=owner:self%20status:open")
+        query = ["status:open"]
+        if auth:
+            query += ["owner:self"]
+        else:
+            query += ["limit:10"]
+        changes = rest.get("/changes/?q=%s" % "%20".join(query))
         logging.info("%d changes", len(changes))
         for change in changes:
             logging.info(change['change_id'])
