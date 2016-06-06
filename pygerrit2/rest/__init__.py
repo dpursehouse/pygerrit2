@@ -41,7 +41,7 @@ def _decode_response(response):
         requests.HTTPError if the response contains an HTTP error status code.
 
     """
-    content = response.content.strip()
+    content = response.content.strip().decode("UTF-8")
     logging.debug(content[:512])
     response.raise_for_status()
     if content.startswith(GERRIT_MAGIC_JSON_PREFIX):
@@ -258,19 +258,19 @@ class GerritReview(object):
 
         """
         for comment in comments:
-            if 'filename' and 'message' in comment.keys():
+            if 'filename' and 'message' in list(comment.keys()):
                 msg = {}
-                if 'range' in comment.keys():
+                if 'range' in list(comment.keys()):
                     msg = {"range": comment['range'],
                            "message": comment['message']}
-                elif 'line' in comment.keys():
+                elif 'line' in list(comment.keys()):
                     msg = {"line": comment['line'],
                            "message": comment['message']}
                 else:
                     continue
                 file_comment = {comment['filename']: [msg]}
                 if self.comments:
-                    if comment['filename'] in self.comments.keys():
+                    if comment['filename'] in list(self.comments.keys()):
                         self.comments[comment['filename']].append(msg)
                     else:
                         self.comments.update(file_comment)
