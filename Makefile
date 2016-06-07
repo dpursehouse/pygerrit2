@@ -87,7 +87,7 @@ pep257: testenvsetup
 pep8: testenvsetup
 	bash -c "\
           source ./pygerrit2env/bin/activate && \
-          git ls-files | grep \"\.py$$\" | xargs pep8 --max-line-length 80"
+          git ls-files | grep \"\.py$$\" | xargs flake8 --max-line-length 80"
 
 pyflakes: testenvsetup
 	bash -c "\
