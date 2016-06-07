@@ -285,4 +285,4 @@ class GerritReview(object):
             review_input.update({'labels': self.labels})
         if self.comments:
             review_input.update({'comments': self.comments})
-        return json.dumps(review_input)
+        return json.dumps(review_input, sort_keys=True)

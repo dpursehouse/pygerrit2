@@ -154,7 +154,7 @@ class TestGerritReview(unittest.TestCase):
         obj2 = GerritReview(labels={'Verified': 1, 'Code-Review': -1})
         self.assertEqual(
             str(obj2),
-            '{"labels": {"Verified": 1, "Code-Review": -1}}')
+            '{"labels": {"Code-Review": -1, "Verified": 1}}')
 
         obj3 = GerritReview(comments=[{'filename': 'Makefile',
                                       'line': 10, 'message': 'test'}])
@@ -167,8 +167,8 @@ class TestGerritReview(unittest.TestCase):
                                        'message': 'test'}])
         self.assertEqual(
             str(obj4),
-            '{"labels": {"Verified": 1, "Code-Review": -1},'
-            ' "comments": {"Makefile": [{"line": 10, "message": "test"}]}}')
+            '{"comments": {"Makefile": [{"line": 10, "message": "test"}]},'
+            ' "labels": {"Code-Review": -1, "Verified": 1}}')
 
         obj5 = GerritReview(comments=[{'filename': 'Makefile', 'line': 15,
                             'message': 'test'}, {'filename': 'Make',
