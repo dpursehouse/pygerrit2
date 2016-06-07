@@ -3,6 +3,8 @@
 .pydevproject
 .settings
 .idea
+.tox
+.eggs
 build/
 dist/
 docs/
