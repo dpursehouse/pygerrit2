@@ -27,25 +27,12 @@ To install pygerrit2, simply::
     $ pip install pygerrit2
 
 
-Configuration
--------------
+Usage
+-----
 
-For easier connection to the review server over the REST API, the user's
-HTTP username and password can be given in the user's ``.netrc`` file::
-
-    machine review login MyUsername password MyPassword
-
-
-For instructions on how to obtain the HTTP password, refer to Gerrit's
-`HTTP upload settings`_ documentation.
-
-
-REST API
---------
-
-This simple example shows how to get the user's open changes, authenticating
-to Gerrit via HTTP Digest authentication using an explicitly given username and
-password::
+This simple example shows how to get the user's open changes. Authentication
+to Gerrit is done via HTTP Digest authentication, using an explicitly given
+username and password::
 
     >>> from requests.auth import HTTPDigestAuth
     >>> from pygerrit2.rest import GerritRestAPI
@@ -53,9 +40,29 @@ password::
     >>> rest = GerritRestAPI(url='http://review.example.net', auth=auth)
     >>> changes = rest.get("/changes/?q=owner:self%20status:open")
 
+Note that is is not necessary to add the ``/a/`` prefix on the endpoint
+URLs. This is automatically added when the API is instantiated with an
+authentication object.
 
-Refer to the `example`_ script for a more detailed example of how the
-REST API interface works.
+If the user's HTTP username and password are defined in the ``.netrc``
+file::
+
+    machine review.example.net login MyUsername password MyPassword
+
+then it is possible to authenticate with those credentials::
+
+    >>> from pygerrit2.rest import GerritRestAPI
+    >>> from pygerrit2.rest.auth import HTTPDigestAuthFromNetrc
+    >>> url = 'http://review.example.net'
+    >>> auth = HTTPDigestAuthFromNetrc(url=url)
+    >>> rest = GerritRestAPI(url=url, auth=auth)
+    >>> changes = rest.get("/changes/?q=owner:self%20status:open")
+
+Note that the HTTP password is not the same as the SSH password. For
+instructions on how to obtain the HTTP password, refer to Gerrit's
+`HTTP upload settings`_ documentation.
+
+Refer to the `example`_ script for a full working example.
 
 
 Copyright and License
