@@ -32,9 +32,7 @@ import sys
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 from requests.exceptions import RequestException
 try:
-    # pylint: disable=F0401
     from requests_kerberos import HTTPKerberosAuth, OPTIONAL
-    # pylint: enable=F0401
     _kerberos_support = True
 except ImportError:
     _kerberos_support = False
