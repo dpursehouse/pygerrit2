@@ -53,6 +53,27 @@ def _decode_response(response):
         raise
 
 
+def _merge_dict(result, overrides):
+    """ Deep-merge dictionaries
+
+    :arg dict result: The resulting dictionary
+    :arg dict overrides: Dictionay being merged into the result
+
+    :returns:
+        The resulting dictionary
+    """
+    for key in overrides:
+        if (
+            key in result and
+            isinstance(result[key], dict) and
+            isinstance(overrides[key], dict)
+        ):
+            _merge_dict(result[key], overrides[key])
+        else:
+            result[key] = overrides[key]
+    return result
+
+
 class GerritRestAPI(object):
 
     """ Interface to the Gerrit REST API.
@@ -130,11 +151,18 @@ class GerritRestAPI(object):
             requests.RequestException on timeout or connection error.
 
         """
-        kwargs.update(self.kwargs.copy())
+        args = {}
         if "data" in kwargs:
-            kwargs["headers"].update(
-                {"Content-Type": "application/json;charset=UTF-8"})
-        response = requests.put(self.make_url(endpoint), **kwargs)
+            _merge_dict(
+                args, {
+                    "headers": {
+                        "Content-Type": "application/json;charset=UTF-8"
+                    }
+                }
+            )
+        _merge_dict(args, self.kwargs.copy())
+        _merge_dict(args, kwargs)
+        response = requests.put(self.make_url(endpoint), **args)
         return _decode_response(response)
 
     def post(self, endpoint, **kwargs):
@@ -149,11 +177,18 @@ class GerritRestAPI(object):
             requests.RequestException on timeout or connection error.
 
         """
-        kwargs.update(self.kwargs.copy())
+        args = {}
         if "data" in kwargs:
-            kwargs["headers"].update(
-                {"Content-Type": "application/json;charset=UTF-8"})
-        response = requests.post(self.make_url(endpoint), **kwargs)
+            _merge_dict(
+                args, {
+                    "headers": {
+                        "Content-Type": "application/json;charset=UTF-8"
+                    }
+                }
+            )
+        _merge_dict(args, self.kwargs.copy())
+        _merge_dict(args, kwargs)
+        response = requests.post(self.make_url(endpoint), **args)
         return _decode_response(response)
 
     def delete(self, endpoint, **kwargs):
@@ -168,8 +203,18 @@ class GerritRestAPI(object):
             requests.RequestException on timeout or connection error.
 
         """
-        kwargs.update(self.kwargs.copy())
-        response = requests.delete(self.make_url(endpoint), **kwargs)
+        args = {}
+        if "data" in kwargs:
+            _merge_dict(
+                args, {
+                    "headers": {
+                        "Content-Type": "application/json;charset=UTF-8"
+                    }
+                }
+            )
+        _merge_dict(args, self.kwargs.copy())
+        _merge_dict(args, kwargs)
+        response = requests.delete(self.make_url(endpoint), **args)
         return _decode_response(response)
 
     def review(self, change_id, revision, review):

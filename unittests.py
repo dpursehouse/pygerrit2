@@ -28,7 +28,7 @@
 import unittest
 
 from pygerrit2 import GerritReviewMessageFormatter
-from pygerrit2.rest import GerritReview
+from pygerrit2.rest import GerritReview, _merge_dict
 
 EXPECTED_TEST_CASE_FIELDS = ['header', 'footer', 'paragraphs', 'result']
 
@@ -106,6 +106,60 @@ TEST_CASES = [
      'footer': None,
      'paragraphs': [["* One", "  ", "* Two"]],
      'result': "* One\n* Two"}]
+
+
+class TestMergeDict(unittest.TestCase):
+
+    def test_merge_into_empty_dict(self):
+        dct = {}
+        _merge_dict(dct, {'a': 1, 'b': 2})
+        self.assertEqual(dct, {'a': 1, 'b': 2})
+
+    def test_merge_flat(self):
+        dct = {'c': 3}
+        _merge_dict(dct, {'a': 1, 'b': 2})
+        self.assertEqual(dct, {'a': 1, 'b': 2, 'c': 3})
+
+    def test_merge_with_override(self):
+        dct = {'a': 1}
+        _merge_dict(dct, {'a': 0, 'b': 2})
+        self.assertEqual(dct, {'a': 0, 'b': 2})
+
+    def test_merge_two_levels(self):
+        dct = {
+            'a': {
+                'A': 1,
+                'AA': 2,
+            },
+            'b': {
+                'B': 1,
+                'BB': 2,
+            },
+        }
+        overrides = {
+            'a': {
+                'AAA': 3,
+            },
+            'b': {
+                'BBB': 3,
+            },
+        }
+        _merge_dict(dct, overrides)
+        self.assertEqual(
+            dct,
+            {
+                'a': {
+                    'A': 1,
+                    'AA': 2,
+                    'AAA': 3,
+                },
+                'b': {
+                    'B': 1,
+                    'BB': 2,
+                    'BBB': 3,
+                },
+            }
+        )
 
 
 class TestGerritReviewMessageFormatter(unittest.TestCase):
