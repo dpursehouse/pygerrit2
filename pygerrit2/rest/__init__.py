@@ -44,6 +44,9 @@ def _decode_response(response):
     content = response.content.strip().decode("UTF-8")
     logging.debug(content[:512])
     response.raise_for_status()
+    content_type = response.headers.get('content-type', '')
+    if content_type.split(';')[0] != 'application/json':
+        return content
     if content.startswith(GERRIT_MAGIC_JSON_PREFIX):
         content = content[len(GERRIT_MAGIC_JSON_PREFIX):]
     try:
