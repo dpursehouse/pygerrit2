@@ -99,6 +99,7 @@ class GerritRestAPI(object):
                        'verify': verify,
                        'headers': headers}
         self.url = url.rstrip('/')
+        self.session = requests.session()
 
         if auth:
             if not isinstance(auth, requests.auth.AuthBase):
@@ -140,7 +141,7 @@ class GerritRestAPI(object):
 
         """
         kwargs.update(self.kwargs.copy())
-        response = requests.get(self.make_url(endpoint), **kwargs)
+        response = self.session.get(self.make_url(endpoint), **kwargs)
         return _decode_response(response)
 
     def put(self, endpoint, **kwargs):
@@ -166,7 +167,7 @@ class GerritRestAPI(object):
             )
         _merge_dict(args, self.kwargs.copy())
         _merge_dict(args, kwargs)
-        response = requests.put(self.make_url(endpoint), **args)
+        response = self.session.put(self.make_url(endpoint), **args)
         return _decode_response(response)
 
     def post(self, endpoint, **kwargs):
@@ -192,7 +193,7 @@ class GerritRestAPI(object):
             )
         _merge_dict(args, self.kwargs.copy())
         _merge_dict(args, kwargs)
-        response = requests.post(self.make_url(endpoint), **args)
+        response = self.session.post(self.make_url(endpoint), **args)
         return _decode_response(response)
 
     def delete(self, endpoint, **kwargs):
@@ -218,7 +219,7 @@ class GerritRestAPI(object):
             )
         _merge_dict(args, self.kwargs.copy())
         _merge_dict(args, kwargs)
-        response = requests.delete(self.make_url(endpoint), **args)
+        response = self.session.delete(self.make_url(endpoint), **args)
         return _decode_response(response)
 
     def review(self, change_id, revision, review):
