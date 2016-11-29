@@ -109,5 +109,6 @@ def _main():
     except RequestException as err:
         logging.error("Error: %s", str(err))
 
+
 if __name__ == "__main__":
     sys.exit(_main())
