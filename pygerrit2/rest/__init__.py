@@ -144,6 +144,25 @@ class GerritRestAPI(object):
         response = self.session.get(self.make_url(endpoint), **kwargs)
         return _decode_response(response)
 
+    def get_raw(self, endpoint, **kwargs):
+        """ Send HTTP GET to the endpoint. Return raw result
+
+        :arg str endpoint: The endpoint to send to.
+
+        :returns:
+            Raw result.
+
+        :raises:
+            requests.RequestException on timeout or connection error.
+
+        """
+        kwargs.update(self.kwargs.copy())
+        response = requests.get(self.make_url(endpoint), **kwargs)
+        content = response.content.strip()
+        response.raise_for_status()
+
+        return content
+
     def put(self, endpoint, **kwargs):
         """ Send HTTP PUT to the endpoint.
 
