@@ -44,7 +44,6 @@ def _decode_response(response):
     content = response.content.strip()
     if response.encoding:
         content = content.decode(response.encoding)
-    logging.debug(content[:512])
     response.raise_for_status()
     content_type = response.headers.get('content-type', '')
     if content_type.split(';')[0] != 'application/json':
@@ -116,7 +115,6 @@ class GerritRestAPI(object):
 
         if not self.url.endswith('/'):
             self.url += '/'
-        logging.debug("url %s", self.url)
 
     def make_url(self, endpoint):
         """ Make the full url for the endpoint.
