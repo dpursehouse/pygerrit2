@@ -41,7 +41,9 @@ def _decode_response(response):
         requests.HTTPError if the response contains an HTTP error status code.
 
     """
-    content = response.content.strip().decode("UTF-8")
+    content = response.content.strip()
+    if response.encoding:
+        content = content.decode(response.encoding)
     logging.debug(content[:512])
     response.raise_for_status()
     content_type = response.headers.get('content-type', '')
