@@ -115,6 +115,7 @@ class GerritRestAPI(object):
 
         if not self.url.endswith('/'):
             self.url += '/'
+        logging.debug("url %s", self.url)
 
     def make_url(self, endpoint):
         """ Make the full url for the endpoint.
@@ -128,10 +129,11 @@ class GerritRestAPI(object):
         endpoint = endpoint.lstrip('/')
         return self.url + endpoint
 
-    def get(self, endpoint, **kwargs):
+    def get(self, endpoint, return_response=False, **kwargs):
         """ Send HTTP GET to the endpoint.
 
         :arg str endpoint: The endpoint to send to.
+        :arg bool return_response: If true will also return the response
 
         :returns:
             JSON decoded result.
@@ -142,9 +144,14 @@ class GerritRestAPI(object):
         """
         kwargs.update(self.kwargs.copy())
         response = self.session.get(self.make_url(endpoint), **kwargs)
-        return _decode_response(response)
 
-    def put(self, endpoint, **kwargs):
+        decoded_response = _decode_response(response)
+
+        if return_response:
+            return decoded_response, response
+        return decoded_response
+
+    def put(self, endpoint, return_response=False, **kwargs):
         """ Send HTTP PUT to the endpoint.
 
         :arg str endpoint: The endpoint to send to.
@@ -168,9 +175,14 @@ class GerritRestAPI(object):
         _merge_dict(args, self.kwargs.copy())
         _merge_dict(args, kwargs)
         response = self.session.put(self.make_url(endpoint), **args)
-        return _decode_response(response)
 
-    def post(self, endpoint, **kwargs):
+        decoded_response = _decode_response(response)
+
+        if return_response:
+            return decoded_response, response
+        return decoded_response
+
+    def post(self, endpoint, return_response=False, **kwargs):
         """ Send HTTP POST to the endpoint.
 
         :arg str endpoint: The endpoint to send to.
@@ -194,9 +206,14 @@ class GerritRestAPI(object):
         _merge_dict(args, self.kwargs.copy())
         _merge_dict(args, kwargs)
         response = self.session.post(self.make_url(endpoint), **args)
-        return _decode_response(response)
 
-    def delete(self, endpoint, **kwargs):
+        decoded_response = _decode_response(response)
+
+        if return_response:
+            return decoded_response, response
+        return decoded_response
+
+    def delete(self, endpoint, return_response=False, **kwargs):
         """ Send HTTP DELETE to the endpoint.
 
         :arg str endpoint: The endpoint to send to.
@@ -220,7 +237,12 @@ class GerritRestAPI(object):
         _merge_dict(args, self.kwargs.copy())
         _merge_dict(args, kwargs)
         response = self.session.delete(self.make_url(endpoint), **args)
-        return _decode_response(response)
+
+        decoded_response = _decode_response(response)
+
+        if return_response:
+            return decoded_response, response
+        return decoded_response
 
     def review(self, change_id, revision, review):
         """ Submit a review.
