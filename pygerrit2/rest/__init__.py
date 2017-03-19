@@ -115,7 +115,6 @@ class GerritRestAPI(object):
 
         if not self.url.endswith('/'):
             self.url += '/'
-        logging.debug("url %s", self.url)
 
     def make_url(self, endpoint):
         """ Make the full url for the endpoint.
