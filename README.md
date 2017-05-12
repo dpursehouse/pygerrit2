@@ -26,14 +26,14 @@ $ pip install pygerrit2
 ## Usage
 
 This simple example shows how to get the user's open changes. Authentication
-to Gerrit is done via HTTP Digest authentication, using an explicitly given
+to Gerrit is done via HTTP Basic authentication, using an explicitly given
 username and password:
 
 ```python
-from requests.auth import HTTPDigestAuth
+from requests.auth import HTTPBasicAuth
 from pygerrit2.rest import GerritRestAPI
 
-auth = HTTPDigestAuth('username', 'password')
+auth = HTTPBasicAuth('username', 'password')
 rest = GerritRestAPI(url='http://review.example.net', auth=auth)
 changes = rest.get("/changes/?q=owner:self%20status:open")
 ```
@@ -53,10 +53,10 @@ then it is possible to authenticate with those credentials:
 
 ```python
 from pygerrit2.rest import GerritRestAPI
-from pygerrit2.rest.auth import HTTPDigestAuthFromNetrc
+from pygerrit2.rest.auth import HTTPBasicAuthFromNetrc
 
 url = 'http://review.example.net'
-auth = HTTPDigestAuthFromNetrc(url=url)
+auth = HTTPBasicAuthFromNetrc(url=url)
 rest = GerritRestAPI(url=url, auth=auth)
 changes = rest.get("/changes/?q=owner:self%20status:open")
 ```
@@ -64,6 +64,11 @@ changes = rest.get("/changes/?q=owner:self%20status:open")
 Note that the HTTP password is not the same as the SSH password. For
 instructions on how to obtain the HTTP password, refer to Gerrit's
 [HTTP upload settings documentation][settings].
+
+Also note that in Gerrit version 2.14, support for HTTP Digest authentication
+was removed and only HTTP Basic authentication is supported. When using
+pygerrit2 against an earlier Gerrit version, it may be necessary to replace
+the `HTTPBasic...` classes with the corresponding `HTTPDigest...` versions.
 
 Refer to the [example script][example] for a full working example.
 

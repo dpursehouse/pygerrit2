@@ -51,7 +51,10 @@ def _main():
                         help='gerrit server url')
     parser.add_argument('-b', '--basic-auth', dest='basic_auth',
                         action='store_true',
-                        help='use basic auth instead of digest')
+                        help='(deprecated) use basic auth instead of digest')
+    parser.add_argument('-d', '--digest-auth', dest='digest_auth',
+                        action='store_true',
+                        help='use digest auth instead of basic')
     if _kerberos_support:
         parser.add_argument('-k', '--kerberos-auth', dest='kerberos_auth',
                             action='store_true',
@@ -82,15 +85,15 @@ def _main():
     elif options.username and options.password:
         if options.netrc:
             logging.warning("--netrc option ignored")
-        if options.basic_auth:
-            auth = HTTPBasicAuth(options.username, options.password)
-        else:
+        if options.digest_auth:
             auth = HTTPDigestAuth(options.username, options.password)
-    elif options.netrc:
-        if options.basic_auth:
-            auth = HTTPBasicAuthFromNetrc(url=options.gerrit_url)
         else:
+            auth = HTTPBasicAuth(options.username, options.password)
+    elif options.netrc:
+        if options.digest_auth:
             auth = HTTPDigestAuthFromNetrc(url=options.gerrit_url)
+        else:
+            auth = HTTPBasicAuthFromNetrc(url=options.gerrit_url)
     else:
         auth = None
 
