@@ -80,5 +80,5 @@ license details.
 .. _`Gerrit Code Review`: https://gerritcodereview.com/
 .. _`requests`: https://github.com/kennethreitz/requests
 .. _example: https://github.com/dpursehouse/pygerrit2/blob/master/example.py
-.. _`HTTP upload settings`: https://gerrit-documentation.storage.googleapis.com/Documentation/2.13/user-upload.html#http
+.. _`HTTP upload settings`: https://gerrit-documentation.storage.googleapis.com/Documentation/2.14/user-upload.html#http
 .. _LICENSE: https://github.com/dpursehouse/pygerrit2/blob/master/LICENSE
