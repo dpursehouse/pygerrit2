@@ -1,7 +1,6 @@
 # Pygerrit2 - Client library for interacting with Gerrit Code Review's REST API
 
 ![Version](https://img.shields.io/pypi/v/pygerrit2.png)
-![Downloads](https://img.shields.io/pypi/dm/pygerrit2.png)
 ![License](https://img.shields.io/pypi/l/pygerrit2.png)
 
 Pygerrit2 provides a simple interface for clients to interact with
