@@ -32,7 +32,7 @@ This simple example shows how to get the user's open changes. Authentication
 to Gerrit is done via HTTP Basic authentication, using an explicitly given
 username and password::
 
-    >>> from requests.auth import HTTPBasicAuth
+    >>> from pygerrit2.rest.auth import HTTPBasicAuth
     >>> from pygerrit2.rest import GerritRestAPI
     >>> auth = HTTPBasicAuth('username', 'password')
     >>> rest = GerritRestAPI(url='http://review.example.net', auth=auth)
