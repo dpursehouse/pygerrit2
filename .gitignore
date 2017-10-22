@@ -7,7 +7,6 @@
 .eggs
 build/
 dist/
-docs/
 pygerrit2.egg-info/
 pygerrit2env/
 ChangeLog

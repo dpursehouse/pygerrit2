@@ -41,43 +41,15 @@ all: test
 
 test: clean unittests pyflakes pep8 pep257
 
-docs: html
-
 sdist: valid-virtualenv test
 	bash -c "\
           source ./pygerrit2env/bin/activate && \
           python setup.py sdist"
 
-ddist: sdist docs
-	bash -c "\
-          cd docs/_build/html && \
-          zip -r $(PWD)/dist/pygerrit2-$(VERSION)-api-documentation.zip . && \
-          cd $(PWD)"
-
 valid-virtualenv:
 ifeq ($(VIRTUALENV_OK),0)
   $(error virtualenv version $(REQUIRED_VIRTUALENV) or higher is needed)
 endif
-
-html: sphinx
-	bash -c "\
-          source ./pygerrit2env/bin/activate && \
-          export PYTHONPATH=$(PWD) && \
-          cd docs && \
-          make html && \
-          cd $(PWD)"
-
-sphinx: docenvsetup
-	bash -c "\
-          source ./pygerrit2env/bin/activate && \
-          sphinx-apidoc \
-              -V \"$(VERSION)\" \
-              -R \"$(VERSION)\" \
-              -H \"Pygerrit2\" \
-              -A \"David Pursehouse\" \
-              --full \
-              --force \
-              -o docs pygerrit2"
 
 pep257: testenvsetup
 	bash -c "\
@@ -119,4 +91,4 @@ envinit:
 
 clean:
 	@find . -type f -name "*.pyc" -exec rm -f {} \;
-	@rm -rf pygerrit2env pygerrit2.egg-info build dist docs
+	@rm -rf pygerrit2env pygerrit2.egg-info build dist
