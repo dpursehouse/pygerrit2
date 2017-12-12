@@ -54,17 +54,17 @@ endif
 pep257: testenvsetup
 	bash -c "\
           source ./pygerrit2env/bin/activate && \
-          git ls-files | grep \"\.py$$\" | xargs pep257"
+          git ls-files | grep \"\.py$$\" | grep -v docs | xargs pep257"
 
 pep8: testenvsetup
 	bash -c "\
           source ./pygerrit2env/bin/activate && \
-          git ls-files | grep \"\.py$$\" | xargs flake8 --max-line-length 80"
+          git ls-files | grep \"\.py$$\" | grep -v docs | xargs flake8 --max-line-length 80"
 
 pyflakes: testenvsetup
 	bash -c "\
           source ./pygerrit2env/bin/activate && \
-          git ls-files | grep \"\.py$$\" | xargs pyflakes"
+          git ls-files | grep \"\.py$$\" | grep -v docs | xargs pyflakes"
 
 unittests: testenvsetup
 	bash -c "\
