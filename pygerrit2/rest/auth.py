@@ -37,9 +37,6 @@ class HTTPDigestAuthFromNetrc(HTTPDigestAuth):
         username, password = auth
         super(HTTPDigestAuthFromNetrc, self).__init__(username, password)
 
-    def __call__(self, req):
-        return super(HTTPDigestAuthFromNetrc, self).__call__(req)
-
 
 class HTTPBasicAuthFromNetrc(HTTPBasicAuth):
 
@@ -51,6 +48,3 @@ class HTTPBasicAuthFromNetrc(HTTPBasicAuth):
             raise ValueError("netrc missing or no credentials found in netrc")
         username, password = auth
         super(HTTPBasicAuthFromNetrc, self).__init__(username, password)
-
-    def __call__(self, req):
-        return super(HTTPBasicAuthFromNetrc, self).__call__(req)
