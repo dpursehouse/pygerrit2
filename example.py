@@ -33,9 +33,9 @@ from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 from requests.exceptions import RequestException
 try:
     from requests_kerberos import HTTPKerberosAuth, OPTIONAL
-    _kerberos_support = True
+    _KERBEROS_SUPPORT = True
 except ImportError:
-    _kerberos_support = False
+    _KERBEROS_SUPPORT = False
 
 from pygerrit2.rest import GerritRestAPI
 from pygerrit2.rest.auth import HTTPDigestAuthFromNetrc, HTTPBasicAuthFromNetrc
@@ -55,7 +55,7 @@ def _main():
     parser.add_argument('-d', '--digest-auth', dest='digest_auth',
                         action='store_true',
                         help='use digest auth instead of basic')
-    if _kerberos_support:
+    if _KERBEROS_SUPPORT:
         parser.add_argument('-k', '--kerberos-auth', dest='kerberos_auth',
                             action='store_true',
                             help='use kerberos auth')
@@ -76,7 +76,7 @@ def _main():
     logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                         level=level)
 
-    if _kerberos_support and options.kerberos_auth:
+    if _KERBEROS_SUPPORT and options.kerberos_auth:
         if options.username or options.password \
                 or options.basic_auth or options.netrc:
             parser.error("--kerberos-auth may not be used together with "
