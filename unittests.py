@@ -176,24 +176,24 @@ class TestGerritReviewMessageFormatter(unittest.TestCase):
 
     def test_is_empty(self):
         """ Test if message is empty for missing header and footer. """
-        f = GerritReviewMessageFormatter(header=None, footer=None)
-        self.assertTrue(f.is_empty())
-        f.append(['test'])
-        self.assertFalse(f.is_empty())
+        fmt = GerritReviewMessageFormatter(header=None, footer=None)
+        self.assertTrue(fmt.is_empty())
+        fmt.append(['test'])
+        self.assertFalse(fmt.is_empty())
 
     def test_message_formatting(self):
         """ Test message formatter for different test cases. """
         for i in range(len(TEST_CASES)):
             test_case = TEST_CASES[i]
             self._check_test_case_fields(test_case, i)
-            f = GerritReviewMessageFormatter(header=test_case['header'],
-                                             footer=test_case['footer'])
+            fmt = GerritReviewMessageFormatter(header=test_case['header'],
+                                               footer=test_case['footer'])
             for paragraph in test_case['paragraphs']:
-                f.append(paragraph)
-            m = f.format()
-            self.assertEqual(m, test_case['result'],
+                fmt.append(paragraph)
+            msg = fmt.format()
+            self.assertEqual(msg, test_case['result'],
                              "Formatted message does not match expected "
-                             "result in test case #%d:\n[%s]" % (i, m))
+                             "result in test case #%d:\n[%s]" % (i, msg))
 
 
 class TestGerritReview(unittest.TestCase):
@@ -211,7 +211,7 @@ class TestGerritReview(unittest.TestCase):
             '{"labels": {"Code-Review": -1, "Verified": 1}}')
 
         obj3 = GerritReview(comments=[{'filename': 'Makefile',
-                                      'line': 10, 'message': 'test'}])
+                                       'line': 10, 'message': 'test'}])
         self.assertEqual(
             str(obj3),
             '{"comments": {"Makefile": [{"line": 10, "message": "test"}]}}')
@@ -224,10 +224,10 @@ class TestGerritReview(unittest.TestCase):
             '{"comments": {"Makefile": [{"line": 10, "message": "test"}]},'
             ' "labels": {"Code-Review": -1, "Verified": 1}}')
 
-        obj5 = GerritReview(comments=[{'filename': 'Makefile', 'line': 15,
-                            'message': 'test'}, {'filename': 'Make',
-                                                 'line': 10,
-                                                 'message': 'test1'}])
+        obj5 = GerritReview(comments=[
+            {'filename': 'Makefile', 'line': 15, 'message': 'test'},
+            {'filename': 'Make', 'line': 10, 'message': 'test1'}
+        ])
         self.assertEqual(
             str(obj5),
             '{"comments": {"Make": [{"line": 10, "message": "test1"}],'

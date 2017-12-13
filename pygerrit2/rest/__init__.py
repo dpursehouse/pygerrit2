@@ -53,7 +53,7 @@ def _decode_response(response):
     try:
         return json.loads(content)
     except ValueError:
-        logging.error('Invalid json content: %s' % content)
+        logging.error('Invalid json content: %s', content)
         raise
 
 
@@ -68,11 +68,9 @@ def _merge_dict(result, overrides):
 
     """
     for key in overrides:
-        if (
-            key in result and
-            isinstance(result[key], dict) and
-            isinstance(overrides[key], dict)
-        ):
+        if (key in result and
+                isinstance(result[key], dict) and
+                isinstance(overrides[key], dict)):
             _merge_dict(result[key], overrides[key])
         else:
             result[key] = overrides[key]
