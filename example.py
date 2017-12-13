@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-""" Example of using the Gerrit client REST API. """
+"""Example of using the Gerrit client REST API."""
 
 import argparse
 import logging

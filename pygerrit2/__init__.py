@@ -20,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-""" Module to interface with Gerrit. """
+"""Module to interface with Gerrit."""
 
 
 def from_json(json_data, key):
-    """ Helper method to extract values from JSON data.
+    """Extract values from JSON data.
 
     :arg dict json_data: The JSON data
     :arg str key: Key to get data for.
@@ -39,7 +39,7 @@ def from_json(json_data, key):
 
 
 def escape_string(string):
-    """ Escape a string for use in Gerrit commands.
+    """Escape a string for use in Gerrit commands.
 
     :arg str string: The string to escape.
 
@@ -48,7 +48,6 @@ def escape_string(string):
         double-quoted strings.
 
     """
-
     result = string
     result = result.replace('\\', '\\\\')
     result = result.replace('"', '\\"')
@@ -56,8 +55,7 @@ def escape_string(string):
 
 
 class GerritReviewMessageFormatter(object):
-
-    """ Helper class to format review messages that are sent to Gerrit.
+    """Helper class to format review messages that are sent to Gerrit.
 
     :arg str header: (optional) If specified, will be prepended as the first
         paragraph of the output message.
@@ -78,7 +76,7 @@ class GerritReviewMessageFormatter(object):
             self.footer = ""
 
     def append(self, data):
-        """ Append the given `data` to the output.
+        """Append the given `data` to the output.
 
         :arg data: If a list, it is formatted as a bullet list with each
             entry in the list being a separate bullet.  Otherwise if it is a
@@ -118,7 +116,7 @@ class GerritReviewMessageFormatter(object):
             raise ValueError('Data must be a list or a string')
 
     def is_empty(self):
-        """ Check if the formatter is empty.
+        """Check if the formatter is empty.
 
         :Returns: True if empty, i.e. no paragraphs have been added.
 
@@ -126,7 +124,7 @@ class GerritReviewMessageFormatter(object):
         return not self.paragraphs
 
     def format(self):
-        """ Format the message parts to a string.
+        """Format the message parts to a string.
 
         :Returns: A string of all the message parts separated into paragraphs,
             with header and footer paragraphs if they were specified in the
