@@ -166,6 +166,3 @@ texinfo_documents = [
      author, 'pygerrit2', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-

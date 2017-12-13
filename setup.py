@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-""" Client library for interacting with Gerrit. """
+"""Client library for interacting with Gerrit."""
 
 import setuptools
 

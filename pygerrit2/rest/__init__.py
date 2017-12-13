@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-""" Interface to the Gerrit REST API. """
+"""Interface to the Gerrit REST API."""
 
 import json
 import logging
@@ -31,7 +31,7 @@ GERRIT_AUTH_SUFFIX = "/a"
 
 
 def _decode_response(response):
-    """ Strip off Gerrit's magic prefix and decode a response.
+    """Strip off Gerrit's magic prefix and decode a response.
 
     :returns:
         Decoded JSON content as a dict, or raw text if content could not be
@@ -58,7 +58,7 @@ def _decode_response(response):
 
 
 def _merge_dict(result, overrides):
-    """ Deep-merge dictionaries.
+    """Deep-merge dictionaries.
 
     :arg dict result: The resulting dictionary
     :arg dict overrides: Dictionay being merged into the result
@@ -78,12 +78,11 @@ def _merge_dict(result, overrides):
 
 
 class GerritRestAPI(object):
+    """Interface to the Gerrit REST API.
 
-    """ Interface to the Gerrit REST API.
-
-    :arg str url: The full URL to the server, including the `http(s)://` prefix.
-        If `auth` is given, `url` will be automatically adjusted to include
-        Gerrit's authentication suffix.
+    :arg str url: The full URL to the server, including the `http(s)://`
+        prefix. If `auth` is given, `url` will be automatically adjusted to
+        include Gerrit's authentication suffix.
     :arg auth: (optional) Authentication handler.  Must be derived from
         `requests.auth.AuthBase`.
     :arg boolean verify: (optional) Set to False to disable verification of
@@ -115,7 +114,7 @@ class GerritRestAPI(object):
             self.url += '/'
 
     def make_url(self, endpoint):
-        """ Make the full url for the endpoint.
+        """Make the full url for the endpoint.
 
         :arg str endpoint: The endpoint.
 
@@ -127,7 +126,7 @@ class GerritRestAPI(object):
         return self.url + endpoint
 
     def get(self, endpoint, return_response=False, **kwargs):
-        """ Send HTTP GET to the endpoint.
+        """Send HTTP GET to the endpoint.
 
         :arg str endpoint: The endpoint to send to.
         :arg bool return_response: If true will also return the response
@@ -149,7 +148,7 @@ class GerritRestAPI(object):
         return decoded_response
 
     def put(self, endpoint, return_response=False, **kwargs):
-        """ Send HTTP PUT to the endpoint.
+        """Send HTTP PUT to the endpoint.
 
         :arg str endpoint: The endpoint to send to.
 
@@ -181,7 +180,7 @@ class GerritRestAPI(object):
         return decoded_response
 
     def post(self, endpoint, return_response=False, **kwargs):
-        """ Send HTTP POST to the endpoint.
+        """Send HTTP POST to the endpoint.
 
         :arg str endpoint: The endpoint to send to.
 
@@ -213,7 +212,7 @@ class GerritRestAPI(object):
         return decoded_response
 
     def delete(self, endpoint, return_response=False, **kwargs):
-        """ Send HTTP DELETE to the endpoint.
+        """Send HTTP DELETE to the endpoint.
 
         :arg str endpoint: The endpoint to send to.
 
@@ -244,7 +243,7 @@ class GerritRestAPI(object):
         return decoded_response
 
     def review(self, change_id, revision, review):
-        """ Submit a review.
+        """Submit a review.
 
         :arg str change_id: The change ID.
         :arg str revision: The revision.
@@ -257,14 +256,12 @@ class GerritRestAPI(object):
             requests.RequestException on timeout or connection error.
 
         """
-
         endpoint = "changes/%s/revisions/%s/review" % (change_id, revision)
         self.post(endpoint, data=str(review))
 
 
 class GerritReview(object):
-
-    """ Encapsulation of a Gerrit review.
+    """Encapsulation of a Gerrit review.
 
     :arg str message: (optional) Cover message.
     :arg dict labels: (optional) Review labels.
@@ -289,7 +286,7 @@ class GerritReview(object):
             self.comments = {}
 
     def set_message(self, message):
-        """ Set review cover message.
+        """Set review cover message.
 
         :arg str message: Cover message.
 
@@ -297,7 +294,7 @@ class GerritReview(object):
         self.message = message
 
     def add_labels(self, labels):
-        """ Add labels.
+        """Add labels.
 
         :arg dict labels: Labels to add, for example
 
@@ -310,7 +307,7 @@ class GerritReview(object):
         self.labels.update(labels)
 
     def add_comments(self, comments):
-        """ Add inline comments.
+        """Add inline comments.
 
         :arg dict comments: Comments to add.
 

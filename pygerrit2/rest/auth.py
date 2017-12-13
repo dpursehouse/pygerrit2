@@ -20,15 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-""" Authentication handlers. """
+"""Authentication handlers."""
 
 from requests.auth import HTTPDigestAuth, HTTPBasicAuth
 from requests.utils import get_netrc_auth
 
 
 class HTTPDigestAuthFromNetrc(HTTPDigestAuth):
-
-    """ HTTP Digest Auth with netrc credentials. """
+    """HTTP Digest Auth with netrc credentials."""
 
     def __init__(self, url):
         auth = get_netrc_auth(url)
@@ -39,8 +38,7 @@ class HTTPDigestAuthFromNetrc(HTTPDigestAuth):
 
 
 class HTTPBasicAuthFromNetrc(HTTPBasicAuth):
-
-    """ HTTP Basic Auth with netrc credentials. """
+    """HTTP Basic Auth with netrc credentials."""
 
     def __init__(self, url):
         auth = get_netrc_auth(url)

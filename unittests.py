@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-""" Unit tests for the Pygerrit2 helper methods. """
+"""Unit tests for the Pygerrit2 helper methods."""
 
 import unittest
 
@@ -163,26 +163,26 @@ class TestMergeDict(unittest.TestCase):
 
 
 class TestGerritReviewMessageFormatter(unittest.TestCase):
-
-    """ Test that the GerritReviewMessageFormatter class behaves properly. """
+    """Test that the GerritReviewMessageFormatter class behaves properly."""
 
     def _check_test_case_fields(self, test_case, i):
         for field in EXPECTED_TEST_CASE_FIELDS:
             self.assertTrue(field in test_case,
                             "field '%s' not present in test case #%d" %
                             (field, i))
-        self.assertTrue(isinstance(test_case['paragraphs'], list),
-                        "'paragraphs' field is not a list in test case #%d" % i)
+        self.assertTrue(
+            isinstance(test_case['paragraphs'], list),
+            "'paragraphs' field is not a list in test case #%d" % i)
 
     def test_is_empty(self):
-        """ Test if message is empty for missing header and footer. """
+        """Test if message is empty for missing header and footer."""
         fmt = GerritReviewMessageFormatter(header=None, footer=None)
         self.assertTrue(fmt.is_empty())
         fmt.append(['test'])
         self.assertFalse(fmt.is_empty())
 
     def test_message_formatting(self):
-        """ Test message formatter for different test cases. """
+        """Test message formatter for different test cases."""
         for i, test_case in enumerate(TEST_CASES):
             self._check_test_case_fields(test_case, i)
             fmt = GerritReviewMessageFormatter(header=test_case['header'],
@@ -196,11 +196,10 @@ class TestGerritReviewMessageFormatter(unittest.TestCase):
 
 
 class TestGerritReview(unittest.TestCase):
-
-    """ Test that the GerritReview class behaves properly. """
+    """Test that the GerritReview class behaves properly."""
 
     def test_str(self):
-        """ Test for str function. """
+        """Test for str function."""
         obj = GerritReview()
         self.assertEqual(str(obj), '{}')
 
