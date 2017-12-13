@@ -39,7 +39,7 @@ VIRTUALENV_OK := $(shell expr `virtualenv --version | \
 
 all: test
 
-test: clean unittests pyflakes pep8 pep257
+test: clean unittests pyflakes pep8 pydocstyle
 
 sdist: valid-virtualenv test
 	bash -c "\
@@ -51,10 +51,10 @@ ifeq ($(VIRTUALENV_OK),0)
   $(error virtualenv version $(REQUIRED_VIRTUALENV) or higher is needed)
 endif
 
-pep257: testenvsetup
+pydocstyle: testenvsetup
 	bash -c "\
           source ./pygerrit2env/bin/activate && \
-          git ls-files | grep \"\.py$$\" | grep -v docs | xargs pep257"
+          git ls-files | grep \"\.py$$\" | grep -v docs | xargs pydocstyle"
 
 pep8: testenvsetup
 	bash -c "\
