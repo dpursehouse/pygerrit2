@@ -65,6 +65,7 @@ class GerritReviewMessageFormatter(object):
     """
 
     def __init__(self, header=None, footer=None):
+        """See class docstring."""
         self.paragraphs = []
         if header:
             self.header = header.strip()

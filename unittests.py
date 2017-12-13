@@ -109,23 +109,28 @@ TEST_CASES = [
 
 
 class TestMergeDict(unittest.TestCase):
+    """Tests for the `_merge_dict` method."""
 
     def test_merge_into_empty_dict(self):
+        """Test merging into an empty dict."""
         dct = {}
         _merge_dict(dct, {'a': 1, 'b': 2})
         self.assertEqual(dct, {'a': 1, 'b': 2})
 
     def test_merge_flat(self):
+        """Test merging a flat dict."""
         dct = {'c': 3}
         _merge_dict(dct, {'a': 1, 'b': 2})
         self.assertEqual(dct, {'a': 1, 'b': 2, 'c': 3})
 
     def test_merge_with_override(self):
+        """Test merging a dict and overriding values."""
         dct = {'a': 1}
         _merge_dict(dct, {'a': 0, 'b': 2})
         self.assertEqual(dct, {'a': 0, 'b': 2})
 
     def test_merge_two_levels(self):
+        """Test merging a dict with two levels."""
         dct = {
             'a': {
                 'A': 1,

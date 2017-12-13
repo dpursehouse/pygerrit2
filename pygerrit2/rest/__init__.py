@@ -91,6 +91,7 @@ class GerritRestAPI(object):
     """
 
     def __init__(self, url, auth=None, verify=True):
+        """See class docstring."""
         headers = {'Accept': 'application/json',
                    'Accept-Encoding': 'gzip'}
         self.kwargs = {'auth': auth,
@@ -270,6 +271,7 @@ class GerritReview(object):
     """
 
     def __init__(self, message=None, labels=None, comments=None):
+        """See class docstring."""
         self.message = message if message else ""
         if labels:
             if not isinstance(labels, dict):
@@ -346,6 +348,7 @@ class GerritReview(object):
                     self.comments.update(file_comment)
 
     def __str__(self):
+        """Return a string representation."""
         review_input = {}
         if self.message:
             review_input.update({'message': self.message})

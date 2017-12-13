@@ -30,6 +30,7 @@ class HTTPDigestAuthFromNetrc(HTTPDigestAuth):
     """HTTP Digest Auth with netrc credentials."""
 
     def __init__(self, url):
+        """See class docstring."""
         auth = get_netrc_auth(url)
         if not auth:
             raise ValueError("netrc missing or no credentials found in netrc")
@@ -41,6 +42,7 @@ class HTTPBasicAuthFromNetrc(HTTPBasicAuth):
     """HTTP Basic Auth with netrc credentials."""
 
     def __init__(self, url):
+        """See class docstring."""
         auth = get_netrc_auth(url)
         if not auth:
             raise ValueError("netrc missing or no credentials found in netrc")
