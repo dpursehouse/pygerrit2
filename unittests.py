@@ -183,8 +183,7 @@ class TestGerritReviewMessageFormatter(unittest.TestCase):
 
     def test_message_formatting(self):
         """ Test message formatter for different test cases. """
-        for i in range(len(TEST_CASES)):
-            test_case = TEST_CASES[i]
+        for i, test_case in enumerate(TEST_CASES):
             self._check_test_case_fields(test_case, i)
             fmt = GerritReviewMessageFormatter(header=test_case['header'],
                                                footer=test_case['footer'])
