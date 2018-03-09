@@ -54,17 +54,17 @@ endif
 pydocstyle: testenvsetup
 	bash -c "\
           source ./pygerrit2env/bin/activate && \
-          git ls-files | grep \"\.py$$\" | grep -v docs | xargs pydocstyle"
+          git ls-files | grep \"\.py$$\" | xargs pydocstyle"
 
 pep8: testenvsetup
 	bash -c "\
           source ./pygerrit2env/bin/activate && \
-          git ls-files | grep \"\.py$$\" | grep -v docs | xargs flake8 --max-line-length 80"
+          git ls-files | grep \"\.py$$\" | xargs flake8 --max-line-length 80"
 
 pyflakes: testenvsetup
 	bash -c "\
           source ./pygerrit2env/bin/activate && \
-          git ls-files | grep \"\.py$$\" | grep -v docs | xargs pyflakes"
+          git ls-files | grep \"\.py$$\" | xargs pyflakes"
 
 unittests: testenvsetup
 	bash -c "\
@@ -75,11 +75,6 @@ testenvsetup: envsetup
 	bash -c "\
           source ./pygerrit2env/bin/activate && \
           pip install --upgrade -r test_requirements.txt"
-
-docenvsetup: envsetup
-	bash -c "\
-          source ./pygerrit2env/bin/activate && \
-          pip install --upgrade -r doc_requirements.txt"
 
 envsetup: envinit
 	bash -c "\
