@@ -258,7 +258,8 @@ class GerritRestAPI(object):
 
         """
         endpoint = "changes/%s/revisions/%s/review" % (change_id, revision)
-        self.post(endpoint, data=str(review))
+        self.post(endpoint, data=str(review),
+                  headers={"Content-Type": "application/json"})
 
 
 class GerritReview(object):
