@@ -25,6 +25,7 @@
 
 """Live server tests."""
 
+import base64
 import pytest
 import unittest
 from pygerrit2.rest import GerritRestAPI, GerritReview
@@ -84,7 +85,15 @@ def test_live_server(gerrit_api):
     gerrit_api.get("/changes/" + change_id)
 
     # Put with content as string
-    gerrit_api.put("/changes/" + change_id + "/edit/foo", data="content")
+    gerrit_api.put("/changes/" + change_id + "/edit/foo",
+                   data="Content with non base64 valid chars åäö")
+
+    # get content
+    response = gerrit_api.get("/changes/" + change_id + "/edit/foo",
+                              headers={'Accept': 'text/plain'})
+
+    # Will raise binascii.Error if content is not properly encoded
+    base64.b64decode(response)
 
     # Put with no content
     gerrit_api.put("/changes/" + change_id + "/edit/foo")

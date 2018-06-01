@@ -139,8 +139,9 @@ class GerritRestAPI(object):
             requests.RequestException on timeout or connection error.
 
         """
-        kwargs.update(self.kwargs.copy())
-        response = self.session.get(self.make_url(endpoint), **kwargs)
+        local_kwargs = self.kwargs.copy()
+        local_kwargs.update(kwargs)
+        response = self.session.get(self.make_url(endpoint), **local_kwargs)
 
         decoded_response = _decode_response(response)
 
