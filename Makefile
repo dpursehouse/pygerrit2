@@ -69,7 +69,7 @@ pyflakes: testenvsetup
 unittests: testenvsetup
 	bash -c "\
           source ./pygerrit2env/bin/activate && \
-          python unittests.py"
+          pytest unittests.py"
 
 testenvsetup: envsetup
 	bash -c "\
