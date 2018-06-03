@@ -32,6 +32,16 @@ from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_container_is_ready
 
 
+class GerritContainer(DockerContainer):
+    """Gerrit container."""
+
+    def __init__(self, version):
+        """Construct a GerritContainer with the given version."""
+        super(GerritContainer, self).__init__(
+            "gerritcodereview/gerrit:" + version)
+        self.with_exposed_ports(8080)
+
+
 class TestLiveServer(unittest.TestCase):
     """Test that GerritRestAPI behaves properly against a live server."""
 
@@ -41,10 +51,7 @@ class TestLiveServer(unittest.TestCase):
 
     def test_live_server(self):
         """Run tests against a server running in a Docker container."""
-        gerrit = \
-            DockerContainer("gerritcodereview/gerrit:2.14.8").\
-            with_exposed_ports(8080)
-        with gerrit:
+        with GerritContainer("2.14.8") as gerrit:
             port = gerrit.get_exposed_port(8080)
             url = "http://localhost:%s" % port
             auth = HTTPBasicAuth("admin", "secret")
