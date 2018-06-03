@@ -39,7 +39,7 @@ VIRTUALENV_OK := $(shell expr `virtualenv --version | \
 
 all: test
 
-test: clean unittests pyflakes pep8 pydocstyle
+test: clean unittests livetests pyflakes pep8 pydocstyle
 
 sdist: valid-virtualenv test
 	bash -c "\
@@ -70,6 +70,11 @@ unittests: testenvsetup
 	bash -c "\
           source ./pygerrit2env/bin/activate && \
           pytest unittests.py"
+
+livetests: testenvsetup
+	bash -c "\
+          source ./pygerrit2env/bin/activate && \
+          pytest livetests.py"
 
 testenvsetup: envsetup
 	bash -c "\

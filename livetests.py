@@ -27,18 +27,37 @@
 
 import unittest
 from pygerrit2.rest import GerritRestAPI, GerritReview
-from pygerrit2.rest.auth import HTTPBasicAuthFromNetrc
-
-url = "http://localhost:8080"
-auth = HTTPBasicAuthFromNetrc(url)
-api = GerritRestAPI(url=url, auth=auth)
+from requests.auth import HTTPBasicAuth
+from testcontainers.core.container import DockerContainer
+from testcontainers.core.waiting_utils import wait_container_is_ready
 
 
 class TestLiveServer(unittest.TestCase):
     """Test that GerritRestAPI behaves properly against a live server."""
 
+    @wait_container_is_ready()
+    def _connect(self, api):
+        api.get("")
+
     def test_live_server(self):
+        """Run tests against a server running in a Docker container."""
+        gerrit = \
+            DockerContainer("gerritcodereview/gerrit:2.14.8").\
+            with_exposed_ports(8080)
+        with gerrit:
+            port = gerrit.get_exposed_port(8080)
+            url = "http://localhost:%s" % port
+            auth = HTTPBasicAuth("admin", "secret")
+            api = GerritRestAPI(url=url, auth=auth)
+            self._connect(api)
+            self._run_tests(api)
+
+    def _run_tests(self, api):
         """Run the tests."""
+        # Create the project
+        projectinput = {"create_empty_commit": "true"}
+        api.put("/projects/test-project", json=projectinput)
+
         # Post with content as dict
         changeinput = {"project": "test-project",
                        "subject": "subject",
