@@ -28,7 +28,7 @@
 import pytest
 import unittest
 from pygerrit2.rest import GerritRestAPI, GerritReview
-from requests.auth import HTTPBasicAuth
+from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_container_is_ready
 
@@ -38,23 +38,29 @@ class GerritContainer(DockerContainer):
 
     def __init__(self, version):
         """Construct a GerritContainer with the given version."""
-        super(GerritContainer, self).__init__(
-            "gerritcodereview/gerrit:" + version)
+        if version.startswith("2.14") or version.startswith("2.15"):
+            image = "gerritcodereview/gerrit:" + version
+        else:
+            image = "gerritforge/gerrit-ubuntu15.04:" + version
+        super(GerritContainer, self).__init__(image)
         self.with_exposed_ports(8080)
 
 
 @wait_container_is_ready()
 def _connect(api):
-    api.get("")
+    api.get("/changes/")
 
 
-@pytest.fixture(scope="module", params=["2.14.8", "2.15.2"])
+@pytest.fixture(scope="module", params=["2.13.11", "2.14.8", "2.15.2"])
 def gerrit_api(request):
     """Create a Gerrit container for the given version and return an API."""
     with GerritContainer(request.param) as gerrit:
         port = gerrit.get_exposed_port(8080)
         url = "http://localhost:%s" % port
-        auth = HTTPBasicAuth("admin", "secret")
+        if request.param == "2.13.11":
+            auth = HTTPDigestAuth("admin", "secret")
+        else:
+            auth = HTTPBasicAuth("admin", "secret")
         api = GerritRestAPI(url=url, auth=auth)
         _connect(api)
         yield api
