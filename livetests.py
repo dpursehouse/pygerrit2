@@ -25,6 +25,7 @@
 
 """Live server tests."""
 
+import pytest
 import unittest
 from pygerrit2.rest import GerritRestAPI, GerritReview
 from requests.auth import HTTPBasicAuth
@@ -42,51 +43,51 @@ class GerritContainer(DockerContainer):
         self.with_exposed_ports(8080)
 
 
-class TestLiveServer(unittest.TestCase):
-    """Test that GerritRestAPI behaves properly against a live server."""
+@wait_container_is_ready()
+def _connect(api):
+    api.get("")
 
-    @wait_container_is_ready()
-    def _connect(self, api):
-        api.get("")
 
-    def test_live_server(self):
-        """Run tests against a server running in a Docker container."""
-        with GerritContainer("2.14.8") as gerrit:
-            port = gerrit.get_exposed_port(8080)
-            url = "http://localhost:%s" % port
-            auth = HTTPBasicAuth("admin", "secret")
-            api = GerritRestAPI(url=url, auth=auth)
-            self._connect(api)
-            self._run_tests(api)
+@pytest.fixture(scope="module", params=["2.14.8", "2.15.2"])
+def gerrit_api(request):
+    """Create a Gerrit container for the given version and return an API."""
+    with GerritContainer(request.param) as gerrit:
+        port = gerrit.get_exposed_port(8080)
+        url = "http://localhost:%s" % port
+        auth = HTTPBasicAuth("admin", "secret")
+        api = GerritRestAPI(url=url, auth=auth)
+        _connect(api)
+        yield api
 
-    def _run_tests(self, api):
-        """Run the tests."""
-        # Create the project
-        projectinput = {"create_empty_commit": "true"}
-        api.put("/projects/test-project", json=projectinput)
 
-        # Post with content as dict
-        changeinput = {"project": "test-project",
-                       "subject": "subject",
-                       "branch": "master",
-                       "topic": "topic"}
-        change = api.post("/changes/", json=changeinput)
-        id = change["id"]
+def test_live_server(gerrit_api):
+    """Run the tests."""
+    # Create the project
+    projectinput = {"create_empty_commit": "true"}
+    gerrit_api.put("/projects/test-project", json=projectinput)
 
-        # Get
-        api.get("/changes/" + id)
+    # Post with content as dict
+    changeinput = {"project": "test-project",
+                   "subject": "subject",
+                   "branch": "master",
+                   "topic": "topic"}
+    change = gerrit_api.post("/changes/", json=changeinput)
+    change_id = change["id"]
 
-        # Put with content as string
-        api.put("/changes/" + id + "/edit/foo", data="content")
+    # Get
+    gerrit_api.get("/changes/" + change_id)
 
-        # Put with no content
-        api.put("/changes/" + id + "/edit/foo")
+    # Put with content as string
+    gerrit_api.put("/changes/" + change_id + "/edit/foo", data="content")
 
-        # Review by API
-        rev = GerritReview()
-        rev.set_message("Review from live test")
-        rev.add_labels({"Code-Review": 1})
-        api.review(id, "current", rev)
+    # Put with no content
+    gerrit_api.put("/changes/" + change_id + "/edit/foo")
+
+    # Review by API
+    rev = GerritReview()
+    rev.set_message("Review from live test")
+    rev.add_labels({"Code-Review": 1})
+    gerrit_api.review(change_id, "current", rev)
 
 
 if __name__ == '__main__':

@@ -74,7 +74,7 @@ unittests: testenvsetup
 livetests: testenvsetup
 	bash -c "\
           source ./pygerrit2env/bin/activate && \
-          pytest livetests.py"
+          pytest -s livetests.py"
 
 testenvsetup: envsetup
 	bash -c "\
