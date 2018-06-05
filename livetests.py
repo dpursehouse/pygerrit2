@@ -39,10 +39,7 @@ class GerritContainer(DockerContainer):
 
     def __init__(self, version):
         """Construct a GerritContainer with the given version."""
-        if version.startswith("2.14") or version.startswith("2.15"):
-            image = "gerritcodereview/gerrit:" + version
-        else:
-            image = "gerritforge/gerrit-ubuntu15.04:" + version
+        image = "gerritcodereview/gerrit:" + version
         super(GerritContainer, self).__init__(image)
         self.with_exposed_ports(8080)
 
