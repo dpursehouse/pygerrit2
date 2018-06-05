@@ -22,8 +22,23 @@
 
 """Authentication handlers."""
 
-from requests.auth import HTTPDigestAuth, HTTPBasicAuth
+from requests.auth import HTTPDigestAuth
 from requests.utils import get_netrc_auth
+from requests.auth import HTTPBasicAuth as BasicAuth
+
+
+class HTTPBasicAuth(BasicAuth):
+
+    """ HTTP Basic Auth.
+
+    It inherits from requests HTTPBasicAuth.
+    By using it, the user no need to import
+    requests library again.
+
+    """
+
+    def __init__(self, user, password):
+        super(HTTPBasicAuth, self).__init__(user, password)
 
 
 class HTTPDigestAuthFromNetrc(HTTPDigestAuth):

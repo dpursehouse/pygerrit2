@@ -29,7 +29,7 @@ to Gerrit is done via HTTP Basic authentication, using an explicitly given
 username and password:
 
 ```python
-from requests.auth import HTTPBasicAuth
+from pygerrit2.rest.auth import HTTPBasicAuth
 from pygerrit2.rest import GerritRestAPI
 
 auth = HTTPBasicAuth('username', 'password')
