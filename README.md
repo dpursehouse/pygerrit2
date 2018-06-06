@@ -8,8 +8,7 @@ Pygerrit2 provides a simple interface for clients to interact with
 
 ## Prerequisites
 
-Pygerrit2 is compatible with Python 2.6 and Python 2.7.  Support for Python 3
-is experimental.
+Pygerrit2 is compatible with Python 2.7 and Python 3.6.
 
 Pygerrit2 depends on the [requests library][requests].
 
