@@ -27,8 +27,8 @@
 
 import unittest
 
-from pygerrit2 import GerritReviewMessageFormatter
-from pygerrit2.rest import GerritReview, _merge_dict
+from pygerrit2 import GerritReviewMessageFormatter, GerritReview
+from pygerrit2.rest import _merge_dict
 
 EXPECTED_TEST_CASE_FIELDS = ['header', 'footer', 'paragraphs', 'result']
 

@@ -29,7 +29,6 @@ import argparse
 import logging
 import sys
 
-from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 from requests.exceptions import RequestException
 try:
     from requests_kerberos import HTTPKerberosAuth, OPTIONAL
@@ -37,8 +36,9 @@ try:
 except ImportError:
     _KERBEROS_SUPPORT = False
 
-from pygerrit2.rest import GerritRestAPI
-from pygerrit2.rest.auth import HTTPDigestAuthFromNetrc, HTTPBasicAuthFromNetrc
+from pygerrit2 import GerritRestAPI
+from pygerrit2 import HTTPDigestAuthFromNetrc, HTTPBasicAuthFromNetrc
+from pygerrit2 import HTTPBasicAuth, HTTPDigestAuth
 
 
 def _main():

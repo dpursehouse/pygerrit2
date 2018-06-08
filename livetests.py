@@ -28,8 +28,8 @@
 import base64
 import pytest
 import unittest
-from pygerrit2.rest import GerritRestAPI, GerritReview
-from requests.auth import HTTPBasicAuth, HTTPDigestAuth
+from pygerrit2 import GerritRestAPI, GerritReview, HTTPBasicAuth, \
+    HTTPDigestAuth
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_container_is_ready
 

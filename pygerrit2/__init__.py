@@ -22,6 +22,14 @@
 
 """Module to interface with Gerrit."""
 
+from .rest import GerritRestAPI, GerritReview
+from requests.auth import HTTPBasicAuth, HTTPDigestAuth
+from .rest.auth import HTTPBasicAuthFromNetrc, HTTPDigestAuthFromNetrc
+
+__all__ = ["GerritRestAPI", "GerritReview",
+           "HTTPBasicAuth", "HTTPDigestAuth",
+           "HTTPBasicAuthFromNetrc", "HTTPDigestAuthFromNetrc"]
+
 
 def from_json(json_data, key):
     """Extract values from JSON data.
