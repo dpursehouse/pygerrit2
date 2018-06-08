@@ -13,5 +13,4 @@ install:
   - pip install pipenv
 
 script:
-  - pipenv install --dev
-  - pipenv run py.test -sv unittests.py livetests.py
+  - make test

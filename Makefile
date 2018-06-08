@@ -20,74 +20,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-PWD := $(shell pwd)
-VERSION := $(shell git describe)
-
-VIRTUALENV := $(shell which virtualenv)
-ifeq ($(wildcard $(VIRTUALENV)),)
-  $(error virtualenv must be available)
-endif
-
-PIP := $(shell which pip)
-ifeq ($(wildcard $(PIP)),)
-  $(error pip must be available)
-endif
-
-REQUIRED_VIRTUALENV ?= 1.10
-VIRTUALENV_OK := $(shell expr `virtualenv --version | \
-    cut -f2 -d' '` \>= $(REQUIRED_VIRTUALENV))
-
-all: test
+FILES := $(shell git ls-files | grep py$$)
 
 test: clean unittests livetests pyflakes pep8 pydocstyle
 
-sdist: valid-virtualenv test
-	bash -c "\
-          source ./pygerrit2env/bin/activate && \
-          python setup.py sdist"
-
-valid-virtualenv:
-ifeq ($(VIRTUALENV_OK),0)
-  $(error virtualenv version $(REQUIRED_VIRTUALENV) or higher is needed)
-endif
+sdist: test
+	pipenv run python setup.py sdist
 
 pydocstyle: testenvsetup
-	bash -c "\
-          source ./pygerrit2env/bin/activate && \
-          git ls-files | grep \"\.py$$\" | xargs pydocstyle"
+	pipenv run pydocstyle $(FILES)
 
 pep8: testenvsetup
-	bash -c "\
-          source ./pygerrit2env/bin/activate && \
-          git ls-files | grep \"\.py$$\" | xargs flake8 --max-line-length 80"
+	pipenv run flake8 $(FILES)
 
 pyflakes: testenvsetup
-	bash -c "\
-          source ./pygerrit2env/bin/activate && \
-          git ls-files | grep \"\.py$$\" | xargs pyflakes"
+	pipenv run pyflakes $(FILES)
 
 unittests: testenvsetup
-	bash -c "\
-          source ./pygerrit2env/bin/activate && \
-          pytest unittests.py"
+	pipenv run pytest -sv unittests.py
 
 livetests: testenvsetup
-	bash -c "\
-          source ./pygerrit2env/bin/activate && \
-          pytest -s livetests.py"
+	pipenv run pytest -sv livetests.py
 
-testenvsetup: envsetup
-	bash -c "\
-          source ./pygerrit2env/bin/activate && \
-          pip install --upgrade -r test_requirements.txt"
-
-envsetup: envinit
-	bash -c "\
-          source ./pygerrit2env/bin/activate && \
-          pip install --upgrade -r requirements.txt"
-
-envinit:
-	bash -c "[ -e ./pygerrit2env/bin/activate ] || virtualenv --system-site-packages ./pygerrit2env"
+testenvsetup:
+	pipenv install --dev
 
 clean:
 	@find . -type f -name "*.pyc" -exec rm -f {} \;

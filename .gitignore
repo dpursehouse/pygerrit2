@@ -4,12 +4,10 @@
 .pytest_cache
 .settings
 .idea
-.tox
 .eggs
 build/
 dist/
 pygerrit2.egg-info/
-pygerrit2env/
 ChangeLog
 AUTHORS
 MANIFEST
