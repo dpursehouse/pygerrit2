@@ -31,7 +31,7 @@ pydocstyle: testenvsetup
 	pipenv run pydocstyle $(FILES)
 
 pep8: testenvsetup
-	pipenv run flake8 $(FILES)
+	pipenv run flake8 $(FILES) --max-line-length 80
 
 pyflakes: testenvsetup
 	pipenv run pyflakes $(FILES)
