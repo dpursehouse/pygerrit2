@@ -1,5 +1,5 @@
 pydocstyle==2.1.1
 flake8==3.5.0
-pyflakes==1.6.0
+pyflakes==2.0.0
 pytest==3.6.1
 testcontainers==2.2
