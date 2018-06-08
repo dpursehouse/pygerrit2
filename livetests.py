@@ -131,6 +131,11 @@ class TestGerritAgainstLiveServer(object):
         # Will raise binascii.Error if content is not properly encoded
         base64.b64decode(response)
 
+    def test_get_patch_zip(self, gerrit_api):
+        """Test a GET request to get a patch file (issue #19)."""
+        change_id = self._get_test_change(gerrit_api)["id"]
+        gerrit_api.get("/changes/" + change_id + "/revisions/current/patch?zip")
+
     def test_put_with_no_content(self, gerrit_api):
         """Test a PUT request with no content."""
         change_id = self._get_test_change(gerrit_api)["id"]
