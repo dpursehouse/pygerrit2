@@ -1,6 +1,7 @@
 *.pyc
 .project
 .pydevproject
+.pytest_cache
 .settings
 .idea
 .tox
