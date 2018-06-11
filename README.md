@@ -9,8 +9,8 @@ Pygerrit2 provides a simple interface for clients to interact with
 
 ## Prerequisites
 
-Pygerrit2 is compatible with Python 2.7 and Python 3.6.
-
+Pygerrit is tested on OSX with Python 3.6, and Ubuntu (trusty) with Python
+3.5 and 3.6. It is compatible with Python 2.7, but support is not guaranteed.
 
 ## Installation
 
