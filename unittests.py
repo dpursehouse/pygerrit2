@@ -25,6 +25,7 @@
 
 """Unit tests for the Pygerrit2 helper methods."""
 
+import re
 import unittest
 
 from mock import patch
@@ -288,6 +289,12 @@ class TestNetrcAuth(unittest.TestCase):
             api = GerritRestAPI(url="http://review.example.com")
             assert api.auth is None
             assert not api.url.endswith("/a/")
+
+    def test_invalid_auth_type(self):
+        """Test that an exception is raised for invalid auth type."""
+        with self.assertRaises(ValueError) as exc:
+            GerritRestAPI(url="http://review.example.com", auth="foo")
+        assert re.search(r'Invalid auth type', str(exc.exception))
 
 
 if __name__ == '__main__':
