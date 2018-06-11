@@ -80,7 +80,6 @@ Licensed under The MIT License.  Please refer to the [LICENSE file][license]
 for full license details.
 
 [gerrit]: https://gerritcodereview.com/
-[requests]: https://github.com/kennethreitz/requests
 [example]: https://github.com/dpursehouse/pygerrit2/blob/master/example.py
 [settings]: https://gerrit-documentation.storage.googleapis.com/Documentation/2.15.2/user-upload.html#http
 [license]: https://github.com/dpursehouse/pygerrit2/blob/master/LICENSE
