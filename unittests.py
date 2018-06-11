@@ -27,7 +27,9 @@
 
 import unittest
 
+from mock import patch
 from pygerrit2 import GerritReviewMessageFormatter, GerritReview
+from pygerrit2 import HTTPBasicAuthFromNetrc, HTTPDigestAuthFromNetrc
 from pygerrit2.rest import _merge_dict
 
 EXPECTED_TEST_CASE_FIELDS = ['header', 'footer', 'paragraphs', 'result']
@@ -235,6 +237,40 @@ class TestGerritReview(unittest.TestCase):
             str(obj5),
             '{"comments": {"Make": [{"line": 10, "message": "test1"}],'
             ' "Makefile": [{"line": 15, "message": "test"}]}}')
+
+
+class TestNetrcAuth(unittest.TestCase):
+    """Test that netrc authentication works."""
+
+    def test_basic_auth_from_netrc(self):
+        """Test that the HTTP basic auth is taken from netrc."""
+        with patch('pygerrit2.rest.auth._get_netrc_auth') as mock_netrc:
+            mock_netrc.return_value = ("netrcuser", "netrcpass")
+            auth = HTTPBasicAuthFromNetrc(url="http://review.example.com")
+            assert auth.username == "netrcuser"
+            assert auth.password == "netrcpass"
+
+    def test_digest_auth_from_netrc(self):
+        """Test that the HTTP digest auth is taken from netrc."""
+        with patch('pygerrit2.rest.auth._get_netrc_auth') as mock_netrc:
+            mock_netrc.return_value = ("netrcuser", "netrcpass")
+            auth = HTTPDigestAuthFromNetrc(url="http://review.example.com")
+            assert auth.username == "netrcuser"
+            assert auth.password == "netrcpass"
+
+    def test_basic_auth_from_netrc_fails(self):
+        """Test that an exception is raised when credentials are not found."""
+        with self.assertRaises(ValueError) as exc:
+            HTTPBasicAuthFromNetrc(url="http://review.example.com")
+        assert str(exc.exception) == \
+            "netrc missing or no credentials found in netrc"
+
+    def test_digest_auth_from_netrc_fails(self):
+        """Test that an exception is raised when credentials are not found."""
+        with self.assertRaises(ValueError) as exc:
+            HTTPDigestAuthFromNetrc(url="http://review.example.com")
+        assert str(exc.exception) == \
+            "netrc missing or no credentials found in netrc"
 
 
 if __name__ == '__main__':
