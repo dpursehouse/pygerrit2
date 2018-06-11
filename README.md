@@ -29,8 +29,7 @@ to Gerrit is done via HTTP Basic authentication, using an explicitly given
 username and password:
 
 ```python
-from requests.auth import HTTPBasicAuth
-from pygerrit2.rest import GerritRestAPI
+from pygerrit2 import GerritRestAPI, HTTPBasicAuth
 
 auth = HTTPBasicAuth('username', 'password')
 rest = GerritRestAPI(url='http://review.example.net', auth=auth)
@@ -51,8 +50,7 @@ machine review.example.net login MyUsername password MyPassword
 then it is possible to authenticate with those credentials:
 
 ```python
-from pygerrit2.rest import GerritRestAPI
-from pygerrit2.rest.auth import HTTPBasicAuthFromNetrc
+from pygerrit2 import GerritRestAPI, HTTPBasicAuthFromNetrc
 
 url = 'http://review.example.net'
 auth = HTTPBasicAuthFromNetrc(url=url)
