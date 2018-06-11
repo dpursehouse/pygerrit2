@@ -56,6 +56,10 @@ rest = GerritRestAPI(url=url, auth=auth)
 changes = rest.get("/changes/?q=owner:self%20status:open")
 ```
 
+If no `auth` parameter is specified, pygerrit2 will attempt to find
+credentials in the `netrc` and use them with HTTP basic auth. If no
+credentials are found, it will fall back to using no authentication.
+
 Note that the HTTP password is not the same as the SSH password. For
 instructions on how to obtain the HTTP password, refer to Gerrit's
 [HTTP upload settings documentation][settings].

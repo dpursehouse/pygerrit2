@@ -30,6 +30,7 @@ import unittest
 from mock import patch
 from pygerrit2 import GerritReviewMessageFormatter, GerritReview
 from pygerrit2 import HTTPBasicAuthFromNetrc, HTTPDigestAuthFromNetrc
+from pygerrit2 import GerritRestAPI
 from pygerrit2.rest import _merge_dict
 
 EXPECTED_TEST_CASE_FIELDS = ['header', 'footer', 'paragraphs', 'result']
@@ -271,6 +272,22 @@ class TestNetrcAuth(unittest.TestCase):
             HTTPDigestAuthFromNetrc(url="http://review.example.com")
         assert str(exc.exception) == \
             "netrc missing or no credentials found in netrc"
+
+    def test_default_to_basic_auth_from_netrc(self):
+        """Test auth defaults to HTTP basic from netrc when not specified."""
+        with patch('pygerrit2.rest.auth._get_netrc_auth') as mock_netrc:
+            mock_netrc.return_value = ("netrcuser", "netrcpass")
+            api = GerritRestAPI(url="http://review.example.com")
+            assert isinstance(api.auth, HTTPBasicAuthFromNetrc)
+            assert api.url.endswith("/a/")
+
+    def test_default_to_no_auth_when_not_in_netrc(self):
+        """Test auth defaults to none when not specified and not in netrc."""
+        with patch('pygerrit2.rest.auth._get_netrc_auth') as mock_netrc:
+            mock_netrc.return_value = None
+            api = GerritRestAPI(url="http://review.example.com")
+            assert api.auth is None
+            assert not api.url.endswith("/a/")
 
 
 if __name__ == '__main__':

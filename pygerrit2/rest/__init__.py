@@ -26,6 +26,8 @@ import json
 import logging
 import requests
 
+from .auth import HTTPBasicAuthFromNetrc
+
 GERRIT_MAGIC_JSON_PREFIX = ")]}\'\n"
 GERRIT_AUTH_SUFFIX = "/a"
 
@@ -100,6 +102,12 @@ class GerritRestAPI(object):
         self.url = url.rstrip('/')
         self.session = requests.session()
 
+        if not auth:
+            try:
+                auth = HTTPBasicAuthFromNetrc(url)
+            except ValueError:
+                pass
+
         if auth:
             if not isinstance(auth, requests.auth.AuthBase):
                 raise ValueError('Invalid auth type; must be derived '
@@ -110,6 +118,9 @@ class GerritRestAPI(object):
         else:
             if self.url.endswith(GERRIT_AUTH_SUFFIX):
                 self.url = self.url[: - len(GERRIT_AUTH_SUFFIX)]
+
+        # Keep a copy of the auth, only needed for tests
+        self.auth = auth
 
         if not self.url.endswith('/'):
             self.url += '/'
