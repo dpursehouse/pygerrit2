@@ -15,7 +15,7 @@ interface. Users who require an SSH interface should continue to use
 
 ## Prerequisites
 
-Pygerrit2 is tested on OSX with Python 3.6, and Ubuntu (trusty) with Python
+Pygerrit2 is tested on OSX with Python 3.7, and Ubuntu (trusty) with Python
 3.5 and 3.6. It is compatible with Python 2.7, but support is not guaranteed.
 
 ## Installation
