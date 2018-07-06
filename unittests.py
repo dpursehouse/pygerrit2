@@ -32,7 +32,6 @@ from mock import patch
 from pygerrit2 import GerritReviewMessageFormatter, GerritReview
 from pygerrit2 import HTTPBasicAuthFromNetrc, HTTPDigestAuthFromNetrc
 from pygerrit2 import GerritRestAPI
-from pygerrit2.rest import _merge_dict
 
 EXPECTED_TEST_CASE_FIELDS = ['header', 'footer', 'paragraphs', 'result']
 
@@ -110,65 +109,6 @@ TEST_CASES = [
      'footer': None,
      'paragraphs': [["* One", "  ", "* Two"]],
      'result': "* One\n* Two"}]
-
-
-class TestMergeDict(unittest.TestCase):
-    """Tests for the `_merge_dict` method."""
-
-    def test_merge_into_empty_dict(self):
-        """Test merging into an empty dict."""
-        dct = {}
-        _merge_dict(dct, {'a': 1, 'b': 2})
-        self.assertEqual(dct, {'a': 1, 'b': 2})
-
-    def test_merge_flat(self):
-        """Test merging a flat dict."""
-        dct = {'c': 3}
-        _merge_dict(dct, {'a': 1, 'b': 2})
-        self.assertEqual(dct, {'a': 1, 'b': 2, 'c': 3})
-
-    def test_merge_with_override(self):
-        """Test merging a dict and overriding values."""
-        dct = {'a': 1}
-        _merge_dict(dct, {'a': 0, 'b': 2})
-        self.assertEqual(dct, {'a': 0, 'b': 2})
-
-    def test_merge_two_levels(self):
-        """Test merging a dict with two levels."""
-        dct = {
-            'a': {
-                'A': 1,
-                'AA': 2,
-            },
-            'b': {
-                'B': 1,
-                'BB': 2,
-            },
-        }
-        overrides = {
-            'a': {
-                'AAA': 3,
-            },
-            'b': {
-                'BBB': 3,
-            },
-        }
-        _merge_dict(dct, overrides)
-        self.assertEqual(
-            dct,
-            {
-                'a': {
-                    'A': 1,
-                    'AA': 2,
-                    'AAA': 3,
-                },
-                'b': {
-                    'B': 1,
-                    'BB': 2,
-                    'BBB': 3,
-                },
-            }
-        )
 
 
 class TestGerritReviewMessageFormatter(unittest.TestCase):
@@ -295,6 +235,99 @@ class TestNetrcAuth(unittest.TestCase):
         with self.assertRaises(ValueError) as exc:
             GerritRestAPI(url="http://review.example.com", auth="foo")
         assert re.search(r'Invalid auth type', str(exc.exception))
+
+
+class TestKwargsTranslation(unittest.TestCase):
+    """Test that kwargs translation works."""
+
+    def test_data_and_json(self):
+        """Test that `json` and `data` cannot be used at the same time."""
+        api = GerritRestAPI(url="http://review.example.com")
+        with self.assertRaises(ValueError) as exc:
+            api.translate_kwargs(data="d", json="j")
+        assert re.search(r'Cannot use data and json together',
+                         str(exc.exception))
+
+    def test_data_as_dict_converts_to_json_and_header_added(self):
+        """Test that `data` dict is converted to `json`.
+
+        Also test that a Content-Type header is added.
+        """
+        api = GerritRestAPI(url="http://review.example.com")
+        data = {"a": "a"}
+        result = api.translate_kwargs(data=data)
+        assert "json" in result
+        assert "data" not in result
+        assert "headers" in result
+        headers = result["headers"]
+        assert "Content-Type" in headers
+        assert result["json"] == {"a": "a"}
+        assert headers["Content-Type"] == "application/json;charset=UTF-8"
+
+    def test_json_is_unchanged_and_header_added(self):
+        """Test that `json` is unchanged and a Content-Type header is added."""
+        api = GerritRestAPI(url="http://review.example.com")
+        json = {"a": "a"}
+        result = api.translate_kwargs(json=json)
+        assert "json" in result
+        assert "data" not in result
+        assert "headers" in result
+        headers = result["headers"]
+        assert "Content-Type" in headers
+        assert result["json"] == {"a": "a"}
+        assert headers["Content-Type"] == "application/json;charset=UTF-8"
+
+    def test_json_no_side_effect_on_subsequent_call(self):
+        """Test that subsequent call is not polluted with results of previous.
+
+        If the translate_kwargs method is called, resulting in the content-type
+        header being added, the header should not also be added on a subsequent
+        call that does not need it.
+        """
+        api = GerritRestAPI(url="http://review.example.com")
+        json = {"a": "a"}
+        result = api.translate_kwargs(json=json)
+        assert "json" in result
+        assert "data" not in result
+        assert "headers" in result
+        headers = result["headers"]
+        assert "Content-Type" in headers
+        assert result["json"] == {"a": "a"}
+        assert headers["Content-Type"] == "application/json;charset=UTF-8"
+        kwargs = {"a": "a", "b": "b"}
+        result = api.translate_kwargs(**kwargs)
+        assert "json" not in result
+        assert "data" not in result
+        assert "a" in result
+        assert "b" in result
+        assert "headers" in result
+        headers = result["headers"]
+        assert "Content-Type" not in headers
+
+    def test_kwargs_unchanged_when_no_data_or_json(self):
+        """Test that `json` or `data` are not added when not passed."""
+        api = GerritRestAPI(url="http://review.example.com")
+        kwargs = {"a": "a", "b": "b"}
+        result = api.translate_kwargs(**kwargs)
+        assert "json" not in result
+        assert "data" not in result
+        assert "a" in result
+        assert "b" in result
+        assert "headers" in result
+        headers = result["headers"]
+        assert "Content-Type" not in headers
+
+    def test_data_as_string_is_unchanged(self):
+        """Test that `data` is unchanged when passed as a string."""
+        api = GerritRestAPI(url="http://review.example.com")
+        kwargs = {"data": "Content with non base64 valid chars åäö"}
+        result = api.translate_kwargs(**kwargs)
+        assert "json" not in result
+        assert "data" in result
+        assert result["data"] == "Content with non base64 valid chars åäö"
+        assert "headers" in result
+        headers = result["headers"]
+        assert "Content-Type" not in headers
 
 
 if __name__ == '__main__':

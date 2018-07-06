@@ -34,6 +34,9 @@ from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_container_is_ready
 
 
+TEST_TOPIC = "test-topic"
+
+
 class GerritContainer(DockerContainer):
     """Gerrit container."""
 
@@ -67,10 +70,8 @@ def gerrit_api(request):
 class TestGerritAgainstLiveServer(object):
     """Run tests against a live server."""
 
-    TEST_TOPIC = "test-topic"
-
-    def _get_test_change(self, gerrit_api):
-        results = gerrit_api.get("/changes/?q=topic:" + self.TEST_TOPIC)
+    def _get_test_change(self, gerrit_api, topic=TEST_TOPIC):
+        results = gerrit_api.get("/changes/?q=topic:" + topic)
         assert len(results) == 1
         return results[0]
 
@@ -86,6 +87,36 @@ class TestGerritAgainstLiveServer(object):
         gerrit_api.put("/projects/test-project", json=projectinput)
         gerrit_api.get("/projects/test-project")
 
+    def test_put_with_data_dict(self, gerrit_api):
+        """Test a PUT request passing data as a dict to `data`.
+
+        Tests that the PUT request works as expected when data is passed
+        via the `data` argument as a `dict`.
+        """
+        description = {"description": "New Description"}
+        gerrit_api.put("/projects/test-project/description", data=description)
+        project = gerrit_api.get("/projects/test-project")
+        assert project["description"] == "New Description"
+
+    def test_post_with_data_dict_and_no_data(self, gerrit_api):
+        """Test a POST request passing data as a dict to `data`.
+
+        Tests that the POST request works as expected when data is passed
+        via the `data` argument as a `dict`.
+        """
+        changeinput = {"project": "test-project",
+                       "subject": "subject",
+                       "branch": "master",
+                       "topic": "post-with-data"}
+        result = gerrit_api.post("/changes/", data=changeinput)
+        change = self._get_test_change(gerrit_api, "post-with-data")
+        assert change["id"] == result["id"]
+
+        # Subsequent post without data or json should not have the Content-Type
+        # json header, and should succeed.
+        result = gerrit_api.post("/changes/" + change["id"] + "/abandon")
+        assert result["status"] == "ABANDONED"
+
     def test_post_with_json_dict(self, gerrit_api):
         """Test a POST request passing data as a dict to `json`.
 
@@ -97,7 +128,7 @@ class TestGerritAgainstLiveServer(object):
         changeinput = {"project": "test-project",
                        "subject": "subject",
                        "branch": "master",
-                       "topic": self.TEST_TOPIC}
+                       "topic": TEST_TOPIC}
         result = gerrit_api.post("/changes/", json=changeinput)
         change = self._get_test_change(gerrit_api)
         assert change["id"] == result["id"]
