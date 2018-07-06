@@ -81,9 +81,7 @@ class TestGerritAgainstLiveServer(object):
         via the `json` argument as a `dict`.
 
         Creates the test project which is used by subsequent tests.
-
         """
-        # Creates the project which will be used by subsequent tests
         projectinput = {"create_empty_commit": "true"}
         gerrit_api.put("/projects/test-project", json=projectinput)
         gerrit_api.get("/projects/test-project")
@@ -96,7 +94,6 @@ class TestGerritAgainstLiveServer(object):
 
         Creates the change which is used by subsequent tests.
         """
-        # Creates the change which will be used by subsequent tests
         changeinput = {"project": "test-project",
                        "subject": "subject",
                        "branch": "master",
