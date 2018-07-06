@@ -5,11 +5,17 @@
 [![Build Status](https://travis-ci.org/dpursehouse/pygerrit2.svg?branch=master)](https://travis-ci.org/dpursehouse/pygerrit2)
 
 Pygerrit2 provides a simple interface for clients to interact with
-[Gerrit Code Review][gerrit] via the REST API.
+[Gerrit Code Review][gerrit] via the REST API. It is based on [pygerrit][pygerrit]
+which was originally developed at Sony Mobile, but is no longer
+actively maintained.
+
+Unlike the original pygerrit, pygerrit2 does not provide any SSH
+interface. Users who require an SSH interface should continue to use
+[pygerrit][pygerrit].
 
 ## Prerequisites
 
-Pygerrit is tested on OSX with Python 3.6, and Ubuntu (trusty) with Python
+Pygerrit2 is tested on OSX with Python 3.6, and Ubuntu (trusty) with Python
 3.5 and 3.6. It is compatible with Python 2.7, but support is not guaranteed.
 
 ## Installation
@@ -87,3 +93,4 @@ for full license details.
 [example]: https://github.com/dpursehouse/pygerrit2/blob/master/example.py
 [settings]: https://gerrit-documentation.storage.googleapis.com/Documentation/2.15.2/user-upload.html#http
 [license]: https://github.com/dpursehouse/pygerrit2/blob/master/LICENSE
+[pygerrit]: https://github.com/sonyxperiadev/pygerrit
