@@ -41,10 +41,10 @@
         },
         "pbr": {
             "hashes": [
-                "sha256:3747c6f017f2dc099986c325239661948f9f5176f6880d9fdef164cb664cd665",
-                "sha256:a9c27eb8f0e24e786e544b2dbaedb729c9d8546342b5a6818d8eda098ad4340d"
+                "sha256:4f2b11d95917af76e936811be8361b2b19616e5ef3b55956a429ec7864378e0c",
+                "sha256:e0f23b61ec42473723b2fec2f33fb12558ff221ee551962f01dd4de9053c2055"
             ],
-            "version": "==4.0.4"
+            "version": "==4.1.0"
         },
         "requests": {
             "hashes": [
@@ -59,7 +59,7 @@
                 "sha256:a68ac5e15e76e7e5dd2b8f94007233e01effe3e50e8daddf69acfd81cb686baf",
                 "sha256:b5725a0bd4ba422ab0e66e89e030c806576753ea3ee08554382c14e685d117b5"
             ],
-            "markers": "python_version < '4' and python_version != '3.0.*' and python_version >= '2.6' and python_version != '3.1.*' and python_version != '3.2.*' and python_version != '3.3.*'",
+            "markers": "python_version != '3.3.*' and python_version != '3.2.*' and python_version < '4' and python_version >= '2.6' and python_version != '3.1.*' and python_version != '3.0.*'",
             "version": "==1.23"
         }
     },
@@ -115,11 +115,10 @@
         },
         "docker": {
             "hashes": [
-                "sha256:dbed56b8ba57b23919794e7cdcf7340c5052e9fd1cbe64b90b4eb9106437e0e3",
-                "sha256:e9cc39e24905e67ba9e2df14c94488f5cf030fb72ae1c60de505ce5ea90503f7"
+                "sha256:52cf5b1c3c394f9abf897638bfc3336d6b63a0f65969d0d4d2da6d3b1d8032b6",
+                "sha256:ad077b49660b711d20f50f344f70cfae014d635ef094bf21b0d7df5f0aeedf99"
             ],
-            "markers": "python_version < '4' and python_version != '3.0.*' and python_version >= '2.6' and python_version != '3.1.*' and python_version != '3.2.*' and python_version != '3.3.*'",
-            "version": "==3.4.0"
+            "version": "==3.4.1"
         },
         "docker-pycreds": {
             "hashes": [
@@ -172,10 +171,10 @@
         },
         "pbr": {
             "hashes": [
-                "sha256:3747c6f017f2dc099986c325239661948f9f5176f6880d9fdef164cb664cd665",
-                "sha256:a9c27eb8f0e24e786e544b2dbaedb729c9d8546342b5a6818d8eda098ad4340d"
+                "sha256:4f2b11d95917af76e936811be8361b2b19616e5ef3b55956a429ec7864378e0c",
+                "sha256:e0f23b61ec42473723b2fec2f33fb12558ff221ee551962f01dd4de9053c2055"
             ],
-            "version": "==4.0.4"
+            "version": "==4.1.0"
         },
         "pluggy": {
             "hashes": [
@@ -183,6 +182,7 @@
                 "sha256:d345c8fe681115900d6da8d048ba67c25df42973bda370783cd58826442dcd7c",
                 "sha256:e160a7fcf25762bb60efc7e171d4497ff1d8d2d75a3d0df7a21b76821ecbf5c5"
             ],
+            "markers": "python_version != '3.3.*' and python_version != '3.2.*' and python_version != '3.1.*' and python_version != '3.0.*' and python_version >= '2.7'",
             "version": "==0.6.0"
         },
         "py": {
@@ -190,6 +190,7 @@
                 "sha256:3fd59af7435864e1a243790d322d763925431213b6b8529c6ca71081ace3bbf7",
                 "sha256:e31fb2767eb657cbde86c454f02e99cb846d3cd9d61b318525140214fdc0e98e"
             ],
+            "markers": "python_version != '3.3.*' and python_version != '3.2.*' and python_version != '3.1.*' and python_version != '3.0.*' and python_version >= '2.7'",
             "version": "==1.5.4"
         },
         "pycodestyle": {
@@ -218,11 +219,11 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:8ea01fc4fcc8e1b1e305252b4bc80a1528019ab99fd3b88666c9dc38d754406c",
-                "sha256:90898786b3d0b880b47645bae7b51aa9bbf1e9d1e4510c2cfd15dd65c70ea0cd"
+                "sha256:0453c8676c2bee6feb0434748b068d5510273a916295fd61d306c4f22fbfd752",
+                "sha256:4b208614ae6d98195430ad6bde03641c78553acee7c83cec2e85d613c0cd383d"
             ],
             "index": "pypi",
-            "version": "==3.6.2"
+            "version": "==3.6.3"
         },
         "requests": {
             "hashes": [
@@ -258,7 +259,7 @@
                 "sha256:a68ac5e15e76e7e5dd2b8f94007233e01effe3e50e8daddf69acfd81cb686baf",
                 "sha256:b5725a0bd4ba422ab0e66e89e030c806576753ea3ee08554382c14e685d117b5"
             ],
-            "markers": "python_version < '4' and python_version != '3.0.*' and python_version >= '2.6' and python_version != '3.1.*' and python_version != '3.2.*' and python_version != '3.3.*'",
+            "markers": "python_version != '3.3.*' and python_version != '3.2.*' and python_version < '4' and python_version >= '2.6' and python_version != '3.1.*' and python_version != '3.0.*'",
             "version": "==1.23"
         },
         "websocket-client": {
