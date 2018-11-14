@@ -193,7 +193,6 @@ class GerritRestAPI(object):
 
         """
         args = self.translate_kwargs(**kwargs)
-        logging.warning(args)
         response = self.session.post(self.make_url(endpoint), **args)
 
         decoded_response = _decode_response(response)
