@@ -7,6 +7,8 @@ Pygerrit2 - Client library for interacting with Gerrit Code Review's REST API
 
 .. image:: https://travis-ci.org/dpursehouse/pygerrit2.svg?branch=master
 
+.. image:: https://api.dependabot.com/badges/status?host=github&repo=dpursehouse/pygerrit2
+
 Pygerrit2 provides a simple interface for clients to interact with
 `Gerrit Code Review`_ via the REST API.
 
