@@ -28,11 +28,14 @@ import requests
 
 from .auth import HTTPBasicAuthFromNetrc
 
-logging.basicConfig(
-    level=logging.WARNING,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    datefmt="[%y-%m-%d %H:%M:%S]")
 logger = logging.getLogger("pygerrit2")
+fmt = "%(asctime)s-[%(name)s-%(levelname)s] %(message)s"
+datefmt = "[%y-%m-%d %H:%M:%S]"
+sh = logging.StreamHandler()
+sh.setLevel(logging.WARNING)
+sh.setFormatter(logging.Formatter(fmt, datefmt))
+if not logger.handlers:
+    logger.addHandler(sh)
 
 GERRIT_MAGIC_JSON_PREFIX = ")]}\'\n"
 GERRIT_AUTH_SUFFIX = "/a"
