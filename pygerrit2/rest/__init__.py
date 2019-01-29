@@ -26,6 +26,9 @@ import json
 import logging
 import requests
 
+logging.basicConfig(level=logging.WARNING, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="[%y-%m-%d %H:%M:%S]")
+logger = logging.getLogger("pygerrit2")
+
 from .auth import HTTPBasicAuthFromNetrc
 
 GERRIT_MAGIC_JSON_PREFIX = ")]}\'\n"
@@ -57,7 +60,7 @@ def _decode_response(response):
     try:
         return json.loads(content)
     except ValueError:
-        logging.error('Invalid json content: %s', content)
+        logger.error('Invalid json content: %s', content)
         raise
 
 
@@ -193,6 +196,7 @@ class GerritRestAPI(object):
 
         """
         args = self.translate_kwargs(**kwargs)
+        logger.warning(args)
         response = self.session.post(self.make_url(endpoint), **args)
 
         decoded_response = _decode_response(response)
