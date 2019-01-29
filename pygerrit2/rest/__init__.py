@@ -28,6 +28,12 @@ import requests
 
 from .auth import HTTPBasicAuthFromNetrc
 
+logging.basicConfig(
+    level=logging.WARNING,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    datefmt="[%y-%m-%d %H:%M:%S]")
+logger = logging.getLogger("pygerrit2")
+
 GERRIT_MAGIC_JSON_PREFIX = ")]}\'\n"
 GERRIT_AUTH_SUFFIX = "/a"
 DEFAULT_HEADERS = {'Accept': 'application/json',
@@ -57,7 +63,7 @@ def _decode_response(response):
     try:
         return json.loads(content)
     except ValueError:
-        logging.error('Invalid json content: %s', content)
+        logger.error('Invalid json content: %s', content)
         raise
 
 
