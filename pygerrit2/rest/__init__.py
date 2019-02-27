@@ -61,6 +61,9 @@ def _decode_response(response):
     content = response.content.strip()
     if response.encoding:
         content = content.decode(response.encoding)
+    if not content:
+        logger.debug("no content in response")
+        return content
     if content_type.split(';')[0] != 'application/json':
         return content
     if content.startswith(GERRIT_MAGIC_JSON_PREFIX):
