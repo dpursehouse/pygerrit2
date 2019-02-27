@@ -146,6 +146,13 @@ class TestGerritAgainstLiveServer(object):
         gerrit_api.put("/changes/" + change_id + "/edit/foo",
                        data="Content with non base64 valid chars åäö")
 
+    def test_put_json_content(self, gerrit_api):
+        """Test a PUT request with a json file content (issue #54)."""
+        change_id = self._get_test_change(gerrit_api)["id"]
+        content = """{"foo" : "bar"}"""
+        gerrit_api.put("/changes/" + change_id + "/edit/file.json",
+                       data=content)
+
     def test_get_base64_data(self, gerrit_api):
         """Test a GET request on an API that returns base64 encoded response.
 

@@ -54,11 +54,16 @@ def _decode_response(response):
         requests.HTTPError if the response contains an HTTP error status code.
 
     """
+    content_type = response.headers.get('content-type', '')
+    logger.debug("status[%s] content_type[%s] encoding[%s]" %
+                 (response.status_code, content_type, response.encoding))
+    response.raise_for_status()
     content = response.content.strip()
     if response.encoding:
         content = content.decode(response.encoding)
-    response.raise_for_status()
-    content_type = response.headers.get('content-type', '')
+    if not content:
+        logger.debug("no content in response")
+        return content
     if content_type.split(';')[0] != 'application/json':
         return content
     if content.startswith(GERRIT_MAGIC_JSON_PREFIX):
