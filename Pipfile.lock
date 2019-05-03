@@ -56,10 +56,10 @@
         },
         "urllib3": {
             "hashes": [
-                "sha256:4c291ca23bbb55c76518905869ef34bdd5f0e46af7afe6861e8375643ffee1a0",
-                "sha256:9a247273df709c4fedb38c711e44292304f73f39ab01beda9f6b9fc375669ac3"
+                "sha256:2393a695cd12afedd0dcb26fe5d50d0cf248e5a66f75dbd89a3d4eb333a61af4",
+                "sha256:a637e5fae88995b256e3409dc4d52c2e2e0ba32c42a6365fee8bbd2238de3cfb"
             ],
-            "version": "==1.24.2"
+            "version": "==1.24.3"
         }
     },
     "develop": {
@@ -154,11 +154,11 @@
         },
         "mock": {
             "hashes": [
-                "sha256:8e4a1f6d89cfaadb486237acbfa24700add01da022dfcf3536e5071d21e13ee0",
-                "sha256:9d6863f6c70d034b8c34b3355cb7ba7d2ad799583947265efda41fe67127c23f"
+                "sha256:5eda46efb363128828d6fd2bf8d16f6ebb66f5b543b9f7f8f4eb224c5cb503fe",
+                "sha256:d659f8ef8810ff4c3f8f973d113a05d291a08ab0f7ed17bd60887983b93a0f9a"
             ],
             "index": "pypi",
-            "version": "==3.0.1"
+            "version": "==3.0.3"
         },
         "more-itertools": {
             "hashes": [
@@ -252,10 +252,10 @@
         },
         "urllib3": {
             "hashes": [
-                "sha256:4c291ca23bbb55c76518905869ef34bdd5f0e46af7afe6861e8375643ffee1a0",
-                "sha256:9a247273df709c4fedb38c711e44292304f73f39ab01beda9f6b9fc375669ac3"
+                "sha256:2393a695cd12afedd0dcb26fe5d50d0cf248e5a66f75dbd89a3d4eb333a61af4",
+                "sha256:a637e5fae88995b256e3409dc4d52c2e2e0ba32c42a6365fee8bbd2238de3cfb"
             ],
-            "version": "==1.24.2"
+            "version": "==1.24.3"
         },
         "websocket-client": {
             "hashes": [
