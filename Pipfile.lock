@@ -154,11 +154,11 @@
         },
         "mock": {
             "hashes": [
-                "sha256:21a2c07af3bbc4a77f9d14ac18fcc1782e8e7ea363df718740cdeaf61995b5e7",
-                "sha256:7868db2825a1563578869d4a011a036503a2f1d60f9ff9dd1e3205cd6e25fcec"
+                "sha256:83657d894c90d5681d62155c82bda9c1187827525880eda8ff5df4ec813437c3",
+                "sha256:d157e52d4e5b938c550f39eb2fd15610db062441a9c2747d3dbfa9298211d0f8"
             ],
             "index": "pypi",
-            "version": "==3.0.4"
+            "version": "==3.0.5"
         },
         "more-itertools": {
             "hashes": [
@@ -177,10 +177,10 @@
         },
         "pluggy": {
             "hashes": [
-                "sha256:19ecf9ce9db2fce065a7a0586e07cfb4ac8614fe96edf628a264b1c70116cf8f",
-                "sha256:84d306a647cc805219916e62aab89caa97a33a1dd8c342e87a37f91073cd4746"
+                "sha256:25a1bc1d148c9a640211872b4ff859878d422bccb59c9965e04eed468a0aa180",
+                "sha256:964cedd2b27c492fbf0b7f58b3284a09cf7f99b0f715941fb24a439b3af1bd1a"
             ],
-            "version": "==0.9.0"
+            "version": "==0.11.0"
         },
         "py": {
             "hashes": [
