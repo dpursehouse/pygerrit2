@@ -4,6 +4,7 @@
 ![License](https://img.shields.io/pypi/l/pygerrit2.svg)
 [![Build Status](https://travis-ci.org/dpursehouse/pygerrit2.svg?branch=master)](https://travis-ci.org/dpursehouse/pygerrit2)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=dpursehouse/pygerrit2)](https://dependabot.com)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Pygerrit2 provides a simple interface for clients to interact with
 [Gerrit Code Review][gerrit] via the REST API. It is based on [pygerrit][pygerrit]

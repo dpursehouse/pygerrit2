@@ -26,9 +26,14 @@ from .rest import GerritRestAPI, GerritReview
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 from .rest.auth import HTTPBasicAuthFromNetrc, HTTPDigestAuthFromNetrc
 
-__all__ = ["GerritRestAPI", "GerritReview",
-           "HTTPBasicAuth", "HTTPDigestAuth",
-           "HTTPBasicAuthFromNetrc", "HTTPDigestAuthFromNetrc"]
+__all__ = [
+    "GerritRestAPI",
+    "GerritReview",
+    "HTTPBasicAuth",
+    "HTTPDigestAuth",
+    "HTTPBasicAuthFromNetrc",
+    "HTTPDigestAuthFromNetrc",
+]
 
 
 def from_json(json_data, key):
@@ -57,7 +62,7 @@ def escape_string(string):
 
     """
     result = string
-    result = result.replace('\\', '\\\\')
+    result = result.replace("\\", "\\\\")
     result = result.replace('"', '\\"')
     return '"' + result + '"'
 
@@ -109,8 +114,7 @@ class GerritReviewMessageFormatter(object):
             # the next step, so we strip off any existing leading '*' that the
             # caller has added, and then strip off any leading or trailing
             # whitespace.
-            _items = [x.replace("\n", " ").strip().lstrip('*').strip()
-                      for x in data]
+            _items = [x.replace("\n", " ").strip().lstrip("*").strip() for x in data]
 
             # Create the bullet list only with the items that still have any
             # text in them after cleaning up.
@@ -122,7 +126,7 @@ class GerritReviewMessageFormatter(object):
             if _paragraph:
                 self.paragraphs.append(_paragraph)
         else:
-            raise ValueError('Data must be a list or a string')
+            raise ValueError("Data must be a list or a string")
 
     def is_empty(self):
         """Check if the formatter is empty.
@@ -143,8 +147,8 @@ class GerritReviewMessageFormatter(object):
         message = ""
         if self.paragraphs:
             if self.header:
-                message += (self.header + '\n\n')
+                message += self.header + "\n\n"
             message += "\n\n".join(self.paragraphs)
             if self.footer:
-                message += ('\n\n' + self.footer)
+                message += "\n\n" + self.footer
         return message

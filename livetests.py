@@ -28,8 +28,7 @@
 import base64
 import pytest
 import unittest
-from pygerrit2 import GerritRestAPI, GerritReview, HTTPBasicAuth, \
-    HTTPDigestAuth
+from pygerrit2 import GerritRestAPI, GerritReview, HTTPBasicAuth, HTTPDigestAuth
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_container_is_ready
 
@@ -52,8 +51,7 @@ def _initialize(api):
     api.get("/changes/")
 
 
-@pytest.fixture(scope="module",
-                params=["2.14.20", "2.15.14", "2.16.10", "3.0.1"])
+@pytest.fixture(scope="module", params=["2.14.20", "2.15.14", "2.16.10", "3.0.1"])
 def gerrit_api(request):
     """Create a Gerrit container for the given version and return an API."""
     with GerritContainer(request.param) as gerrit:
@@ -105,10 +103,12 @@ class TestGerritAgainstLiveServer(object):
         Tests that the POST request works as expected when data is passed
         via the `data` argument as a `dict`.
         """
-        changeinput = {"project": "test-project",
-                       "subject": "subject",
-                       "branch": "master",
-                       "topic": "post-with-data"}
+        changeinput = {
+            "project": "test-project",
+            "subject": "subject",
+            "branch": "master",
+            "topic": "post-with-data",
+        }
         result = gerrit_api.post("/changes/", data=changeinput)
         change = self._get_test_change(gerrit_api, "post-with-data")
         assert change["id"] == result["id"]
@@ -126,10 +126,12 @@ class TestGerritAgainstLiveServer(object):
 
         Creates the change which is used by subsequent tests.
         """
-        changeinput = {"project": "test-project",
-                       "subject": "subject",
-                       "branch": "master",
-                       "topic": TEST_TOPIC}
+        changeinput = {
+            "project": "test-project",
+            "subject": "subject",
+            "branch": "master",
+            "topic": TEST_TOPIC,
+        }
         result = gerrit_api.post("/changes/", json=changeinput)
         change = self._get_test_change(gerrit_api)
         assert change["id"] == result["id"]
@@ -143,15 +145,16 @@ class TestGerritAgainstLiveServer(object):
         Creates a change edit that is checked in the subsequent test.
         """
         change_id = self._get_test_change(gerrit_api)["id"]
-        gerrit_api.put("/changes/" + change_id + "/edit/foo",
-                       data="Content with non base64 valid chars åäö")
+        gerrit_api.put(
+            "/changes/" + change_id + "/edit/foo",
+            data="Content with non base64 valid chars åäö",
+        )
 
     def test_put_json_content(self, gerrit_api):
         """Test a PUT request with a json file content (issue #54)."""
         change_id = self._get_test_change(gerrit_api)["id"]
         content = """{"foo" : "bar"}"""
-        gerrit_api.put("/changes/" + change_id + "/edit/file.json",
-                       data=content)
+        gerrit_api.put("/changes/" + change_id + "/edit/file.json", data=content)
 
     def test_get_base64_data(self, gerrit_api):
         """Test a GET request on an API that returns base64 encoded response.
@@ -161,8 +164,9 @@ class TestGerritAgainstLiveServer(object):
         response can be base64 decoded.
         """
         change_id = self._get_test_change(gerrit_api)["id"]
-        response = gerrit_api.get("/changes/" + change_id + "/edit/foo",
-                                  headers={'Accept': 'text/plain'})
+        response = gerrit_api.get(
+            "/changes/" + change_id + "/edit/foo", headers={"Accept": "text/plain"}
+        )
 
         # Will raise binascii.Error if content is not properly encoded
         base64.b64decode(response)
@@ -186,5 +190,5 @@ class TestGerritAgainstLiveServer(object):
         gerrit_api.review(change_id, "current", review)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

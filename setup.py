@@ -30,9 +30,8 @@ import setuptools
 
 def _main():
     setuptools.setup(
-        packages=setuptools.find_packages(),
-        setup_requires=['pbr'],
-        pbr=True)
+        packages=setuptools.find_packages(), setup_requires=["pbr"], pbr=True
+    )
 
 
 if __name__ == "__main__":

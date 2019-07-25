@@ -37,10 +37,9 @@ sh.setFormatter(logging.Formatter(fmt, datefmt))
 if not logger.handlers:
     logger.addHandler(sh)
 
-GERRIT_MAGIC_JSON_PREFIX = ")]}\'\n"
+GERRIT_MAGIC_JSON_PREFIX = ")]}'\n"
 GERRIT_AUTH_SUFFIX = "/a"
-DEFAULT_HEADERS = {'Accept': 'application/json',
-                   'Accept-Encoding': 'gzip'}
+DEFAULT_HEADERS = {"Accept": "application/json", "Accept-Encoding": "gzip"}
 
 
 def _decode_response(response):
@@ -54,9 +53,11 @@ def _decode_response(response):
         requests.HTTPError if the response contains an HTTP error status code.
 
     """
-    content_type = response.headers.get('content-type', '')
-    logger.debug("status[%s] content_type[%s] encoding[%s]" %
-                 (response.status_code, content_type, response.encoding))
+    content_type = response.headers.get("content-type", "")
+    logger.debug(
+        "status[%s] content_type[%s] encoding[%s]"
+        % (response.status_code, content_type, response.encoding)
+    )
     response.raise_for_status()
     content = response.content.strip()
     if response.encoding:
@@ -64,14 +65,15 @@ def _decode_response(response):
     if not content:
         logger.debug("no content in response")
         return content
-    if content_type.split(';')[0] != 'application/json':
+    if content_type.split(";")[0] != "application/json":
         return content
     if content.startswith(GERRIT_MAGIC_JSON_PREFIX):
-        content = content[len(GERRIT_MAGIC_JSON_PREFIX):]
+        index = len(GERRIT_MAGIC_JSON_PREFIX)
+        content = content[index:]
     try:
         return json.loads(content)
     except ValueError:
-        logger.error('Invalid json content: %s', content)
+        logger.error("Invalid json content: %s", content)
         raise
 
 
@@ -90,9 +92,8 @@ class GerritRestAPI(object):
 
     def __init__(self, url, auth=None, verify=True):
         """See class docstring."""
-        self.kwargs = {'auth': auth,
-                       'verify': verify}
-        self.url = url.rstrip('/')
+        self.kwargs = {"auth": auth, "verify": verify}
+        self.url = url.rstrip("/")
         self.session = requests.session()
 
         if not auth:
@@ -103,20 +104,21 @@ class GerritRestAPI(object):
 
         if auth:
             if not isinstance(auth, requests.auth.AuthBase):
-                raise ValueError('Invalid auth type; must be derived '
-                                 'from requests.auth.AuthBase')
+                raise ValueError(
+                    "Invalid auth type; must be derived " "from requests.auth.AuthBase"
+                )
 
             if not self.url.endswith(GERRIT_AUTH_SUFFIX):
                 self.url += GERRIT_AUTH_SUFFIX
         else:
             if self.url.endswith(GERRIT_AUTH_SUFFIX):
-                self.url = self.url[: - len(GERRIT_AUTH_SUFFIX)]
+                self.url = self.url[: -len(GERRIT_AUTH_SUFFIX)]
 
         # Keep a copy of the auth, only needed for tests
         self.auth = auth
 
-        if not self.url.endswith('/'):
-            self.url += '/'
+        if not self.url.endswith("/"):
+            self.url += "/"
 
     def make_url(self, endpoint):
         """Make the full url for the endpoint.
@@ -127,7 +129,7 @@ class GerritRestAPI(object):
             The full url.
 
         """
-        endpoint = endpoint.lstrip('/')
+        endpoint = endpoint.lstrip("/")
         return self.url + endpoint
 
     def translate_kwargs(self, **kwargs):
@@ -251,8 +253,9 @@ class GerritRestAPI(object):
 
         """
         endpoint = "changes/%s/revisions/%s/review" % (change_id, revision)
-        self.post(endpoint, data=str(review),
-                  headers={"Content-Type": "application/json"})
+        self.post(
+            endpoint, data=str(review), headers={"Content-Type": "application/json"}
+        )
 
 
 class GerritReview(object):
@@ -322,20 +325,18 @@ class GerritReview(object):
 
         """
         for comment in comments:
-            if 'filename' and 'message' in list(comment.keys()):
+            if "filename" and "message" in list(comment.keys()):
                 msg = {}
-                if 'range' in list(comment.keys()):
-                    msg = {"range": comment['range'],
-                           "message": comment['message']}
-                elif 'line' in list(comment.keys()):
-                    msg = {"line": comment['line'],
-                           "message": comment['message']}
+                if "range" in list(comment.keys()):
+                    msg = {"range": comment["range"], "message": comment["message"]}
+                elif "line" in list(comment.keys()):
+                    msg = {"line": comment["line"], "message": comment["message"]}
                 else:
                     continue
-                file_comment = {comment['filename']: [msg]}
+                file_comment = {comment["filename"]: [msg]}
                 if self.comments:
-                    if comment['filename'] in list(self.comments.keys()):
-                        self.comments[comment['filename']].append(msg)
+                    if comment["filename"] in list(self.comments.keys()):
+                        self.comments[comment["filename"]].append(msg)
                     else:
                         self.comments.update(file_comment)
                 else:
@@ -345,9 +346,9 @@ class GerritReview(object):
         """Return a string representation."""
         review_input = {}
         if self.message:
-            review_input.update({'message': self.message})
+            review_input.update({"message": self.message})
         if self.labels:
-            review_input.update({'labels': self.labels})
+            review_input.update({"labels": self.labels})
         if self.comments:
-            review_input.update({'comments': self.comments})
+            review_input.update({"comments": self.comments})
         return json.dumps(review_input, sort_keys=True)

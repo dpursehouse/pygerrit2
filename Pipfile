@@ -5,7 +5,8 @@ name = "pypi"
 
 [packages]
 requests = "*"
-"e1839a8" = {path = ".", editable = true}
+e1839a8 = {path = ".",editable = true}
+black = "*"
 
 [dev-packages]
 pbr = "*"
@@ -15,4 +16,4 @@ pyflakes = "==1.6.0"
 pytest = "*"
 testcontainers = "*"
 mock = "*"
-"e1839a8" = {path = ".", editable = true}
+e1839a8 = {path = ".",editable = true}
