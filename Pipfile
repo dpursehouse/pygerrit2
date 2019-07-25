@@ -6,9 +6,9 @@ name = "pypi"
 [packages]
 requests = "*"
 e1839a8 = {path = ".",editable = true}
-black = "*"
 
 [dev-packages]
+black = {version = "*", markers="python_version >= '3.6.0'"}
 pbr = "*"
 pydocstyle = "*"
 flake8 = "==3.5.0"
