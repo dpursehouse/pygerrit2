@@ -8,7 +8,7 @@ requests = "*"
 e1839a8 = {path = ".",editable = true}
 
 [dev-packages]
-black = {version = "*", markers="python_version >= '3.6.0'"}
+black = {version = "==19.3b0", markers = "python_version >= '3.6.0'"}
 pbr = "*"
 pydocstyle = "*"
 flake8 = "==3.5.0"
@@ -17,3 +17,6 @@ pytest = "*"
 testcontainers = "*"
 mock = "*"
 e1839a8 = {path = ".",editable = true}
+
+[pipenv]
+allow_prereleases = true
