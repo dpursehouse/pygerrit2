@@ -25,6 +25,8 @@
 import json
 import logging
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 from .auth import HTTPBasicAuthFromNetrc
 
@@ -95,6 +97,16 @@ class GerritRestAPI(object):
         self.kwargs = {"auth": auth, "verify": verify}
         self.url = url.rstrip("/")
         self.session = requests.session()
+        retry = Retry(
+            total=5,
+            read=5,
+            connect=5,
+            backoff_factor=0.3,
+            status_forcelist=(500, 502, 504),
+        )
+        adapter = HTTPAdapter(max_retries=retry)
+        self.session.mount('http://', adapter)
+        self.session.mount('https://', adapter)
 
         if not auth:
             try:
@@ -143,6 +155,9 @@ class GerritRestAPI(object):
         if "data" in local_kwargs and isinstance(local_kwargs["data"], dict):
             local_kwargs.update({"json": local_kwargs["data"]})
             del local_kwargs["data"]
+
+        if "timeout" not in local_kwargs:
+            local_kwargs.update({"timeout": 10})
 
         headers = DEFAULT_HEADERS.copy()
         if "headers" in kwargs:
