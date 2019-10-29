@@ -22,7 +22,7 @@
 
 FILES := $(shell git ls-files | grep py$$)
 
-test: clean pyflakes pep8 pydocstyle black unittests livetests
+test: clean pyflakes pep8 pydocstyle unittests livetests
 
 sdist: test
 	pipenv run python setup.py sdist
@@ -35,9 +35,6 @@ pep8: testenvsetup
 
 pyflakes: testenvsetup
 	pipenv run pyflakes $(FILES)
-
-black: testenvsetup
-	pipenv run black --check $(FILES)
 
 unittests: testenvsetup
 	pipenv run pytest -sv unittests.py
