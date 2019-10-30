@@ -105,8 +105,8 @@ class GerritRestAPI(object):
             status_forcelist=(500, 502, 504),
         )
         adapter = HTTPAdapter(max_retries=retry)
-        self.session.mount('http://', adapter)
-        self.session.mount('https://', adapter)
+        self.session.mount("http://", adapter)
+        self.session.mount("https://", adapter)
 
         if not auth:
             try:
