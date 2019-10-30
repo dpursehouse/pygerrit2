@@ -86,6 +86,38 @@ the `HTTPBasic...` classes with the corresponding `HTTPDigest...` versions.
 
 Refer to the [example script][example] for a full working example.
 
+## Contributing
+
+Contributions are welcome. Simply fork the repository, make your changes,
+and submit a pull request.
+
+### Tests
+
+Run the tests with:
+
+```
+make test
+```
+
+The tests include unit tests and integration tests against various versions
+of Gerrit running in Docker. Docker must be running on the development
+environment.
+
+### Code Formatting
+
+Python code is formatted with [black][black]. To check the formatting, run:
+
+```
+make black-check
+```
+
+and to automatically apply formatting, run:
+
+```
+make black-format
+```
+
+Note that black requires minimum Python version 3.6.
 
 # Copyright and License
 
@@ -103,3 +135,4 @@ for full license details.
 [settings]: https://gerrit-documentation.storage.googleapis.com/Documentation/2.15.2/user-upload.html#http
 [license]: https://github.com/dpursehouse/pygerrit2/blob/master/LICENSE
 [pygerrit]: https://github.com/sonyxperiadev/pygerrit
+[black]: https://github.com/psf/black
