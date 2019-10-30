@@ -36,6 +36,12 @@ pep8: testenvsetup
 pyflakes: testenvsetup
 	pipenv run pyflakes $(FILES)
 
+black-check: testenvsetup
+	pipenv run black --check $(FILES)
+
+black-format: testenvsetup
+	pipenv run black $(FILES)
+
 unittests: testenvsetup
 	pipenv run pytest -sv unittests.py
 
