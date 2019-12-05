@@ -279,12 +279,14 @@ class GerritReview(object):
     :arg str message: (optional) Cover message.
     :arg dict labels: (optional) Review labels.
     :arg dict comments: (optional) Inline comments.
+    :arg str tag: (optional) Review tag.
 
     """
 
-    def __init__(self, message=None, labels=None, comments=None):
+    def __init__(self, message=None, labels=None, comments=None, tag=None):
         """See class docstring."""
         self.message = message if message else ""
+        self.tag = tag if tag else ""
         if labels:
             if not isinstance(labels, dict):
                 raise ValueError("labels must be a dict.")
@@ -306,6 +308,14 @@ class GerritReview(object):
 
         """
         self.message = message
+
+    def set_tag(self, tag):
+        """Set review tag.
+
+        :arg str tag: Review tag.
+
+        """
+        self.tag = tag
 
     def add_labels(self, labels):
         """Add labels.
@@ -362,6 +372,8 @@ class GerritReview(object):
         review_input = {}
         if self.message:
             review_input.update({"message": self.message})
+        if self.tag:
+            review_input.update({"tag": self.tag})
         if self.labels:
             review_input.update({"labels": self.labels})
         if self.comments:
