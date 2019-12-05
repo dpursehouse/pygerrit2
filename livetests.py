@@ -189,6 +189,7 @@ class TestGerritAgainstLiveServer(object):
         review = GerritReview()
         review.set_message("Review from live test")
         review.add_labels({"Code-Review": 1})
+        review.set_tag("a_test_tag")
         gerrit_api.review(change_id, "current", review)
 
 
