@@ -24,6 +24,7 @@ Platform | Python version(s)
 OSX | 3.7
 Ubuntu (trusty) | 3.5, 3.6
 Ubuntu (xenial) | 3.7
+Ubuntu (bionic) | 3.8
 
 Support for Python 2.x is no longer guaranteed.
 
