@@ -7,9 +7,6 @@ services:
 language: python
 matrix:
     include:
-        - python: 3.5
-          dist: trusty
-          sudo: false
         - python: 3.6
           dist: trusty
           sudo: false
