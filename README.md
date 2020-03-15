@@ -50,9 +50,8 @@ rest = GerritRestAPI(url='http://review.example.net', auth=auth)
 changes = rest.get("/changes/?q=owner:self%20status:open")
 ```
 
-Note that is is not necessary to add the `/a/` prefix on the endpoint
-URLs. This is automatically added when the API is instantiated with an
-authentication object.
+Note that is is not necessary to add the `/a/` prefix; it is automatically
+added on all URLs when the API is instantiated with authentication.
 
 If the user's HTTP username and password are defined in the `.netrc`
 file:
@@ -73,7 +72,7 @@ changes = rest.get("/changes/?q=owner:self%20status:open")
 ```
 
 If no `auth` parameter is specified, pygerrit2 will attempt to find
-credentials in the `netrc` and use them with HTTP basic auth. If no
+credentials in the `.netrc` and use them with HTTP basic auth. If no
 credentials are found, it will fall back to using no authentication.
 
 Note that the HTTP password is not the same as the SSH password. For
