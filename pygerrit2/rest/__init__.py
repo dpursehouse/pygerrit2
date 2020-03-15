@@ -111,7 +111,8 @@ class GerritRestAPI(object):
         if not auth:
             try:
                 auth = HTTPBasicAuthFromNetrc(url)
-            except ValueError:
+            except ValueError as e:
+                logger.debug("Error parsing netrc: %s", str(e))
                 pass
 
         if auth:
