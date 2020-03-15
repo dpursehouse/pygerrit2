@@ -117,7 +117,7 @@ class GerritRestAPI(object):
         if auth:
             if not isinstance(auth, requests.auth.AuthBase):
                 raise ValueError(
-                    "Invalid auth type; must be derived " "from requests.auth.AuthBase"
+                    "Invalid auth type; must be derived from requests.auth.AuthBase"
                 )
 
             if not self.url.endswith(GERRIT_AUTH_SUFFIX):
