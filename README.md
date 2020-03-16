@@ -75,6 +75,18 @@ If no `auth` parameter is specified, pygerrit2 will attempt to find
 credentials in the `.netrc` and use them with HTTP basic auth. If no
 credentials are found, it will fall back to using no authentication.
 
+To explicitly use anonymous access, i.e. no authentication, use the
+`Anonymous` class:
+
+```python
+from pygerrit2 import GerritRestAPI, Anonymous
+
+url = 'http://review.example.net'
+auth = Anonymous()
+rest = GerritRestAPI(url=url, auth=auth)
+changes = rest.get("/changes/?q=status:open")
+```
+
 Note that the HTTP password is not the same as the SSH password. For
 instructions on how to obtain the HTTP password, refer to Gerrit's
 [HTTP upload settings documentation][settings].

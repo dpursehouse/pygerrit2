@@ -28,7 +28,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
-from .auth import HTTPBasicAuthFromNetrc
+from .auth import HTTPBasicAuthFromNetrc, Anonymous
 
 logger = logging.getLogger("pygerrit2")
 fmt = "%(asctime)s-[%(name)s-%(levelname)s] %(message)s"
@@ -114,6 +114,9 @@ class GerritRestAPI(object):
             except ValueError as e:
                 logger.debug("Error parsing netrc: %s", str(e))
                 pass
+        elif isinstance(auth, Anonymous):
+            logger.debug("Anonymous")
+            auth = None
 
         if auth:
             if not isinstance(auth, requests.auth.AuthBase):

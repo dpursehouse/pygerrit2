@@ -24,9 +24,10 @@
 
 from .rest import GerritRestAPI, GerritReview
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
-from .rest.auth import HTTPBasicAuthFromNetrc, HTTPDigestAuthFromNetrc
+from .rest.auth import HTTPBasicAuthFromNetrc, HTTPDigestAuthFromNetrc, Anonymous
 
 __all__ = [
+    "Anonymous",
     "GerritRestAPI",
     "GerritReview",
     "HTTPBasicAuth",
