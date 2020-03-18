@@ -50,7 +50,7 @@ rest = GerritRestAPI(url='http://review.example.net', auth=auth)
 changes = rest.get("/changes/?q=owner:self%20status:open")
 ```
 
-Note that is is not necessary to add the `/a/` prefix; it is automatically
+Note that it is not necessary to add the `/a/` prefix; it is automatically
 added on all URLs when the API is instantiated with authentication.
 
 If the user's HTTP username and password are defined in the `.netrc`
