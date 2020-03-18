@@ -30,7 +30,7 @@ import unittest
 
 from mock import patch
 from pygerrit2 import GerritReviewMessageFormatter, GerritReview
-from pygerrit2 import HTTPBasicAuthFromNetrc, HTTPDigestAuthFromNetrc
+from pygerrit2 import HTTPBasicAuthFromNetrc, HTTPDigestAuthFromNetrc, Anonymous
 from pygerrit2 import GerritRestAPI
 
 EXPECTED_TEST_CASE_FIELDS = ["header", "footer", "paragraphs", "result"]
@@ -250,6 +250,24 @@ class TestNetrcAuth(unittest.TestCase):
         with self.assertRaises(ValueError) as exc:
             GerritRestAPI(url="http://review.example.com", auth="foo")
         assert re.search(r"Invalid auth type", str(exc.exception))
+
+    def test_explicit_anonymous_with_netrc(self):
+        """Test explicit anonymous access when credentials are in netrc."""
+        with patch("pygerrit2.rest.auth._get_netrc_auth") as mock_netrc:
+            mock_netrc.return_value = ("netrcuser", "netrcpass")
+            auth = Anonymous()
+            api = GerritRestAPI(url="http://review.example.com", auth=auth)
+            assert api.auth is None
+            assert not api.url.endswith("/a/")
+
+    def test_explicit_anonymous_without_netrc(self):
+        """Test explicit anonymous access when credentials are not in netrc."""
+        with patch("pygerrit2.rest.auth._get_netrc_auth") as mock_netrc:
+            mock_netrc.return_value = None
+            auth = Anonymous()
+            api = GerritRestAPI(url="http://review.example.com", auth=auth)
+            assert api.auth is None
+            assert not api.url.endswith("/a/")
 
 
 class TestKwargsTranslation(unittest.TestCase):

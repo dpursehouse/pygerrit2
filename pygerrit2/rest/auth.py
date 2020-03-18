@@ -52,3 +52,9 @@ class HTTPBasicAuthFromNetrc(HTTPBasicAuth):
             raise ValueError("netrc missing or no credentials found in netrc")
         username, password = auth
         super(HTTPBasicAuthFromNetrc, self).__init__(username, password)
+
+
+class Anonymous:
+    """No authentication; i.e. anonymous access."""
+
+    pass

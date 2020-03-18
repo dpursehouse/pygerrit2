@@ -28,7 +28,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
-from .auth import HTTPBasicAuthFromNetrc
+from .auth import HTTPBasicAuthFromNetrc, Anonymous
 
 logger = logging.getLogger("pygerrit2")
 fmt = "%(asctime)s-[%(name)s-%(levelname)s] %(message)s"
@@ -111,13 +111,17 @@ class GerritRestAPI(object):
         if not auth:
             try:
                 auth = HTTPBasicAuthFromNetrc(url)
-            except ValueError:
+            except ValueError as e:
+                logger.debug("Error parsing netrc: %s", str(e))
                 pass
+        elif isinstance(auth, Anonymous):
+            logger.debug("Anonymous")
+            auth = None
 
         if auth:
             if not isinstance(auth, requests.auth.AuthBase):
                 raise ValueError(
-                    "Invalid auth type; must be derived " "from requests.auth.AuthBase"
+                    "Invalid auth type; must be derived from requests.auth.AuthBase"
                 )
 
             if not self.url.endswith(GERRIT_AUTH_SUFFIX):
