@@ -94,7 +94,6 @@ class GerritRestAPI(object):
 
     def __init__(self, url, auth=None, verify=True):
         """See class docstring."""
-        self.kwargs = {"auth": auth, "verify": verify}
         self.url = url.rstrip("/")
         self.session = requests.session()
         retry = Retry(
@@ -129,6 +128,8 @@ class GerritRestAPI(object):
         else:
             if self.url.endswith(GERRIT_AUTH_SUFFIX):
                 self.url = self.url[: -len(GERRIT_AUTH_SUFFIX)]
+
+        self.kwargs = {"auth": auth, "verify": verify}
 
         # Keep a copy of the auth, only needed for tests
         self.auth = auth

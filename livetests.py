@@ -28,7 +28,7 @@
 import base64
 import pytest
 import unittest
-from pygerrit2 import GerritRestAPI, GerritReview, HTTPBasicAuth
+from pygerrit2 import GerritRestAPI, GerritReview, HTTPBasicAuth, Anonymous
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_container_is_ready
 
@@ -59,9 +59,10 @@ def gerrit_api(request):
     with GerritContainer(request.param) as gerrit:
         port = gerrit.get_exposed_port(8080)
         url = "http://localhost:%s" % port
+        api = GerritRestAPI(url=url, auth=Anonymous())
+        _initialize(api)
         auth = HTTPBasicAuth("admin", "secret")
         api = GerritRestAPI(url=url, auth=auth)
-        _initialize(api)
         yield api
 
 
