@@ -52,7 +52,7 @@ def _initialize(api):
 
 
 @pytest.fixture(
-    scope="module", params=["2.14.20", "2.15.18", "2.16.17", "3.0.8", "3.1.4"]
+    scope="module", params=["2.14.20", "2.15.18", "2.16.18", "3.0.8", "3.1.4"]
 )
 def gerrit_api(request):
     """Create a Gerrit container for the given version and return an API."""
