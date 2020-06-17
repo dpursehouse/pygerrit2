@@ -188,7 +188,10 @@ class TestGerritAgainstLiveServer(object):
         review.set_message("Review from live test")
         review.add_labels({"Code-Review": 1})
         review.set_tag("a_test_tag")
-        gerrit_api.review(change_id, "current", review)
+        result = gerrit_api.review(change_id, "current", review)
+        assert "labels" in result
+        assert "Code-Review" in result["labels"]
+        assert result["labels"]["Code-Review"] == 1
 
 
 if __name__ == "__main__":
