@@ -12,7 +12,7 @@ black = {version = "==20.8b1", markers = "python_version >= '3.6.0'"}
 pbr = "*"
 pydocstyle = "*"
 flake8 = "*"
-importlib_metadata = {version = "==1.7.0", markers = "python_version < '3.8.0'"}
+importlib_metadata = {version = "==2.0.0", markers = "python_version < '3.8.0'"}
 pyflakes = "*"
 pytest = "*"
 testcontainers = "*"
