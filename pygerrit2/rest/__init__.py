@@ -89,21 +89,25 @@ class GerritRestAPI(object):
         `requests.auth.AuthBase`.
     :arg boolean verify: (optional) Set to False to disable verification of
         SSL certificates.
+    :arg requests.adapters.BaseAdapter adapter: (optional) Custom connection
+        adapter. See
+        https://requests.readthedocs.io/en/master/api/#requests.adapters.BaseAdapter
 
     """
 
-    def __init__(self, url, auth=None, verify=True):
+    def __init__(self, url, auth=None, verify=True, adapter=None):
         """See class docstring."""
         self.url = url.rstrip("/")
         self.session = requests.session()
-        retry = Retry(
-            total=5,
-            read=5,
-            connect=5,
-            backoff_factor=0.3,
-            status_forcelist=(500, 502, 504),
-        )
-        adapter = HTTPAdapter(max_retries=retry)
+        if not adapter:
+            retry = Retry(
+                total=5,
+                read=5,
+                connect=5,
+                backoff_factor=0.3,
+                status_forcelist=(500, 502, 504),
+            )
+            adapter = HTTPAdapter(max_retries=retry)
         self.session.mount("http://", adapter)
         self.session.mount("https://", adapter)
 
