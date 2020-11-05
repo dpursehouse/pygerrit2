@@ -44,6 +44,11 @@ from pygerrit2 import HTTPBasicAuth, HTTPDigestAuth
 
 
 def _main():
+    """
+    Main function.
+
+    Args:
+    """
     descr = "Send request using Gerrit HTTP API"
     parser = argparse.ArgumentParser(
         description=descr, formatter_class=argparse.ArgumentDefaultsHelpFormatter

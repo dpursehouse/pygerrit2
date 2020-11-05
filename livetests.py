@@ -48,6 +48,12 @@ class GerritContainer(DockerContainer):
 
 @wait_container_is_ready()
 def _initialize(api):
+    """
+    Initialize the api.
+
+    Args:
+        api: (dict): write your description
+    """
     api.get("/changes/")
 
 
@@ -70,6 +76,15 @@ class TestGerritAgainstLiveServer(object):
     """Run tests against a live server."""
 
     def _get_test_change(self, gerrit_api, topic=TEST_TOPIC):
+        """
+        Returns the test test for a test.
+
+        Args:
+            self: (todo): write your description
+            gerrit_api: (todo): write your description
+            topic: (str): write your description
+            TEST_TOPIC: (todo): write your description
+        """
         results = gerrit_api.get("/changes/?q=topic:" + topic)
         assert len(results) == 1
         return results[0]
