@@ -122,6 +122,14 @@ class TestGerritReviewMessageFormatter(unittest.TestCase):
     """Test that the GerritReviewMessageFormatter class behaves properly."""
 
     def _check_test_case_fields(self, test_case, i):
+        """
+        Asserts that the test fields match.
+
+        Args:
+            self: (todo): write your description
+            test_case: (todo): write your description
+            i: (todo): write your description
+        """
         for field in EXPECTED_TEST_CASE_FIELDS:
             self.assertTrue(
                 field in test_case,

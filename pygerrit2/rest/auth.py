@@ -27,6 +27,12 @@ from requests.utils import get_netrc_auth
 
 
 def _get_netrc_auth(url):
+    """
+    Returns the authrc authentication
+
+    Args:
+        url: (str): write your description
+    """
     return get_netrc_auth(url)
 
 
