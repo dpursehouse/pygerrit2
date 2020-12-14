@@ -85,13 +85,6 @@
             "markers": "python_version >= '3.6.0'",
             "version": "==20.8b1"
         },
-        "blindspin": {
-            "hashes": [
-                "sha256:31c4e93d4ae2ef6765e3c42460456814c17addd5add8298dced21fe9dc50f496",
-                "sha256:b30ef7a26ef1637c1d047667b279e8c15dc2a78fcfaad6b3027d7217e752bdba"
-            ],
-            "version": "==2.0.1"
-        },
         "certifi": {
             "hashes": [
                 "sha256:1a4995114262bffbc2413b159f2a1a480c969de6e6eb13ee966d470af86af59c",
@@ -112,20 +105,6 @@
                 "sha256:e4315a188403c0258bbc4a4e31863e48fc301c4e95b8007a8eeda0391158df13"
             ],
             "version": "==8.0.0a1"
-        },
-        "colorama": {
-            "hashes": [
-                "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b",
-                "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"
-            ],
-            "version": "==0.4.4"
-        },
-        "crayons": {
-            "hashes": [
-                "sha256:bd33b7547800f2cfbd26b38431f9e64b487a7de74a947b0fafc89b45a601813f",
-                "sha256:e73ad105c78935d71fe454dd4b85c5c437ba199294e7ffd3341842bc683654b1"
-            ],
-            "version": "==0.4.0"
         },
         "deprecation": {
             "hashes": [
@@ -348,10 +327,10 @@
         },
         "testcontainers": {
             "hashes": [
-                "sha256:c1405f5689b719600e7f5f1d59837d62d16953cfcc31e3b968d474f169d72764"
+                "sha256:2c27dd6e23232f25bda4f6f5710ff28c0c31381297ea291c69838c4332dbe36d"
             ],
             "index": "pypi",
-            "version": "==3.1.0"
+            "version": "==3.2.0"
         },
         "toml": {
             "hashes": [
