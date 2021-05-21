@@ -6,19 +6,19 @@ name = "pypi"
 [packages]
 typing_extensions = "*"
 requests = "*"
-e1839a8 = {path = ".",editable = true}
+e1839a8 = { path = ".", editable = true }
 
 [dev-packages]
-black = {version = "==21.5b1", markers = "python_version >= '3.6.2'"}
+black = { version = "==21.5b1", markers = "python_version >= '3.6.2'" }
 pbr = "*"
 pydocstyle = "*"
 flake8 = "*"
-importlib_metadata = {version = "==4.0.1", markers = "python_version >= '3.6.0'"}
+importlib_metadata = { version = "==4.0.1", markers = "python_version >= '3.6.0'" }
 pyflakes = "*"
 pytest = "*"
 testcontainers = "*"
 mock = "*"
-e1839a8 = {path = ".",editable = true}
+e1839a8 = { path = ".", editable = true }
 
 [pipenv]
 allow_prereleases = true
