@@ -1,0 +1,16 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "09:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: pep257
+    versions:
+    - "< 1, >= 0.a"
+  - dependency-name: importlib-metadata
+    versions:
+    - 3.6.0
+    - 3.7.2
