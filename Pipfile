@@ -9,7 +9,7 @@ requests = "*"
 e1839a8 = { path = ".", editable = true }
 
 [dev-packages]
-black = { version = "==21.5b1", markers = "python_version >= '3.6.2'" }
+black = { version = "==21.5b2", markers = "python_version >= '3.6.2'" }
 pbr = "*"
 pydocstyle = "*"
 flake8 = "*"
