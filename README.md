@@ -142,9 +142,9 @@ Copyright 2016 David Pursehouse. All rights reserved.
 Licensed under The MIT License.  Please refer to the [LICENSE file][license]
 for full license details.
 
-[gerrit]: https://gerritcodereview.com/
+[black]: https://github.com/psf/black
 [example]: https://github.com/dpursehouse/pygerrit2/blob/master/example.py
-[settings]: https://gerrit-documentation.storage.googleapis.com/Documentation/2.15.2/user-upload.html#http
+[gerrit]: https://gerritcodereview.com/
 [license]: https://github.com/dpursehouse/pygerrit2/blob/master/LICENSE
 [pygerrit]: https://github.com/sonyxperiadev/pygerrit
-[black]: https://github.com/psf/black
+[settings]: https://gerrit-documentation.storage.googleapis.com/Documentation/2.15.2/user-upload.html#http
