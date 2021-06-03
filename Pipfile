@@ -19,6 +19,7 @@ pytest = "*"
 testcontainers = "*"
 mock = "*"
 e1839a8 = { path = ".", editable = true }
+six = "*"
 
 [pipenv]
 allow_prereleases = true
