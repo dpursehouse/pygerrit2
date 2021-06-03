@@ -131,6 +131,33 @@ make black-format
 
 Note that black requires minimum Python version 3.6.
 
+### Making Releases
+
+Done by the pygerrit2 maintainers whenever necessary or due.
+
+Assumes a local [`~/.pypirc`][pypirc] file that looks something like this:
+
+```
+[distutils]
+index-servers =
+    pypi
+
+[pypi]
+username:<PyPI user>
+password:<PyPI token>
+```
+
+Example steps used; assumes [twine][twine] installed locally:
+
+```
+git tag 2.0.15
+make sdist
+twine upload dist/pygerrit2-2.0.15.tar.gz
+git push origin 2.0.15
+```
+
+Optional: announcing the new [release][release] highlights on Twitter; no known hashtag.
+
 # Copyright and License
 
 Copyright 2011 Sony Ericsson Mobile Communications. All rights reserved.
@@ -147,4 +174,7 @@ for full license details.
 [gerrit]: https://gerritcodereview.com/
 [license]: https://github.com/dpursehouse/pygerrit2/blob/master/LICENSE
 [pygerrit]: https://github.com/sonyxperiadev/pygerrit
+[pypirc]: https://packaging.python.org/specifications/pypirc/#common-configurations
+[release]: https://pypi.org/project/pygerrit2/
 [settings]: https://gerrit-documentation.storage.googleapis.com/Documentation/2.15.2/user-upload.html#http
+[twine]: https://pypi.org/project/twine/
