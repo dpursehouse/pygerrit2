@@ -33,7 +33,7 @@ Support for Python 2.x is no longer guaranteed.
 To install pygerrit2, simply:
 
 ```bash
-$ pip install pygerrit2
+pip install pygerrit2
 ```
 
 ## Usage
@@ -107,7 +107,7 @@ and submit a pull request.
 
 Run the tests with:
 
-```
+```bash
 make test
 ```
 
@@ -119,13 +119,13 @@ environment.
 
 Python code is formatted with [black][black]. To check the formatting, run:
 
-```
+```bash
 make black-check
 ```
 
 and to automatically apply formatting, run:
 
-```
+```bash
 make black-format
 ```
 
@@ -137,7 +137,7 @@ Done by the pygerrit2 maintainers whenever necessary or due.
 
 Assumes a local [`~/.pypirc`][pypirc] file that looks something like this:
 
-```
+```bash
 [distutils]
 index-servers =
     pypi
@@ -149,7 +149,7 @@ password:<PyPI token>
 
 Example steps used; assumes [twine][twine] installed locally:
 
-```
+```bash
 git tag 2.0.15
 make sdist
 twine upload dist/pygerrit2-2.0.15.tar.gz
@@ -158,7 +158,7 @@ git push origin 2.0.15
 
 Optional: announcing the new [release][release] highlights on Twitter; no known hashtag.
 
-# Copyright and License
+## Copyright and License
 
 Copyright 2011 Sony Ericsson Mobile Communications. All rights reserved.
 
