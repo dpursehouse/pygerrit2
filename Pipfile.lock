@@ -43,11 +43,11 @@
         },
         "pbr": {
             "hashes": [
-                "sha256:4651ca1445e80f2781827305de3d76b3ce53195f2227762684eb08f17bc473b7",
-                "sha256:60002958e459b195e8dbe61bf22bcf344eedf1b4e03a321a5414feb15566100c"
+                "sha256:176e8560eaf61e127817ef93d8a844803abb27a4d4637f0ff3bb783129be2e0a",
+                "sha256:672d8ebee84921862110f23fcec2acea191ef58543d34dfe9ef3d9f13c31cddf"
             ],
             "markers": "python_version >= '2.6'",
-            "version": "==5.7.0"
+            "version": "==5.8.0"
         },
         "requests": {
             "hashes": [
@@ -209,11 +209,11 @@
         },
         "pbr": {
             "hashes": [
-                "sha256:4651ca1445e80f2781827305de3d76b3ce53195f2227762684eb08f17bc473b7",
-                "sha256:60002958e459b195e8dbe61bf22bcf344eedf1b4e03a321a5414feb15566100c"
+                "sha256:176e8560eaf61e127817ef93d8a844803abb27a4d4637f0ff3bb783129be2e0a",
+                "sha256:672d8ebee84921862110f23fcec2acea191ef58543d34dfe9ef3d9f13c31cddf"
             ],
             "markers": "python_version >= '2.6'",
-            "version": "==5.7.0"
+            "version": "==5.8.0"
         },
         "platformdirs": {
             "hashes": [
