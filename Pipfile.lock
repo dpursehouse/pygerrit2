@@ -329,17 +329,17 @@
         },
         "testcontainers": {
             "hashes": [
-                "sha256:cf810b0ef8b514cc161a8a85878ebc26943453e1838ada2c469d469d4082d2ba"
+                "sha256:de054a54acfa4b0ced3de1e561b705ce32b49b65819a64837b4e5a7cf50e117f"
             ],
             "index": "pypi",
-            "version": "==3.4.2"
+            "version": "==3.5.3"
         },
         "tomli": {
             "hashes": [
                 "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc",
                 "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"
             ],
-            "markers": "python_version >= '3.7'",
+            "markers": "python_version < '3.11'",
             "version": "==2.0.1"
         },
         "urllib3": {
