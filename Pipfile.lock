@@ -332,10 +332,10 @@
         },
         "testcontainers": {
             "hashes": [
-                "sha256:cf810b0ef8b514cc161a8a85878ebc26943453e1838ada2c469d469d4082d2ba"
+                "sha256:e40fece4085ae06f8facb067e83020e273738e31f958b01d2b5eaa84e2dab478"
             ],
             "index": "pypi",
-            "version": "==3.4.2"
+            "version": "==3.7.0"
         },
         "tomli": {
             "hashes": [
