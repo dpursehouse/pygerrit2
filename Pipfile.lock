@@ -254,11 +254,11 @@
         },
         "pydocstyle": {
             "hashes": [
-                "sha256:1d41b7c459ba0ee6c345f2eb9ae827cab14a7533a88c5c6f7e94923f72df92dc",
-                "sha256:6987826d6775056839940041beef5c08cc7e3d71d63149b48e36727f70144dc4"
+                "sha256:39573fa08919ac492b063724af39a1afdcfea8cdaa2c7b8018ca0dfff5d7e36f",
+                "sha256:b2d280501a4c0d9feeb96e9171dc3f6f7d0064c55270f4c7b1baa18452019fd9"
             ],
             "index": "pypi",
-            "version": "==6.1.1"
+            "version": "==6.2.0"
         },
         "pyflakes": {
             "hashes": [
