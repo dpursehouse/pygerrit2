@@ -478,10 +478,10 @@
         },
         "testcontainers": {
             "hashes": [
-                "sha256:cf810b0ef8b514cc161a8a85878ebc26943453e1838ada2c469d469d4082d2ba"
+                "sha256:7f48cef4bf0ccd78f1a4534d4b701a003a3bace851f24eae58a32f9e3f0aeba0"
             ],
             "index": "pypi",
-            "version": "==3.4.2"
+            "version": "==3.7.1"
         },
         "urllib3": {
             "hashes": [
