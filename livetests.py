@@ -50,7 +50,7 @@ def _initialize(api):
     api.get("/changes/")
 
 
-@pytest.fixture(scope="module", params=["3.4.8", "3.5.4", "3.6.3", "3.7.0"])
+@pytest.fixture(scope="module", params=["3.4.8", "3.5.5", "3.6.4", "3.7.1"])
 def gerrit_api(request):
     """Create a Gerrit container for the given version and return an API."""
     with GerritContainer(request.param) as gerrit:
