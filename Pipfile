@@ -10,7 +10,7 @@ typing_extensions = "*"
 
 [dev-packages]
 e1839a8 = { path = ".", editable = true }
-black = { version = "==23.7.0", markers = "python_version >= '3.6.2'" }
+black = { version = "==23.11.0", markers = "python_version >= '3.6.2'" }
 flake8 = "*"
 importlib_metadata = { version = "==6.8.0", markers = "python_version >= '3.6.0'" }
 mock = "*"
